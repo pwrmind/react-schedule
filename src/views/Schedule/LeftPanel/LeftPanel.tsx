@@ -21,7 +21,7 @@ export const LeftPanel: React.FC<any> = () => {
 					</div>
 					<div className="left-panel__date--body">
 						<input className="left-panel__date--body-input" placeholder="ДД.ММ.ГГГГ"/>
-						<button className="left-panel__date--body-button">🗓</button>
+						<button className="left-panel__date--body-button">🗓▼</button>
 					</div>
 				</div>
 				<div className="left-panel__specialists">
@@ -32,6 +32,31 @@ export const LeftPanel: React.FC<any> = () => {
 					<div className="left-panel__specialists--body">
 						<input className="left-panel__specialists--body-input" placeholder="Введите текст для поиска"/>
 						<button className="left-panel__specialists--body-button">🔍</button>
+					</div>
+					<div className="left-panel__specialists--footer">
+						<div className="left-panel__specialists--footer__buttons-wrapper">
+							<button className="left-panel__specialists--footer-button">По специальностям</button>
+							<button className="left-panel__specialists--footer-button">По алфавиту</button>
+						</div>
+						<div className="left-panel__specialists--footer__search-wrapper">
+							<ul>
+								<li>
+									<label><input type="checkbox"/>Терапевты</label>
+									<ul>
+										<li><label><input type="checkbox"/>Григорьева Г.Г.</label></li>
+										<li><label><input type="checkbox"/>Сидорова С.С.</label></li>
+										<li><label><input type="checkbox"/>Сидорова С.С.</label></li>
+									</ul>
+								</li>
+								<li>
+									<label><input type="checkbox"/>Офтальмологи</label>
+									<ul>
+										<li><label><input type="checkbox"/>Елисеева Е.Е.</label></li>
+										<li><label><input type="checkbox"/>Константинова-Щедрина А.А.</label></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>
