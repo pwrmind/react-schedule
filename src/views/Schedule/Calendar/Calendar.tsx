@@ -5,7 +5,7 @@ export const Calendar: React.FC<any> = () => {
 	return (
 		<div className="calendar">
 			<div className="calendar__container">
-				calendar
+				<span>Для просмотра расписания выберите хотя бы один Доступный ресурс.</span>
 			</div>
 		</div>
 	)
