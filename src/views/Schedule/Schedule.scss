@@ -3,7 +3,7 @@
 
   &__container {
     display: flex;
-    flex: 1;
+    width: calc(100% - 340px);
     flex-direction: column;
   }
 }
