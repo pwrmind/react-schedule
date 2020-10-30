@@ -1,0 +1,109 @@
+.left-panel {
+  display: flex;
+  width: 340px;
+  min-height: calc(100vh - 40px);
+  background-color: #e8e8eb;
+  box-shadow: 0 0 10px #777;
+  z-index: 2;
+
+  &__container {
+    width: 100%;
+  }
+
+  &__patient, &__date, &__specialists {
+    padding: 20px 10px;
+    border-top: 1px solid #efeff1;
+    border-bottom: 1px solid #dbdbdc;
+
+    &--header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      color: #313131;
+      text-transform: uppercase;
+
+      &-text {
+        font-size: 18px;
+        margin: 0 0 0 20px;
+
+        & span {
+          font-size: 15px;
+        }
+      }
+
+      &-button {
+        background-color: #5e9135;
+        color: white;
+      }
+    }
+
+    &--body {
+      display: flex;
+
+      &-input {
+        width: 100%;
+        height: 25px;
+      }
+
+      &-button {
+        white-space: nowrap;
+      }
+    }
+  }
+
+  &__specialists {
+    border-bottom: 0;
+
+    &--footer {
+      &__buttons-wrapper {
+        display: flex;
+        margin-top: 10px;
+      }
+
+      &-button {
+        height: 25px;
+        flex: 1
+      }
+
+      &__search-wrapper {
+        background-color: white;
+        border: 1px solid #d0d1d1;
+        overflow-x: scroll;
+        margin-top: 50px;
+        max-height: 300px;
+
+        & > ul > li > label {
+          font-weight: bold;
+        }
+
+        & ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+
+        & li {
+          margin-left: 20px;
+        }
+
+        & label {
+          position: relative;
+          display: flex;
+          height: 50px;
+          align-items: center;
+
+          &:after {
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            display: block;
+            width: 318px;
+            height: 1px;
+            background-color: #e8e8eb;
+          }
+        }
+      }
+    }
+  }
+}

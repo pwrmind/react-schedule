@@ -1,0 +1,28 @@
+.filter-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 50px;
+  max-height: 50px;
+  background-color: #e8e8eb;
+  box-shadow: 0 0 10px #777;
+  z-index: 1;
+
+  &__container {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0 20px;
+  }
+
+  &__header {
+    font-size: 22px;
+    font-weight: normal;
+    color: #313131;
+  }
+
+  &__button {
+    background-color: #5e9135;
+    color: white;
+  }
+}
