@@ -73,28 +73,13 @@ export const Calendar: React.FC<any> = () => {
 		'19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'
 	];
 
-	const scroll = (e: any) => {
-		const header: any = document.getElementById('header');
-		if (e.currentTarget.scrollTop > 0) {
-			if (e.currentTarget.style.marginTop === '' || parseInt(e.currentTarget.style.marginTop) === 0) {
-				e.currentTarget.style.marginTop = header.offsetHeight + 'px';
-				header.style.position = 'absolute';
-				header.style.top = '0';
-			}
-		}
-		else {
-			e.currentTarget.style.marginTop = 0;
-			header.style.position = 'relative';
-		}
-	};
-
 	return (
 		<div className="calendar">
 			<div className="calendar__container">
 				{ 0 ?
 					<span>Для просмотра расписания выберите хотя бы один Доступный ресурс.</span> :
 					<div className="calendar__schedule">
-						<div className="calendar__schedule--header" id="header">
+						<div className="calendar__schedule--header">
 						{columns.map((column, index) => (
 							<div className="calendar__schedule--header-column" key={column.id}>
 								<div className="calendar__schedule--header-column-day">{column.date}</div>
@@ -104,7 +89,7 @@ export const Calendar: React.FC<any> = () => {
 							</div>
 						))}
 						</div>
-						<div className="calendar__schedule--body" id="body">
+						<div className="calendar__schedule--body" style={ {width: columns.length * 211 + 'px'} }>
 							{columns.map((column, index) => (
 								<div className="calendar__schedule--body-column" key={column.id}>
 									{hours.map((hour, index) => (
