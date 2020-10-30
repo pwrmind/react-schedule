@@ -12,7 +12,7 @@
     width: 100%;
     overflow: hidden;
 
-    span {
+    & > span {
       color: #a8a8a8;
     }
   }
@@ -38,7 +38,18 @@
         background-color: #d5e0e2;
         border-radius: 5px 5px 0 0;
 
-        &-day, &-name, &-specialty, &-cabinet {
+        &.warning {
+          background-color: #f6ddd6;
+          border: 2px solid #d15530;
+          border-bottom-width: 0;
+          box-sizing: border-box;
+        }
+
+        &.warning &-cabinet {
+          background-color: #eba741;
+        }
+
+        &-day, &-name, &-specialty, &-cabinet, &-schedule, &-status {
           font-size: 15px;
           line-height: 30px;
           text-align: center;
@@ -47,7 +58,7 @@
         &-day {
           color: white;
           background-color: #353535;
-          border-radius: 5px 5px 0 0;
+          border-radius: 4px 4px 0 0;
         }
 
         &-name, &-specialty {
@@ -64,6 +75,14 @@
         &-cabinet {
           background-color: #8ec8d6;
         }
+
+        &-schedule {
+          background-color: #a4c589;
+        }
+
+        &-status {
+          background-color: #d15530;
+        }
       }
     }
 
@@ -73,6 +92,12 @@
       &-column {
         margin: 0 -10px 20px 20px;
         border-radius: 0 0 5px 5px;
+        overflow: hidden;
+
+        &.warning {
+          border-top-width: 0;
+          border-bottom-width: 2px;
+        }
 
         &-hour {
           display: flex;
@@ -80,6 +105,7 @@
           align-items: center;
           border-bottom: 1px dotted black;
           background-color: #e8e8eb;
+          box-sizing: border-box;
         }
       }
     }
