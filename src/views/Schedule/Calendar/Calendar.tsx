@@ -161,7 +161,7 @@ export const Calendar: React.FC<any> = () => {
 							</div>
 						))}
 						</div>
-						<div className="calendar__schedule--body" style={ {width: columns.length * 211 + 'px'} }>
+						<div className="calendar__schedule--body">
 							{columns.map((column) => (
 								<div className={"calendar__schedule--body-column" + (column.status ? ' warning' : '')} key={column.id} style={ {height: hours.length * 30 + 'px'} }>
 									{column.status ? '' : hours.map((hour, index) => (
