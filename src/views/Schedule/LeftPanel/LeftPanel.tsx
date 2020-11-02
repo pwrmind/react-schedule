@@ -19,8 +19,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 
 	public state = {
 		patients: [],
-		resources: [],
-		selectDate: ''
+		resources: []
 	};
 
 	public componentDidMount(): void {
@@ -35,11 +34,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 	}
 
 	public changeDate = (date: any) => {
-		this.setState({
-			selectDate: date
-		});
-
-		this.props.click(this.state.selectDate);
+		this.props.click(date);
 	};
 
 	render() {
@@ -51,7 +46,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 					</div>
 					<div className="left-panel__date">
 						<div className="left-panel__date--header">
-							<h1 className="left-panel__date--header-text" onClick={this.changeDate}>Дата записи</h1>
+							<h1 className="left-panel__date--header-text">Дата записи</h1>
 						</div>
 
 						<div className="left-panel__date--body">

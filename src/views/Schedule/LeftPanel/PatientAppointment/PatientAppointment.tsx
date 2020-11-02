@@ -90,16 +90,18 @@ export default class PatientAppointment extends Component<PatientAppointmentProp
 				<div className="patient-appointment__body">
 					<div className="patient-appointment__body-result">
 						<p>{patient.name},</p>
-						<p>{patient.bDay.getDate()}.{patient.bDay.getMonth()}.{patient.bDay.getFullYear()} г.р.</p>
+						<p>{this.addZero(patient.bDay.getDate())}.{this.addZero(patient.bDay.getMonth() + 1)}.{this.addZero(patient.bDay.getFullYear())} г.р.</p>
 						<p>Полис ОМС: {patient.OMS}</p>
 					</div>
 				</div>
 			)
 		}
+	};
 
-
+	private addZero(number: number): string | number {
+		return number < 10 ? '0' + number : number;
 	}
-	
+
 	render() {
 		return (
 			<div className="patient-appointment__root">
