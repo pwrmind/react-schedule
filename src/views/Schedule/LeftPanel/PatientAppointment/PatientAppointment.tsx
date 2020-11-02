@@ -53,7 +53,7 @@ export default class PatientAppointment extends Component<PatientAppointmentProp
 		}
 		else {
 			this.setState({
-				searchPatients: this.state.patients.filter((patient: any) => patient.name.includes(search))
+				searchPatients: this.state.patients.filter((patient: any) => patient.name.toLowerCase().includes(search))
 			});
 		}
 	};
