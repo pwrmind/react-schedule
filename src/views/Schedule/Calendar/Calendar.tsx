@@ -1,8 +1,64 @@
 import React, { Component } from "react";
 import "./Calendar.scss";
 
-export const Calendar: React.FC<any> = () => {
-	const columns = [
+export const Calendar: React.FC<any> = (props) => {
+	const {
+		resources,
+		selectDate,
+		filterDays
+	} = props;
+
+	const makeCalendar = () => {
+		console.log('filterDays:', props.filterDays);
+		const filterDays = props.filterDays,
+			selectDate = props.selectDate + '',
+			resources = props.resources,
+			today = new Date();
+
+		const columns = columnsTest;
+
+		
+
+		debugger;
+
+		return (
+			<div className="calendar__schedule">
+				{selectDate}
+				<div className="calendar__schedule--header" style={ {width: (columns.length * 210 + 10) + 'px'} }>
+					{columns.map((column) => (
+						<div className={"calendar__schedule--header-column" + (column.status ? ' warning' : '')} key={column.id}>
+							<div className="calendar__schedule--header-column-day">{column.date}</div>
+							<div className="calendar__schedule--header-column-name">{column.name}</div>
+							<div className="calendar__schedule--header-column-specialty">{column.specialty}</div>
+							<div className="calendar__schedule--header-column-cabinet">{column.cabinet}</div>
+							<div className="calendar__schedule--header-column-schedule">{column.schedule}</div>
+							{column.appointment.length ?
+									<div className="calendar__schedule--header-column-schedule">{column.appointment.map((appointment, index) => (
+											<div key={index}>{appointment.desc} ({appointment.time})</div>
+									))}</div> :
+									''
+							}
+							{column.status ?
+									<div className="calendar__schedule--header-column-status">{column.status}</div> :
+									''
+							}
+						</div>
+					))}
+				</div>
+				<div className="calendar__schedule--body">
+					{columns.map((column) => (
+						<div className={"calendar__schedule--body-column" + (column.status ? ' warning' : '')} key={column.id} style={ {height: hours.length * 30 + 'px'} }>
+							{column.status ? '' : hours.map((hour, index) => (
+								<div className="calendar__schedule--body-column-hour" key={index}>{hour}</div>
+							))}
+						</div>
+					))}
+				</div>
+			</div>
+		);
+	};
+
+	const columnsTest = [
 		{
 			id: 1,
 			date: 'Пт. 30 окт.',
@@ -137,40 +193,9 @@ export const Calendar: React.FC<any> = () => {
 	return (
 		<div className="calendar">
 			<div className="calendar__container">
-				{ 0 ?
+				{ !props.selectDate ?
 					<span>Для просмотра расписания выберите хотя бы один Доступный ресурс.</span> :
-					<div className="calendar__schedule">
-						<div className="calendar__schedule--header">
-						{columns.map((column) => (
-							<div className={"calendar__schedule--header-column" + (column.status ? ' warning' : '')} key={column.id}>
-								<div className="calendar__schedule--header-column-day">{column.date}</div>
-								<div className="calendar__schedule--header-column-name">{column.name}</div>
-								<div className="calendar__schedule--header-column-specialty">{column.specialty}</div>
-								<div className="calendar__schedule--header-column-cabinet">{column.cabinet}</div>
-								<div className="calendar__schedule--header-column-schedule">{column.schedule}</div>
-								{column.appointment.length ?
-									<div className="calendar__schedule--header-column-schedule">{column.appointment.map((appointment, index) => (
-											<div key={index}>{appointment.desc} ({appointment.time})</div>
-									))}</div> :
-									''
-								}
-								{column.status ?
-									<div className="calendar__schedule--header-column-status">{column.status}</div> :
-									''
-								}
-							</div>
-						))}
-						</div>
-						<div className="calendar__schedule--body">
-							{columns.map((column) => (
-								<div className={"calendar__schedule--body-column" + (column.status ? ' warning' : '')} key={column.id} style={ {height: hours.length * 30 + 'px'} }>
-									{column.status ? '' : hours.map((hour, index) => (
-										<div className="calendar__schedule--body-column-hour" key={index}>{hour}</div>
-									))}
-								</div>
-							))}
-						</div>
-					</div>
+					makeCalendar()
 				}
 			</div>
 		</div>

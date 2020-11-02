@@ -2,15 +2,25 @@ import React, { Component } from 'react';
 import API from '../../../api/api';
 
 import DateAppointment from './DateAppointment/DateAppointment';
+import PatientAppointment from './PatientAppointment/PatientAppointment';
 
 import './LeftPanel.scss';
 
-export default class LeftPanel extends Component {
+interface LeftPanelProps {
+	click: Function;
+}
+
+export default class LeftPanel extends Component<LeftPanelProps> {
 	private _apiService = API;
+
+	static defaultProps: LeftPanelProps = {
+		click: Function.prototype
+	};
 
 	public state = {
 		patients: [],
-		resources: []
+		resources: [],
+		selectDate: new Date()
 	};
 
 	public componentDidMount(): void {
@@ -22,35 +32,27 @@ export default class LeftPanel extends Component {
 				patients
 			});
 		});
-
-		this._apiService.getResources()
-		.then((resources: any) => {
-			console.log('getResources:', resources);
-
-			this.setState({
-				resources
-			});
-		});
 	}
+
+	public changeDate = () => {
+		const date: any = !this.state.selectDate ? new Date() : this.state.selectDate;
+		this.setState({
+			selectDate: new Date(date.setDate(date.getDate() + 1))
+		});
+
+		this.props.click(this.state.selectDate);
+	};
 
 	render() {
 		return (
 			<div className="left-panel">
 				<div className="left-panel__container">
 					<div className="left-panel__patient">
-						{this.state.patients.length}
-						<div className="left-panel__patient--header">
-							<h1 className="left-panel__patient--header-text">Пациент</h1>
-							<button className="left-panel__patient--header-button">▼</button>
-						</div>
-						<div className="left-panel__patient--body">
-							<input className="left-panel__patient--body-input" placeholder="Введите текст для поиска"/>
-							<button className="left-panel__patient--body-button">🔍</button>
-						</div>
+						{this.state.patients.length ? <PatientAppointment patients={this.state.patients}></PatientAppointment> : null}
 					</div>
 					<div className="left-panel__date">
 						<div className="left-panel__date--header">
-							<h1 className="left-panel__date--header-text">Дата записи</h1>
+							<h1 className="left-panel__date--header-text" onClick={this.changeDate}>Дата записи</h1>
 						</div>
 
 						<div className="left-panel__date--body">
