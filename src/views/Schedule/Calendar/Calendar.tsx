@@ -17,10 +17,6 @@ export const Calendar: React.FC<any> = (props) => {
 
 		const columns = columnsTest;
 
-		
-
-		// debugger;
-
 		return (
 			<div className="calendar__schedule">
 				{selectDate}
