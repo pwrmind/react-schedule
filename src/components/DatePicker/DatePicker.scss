@@ -1,0 +1,53 @@
+.date-picker {
+	flex: 1;
+	padding: 14px;
+
+	&__header {
+		display: flex;
+		justify-content: center;
+		margin-bottom: 8px;
+	}
+
+	&__prev-btn,
+	&__next-btn {
+		padding: 0 14px;
+		cursor: pointer;
+	}
+
+	&__body {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	&__week {
+		display: flex;
+		flex-direction: row;
+	}
+
+	&__day {
+		flex: 1;
+		padding: 4px 8px;
+		vertical-align: middle;
+		text-align: center;
+		border: 2px solid transparent;
+
+		&--today {
+			border: 2px solid dodgerblue;
+
+			&:hover {
+				background-color: #0081ff;
+			}
+		}
+
+		&--selected {
+			background-color: dodgerblue;
+			color: white;
+		}
+
+		&:hover {
+			background-color: #eaeaea;
+			cursor: pointer;
+		}
+	}
+}
