@@ -4,6 +4,7 @@ import './DatePicker.scss';
 
 export interface DatePickerProps {
 	date: Date;
+	selectedDate: Date | null;
 	monthNames: Array<string>;
 	weekDayNames: Array<string>;
 	onChange: Function;
@@ -12,6 +13,7 @@ export interface DatePickerProps {
 export default class DatePicker extends Component<DatePickerProps> {
 	static defaultProps: DatePickerProps = {
 		date: new Date(),
+		selectedDate: null,
 		monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
 		weekDayNames: ['Пн', 'Вт', 'Ср', 'Чт' , 'Пт', 'Сб', 'Вс'],
 		onChange: Function.prototype
@@ -20,7 +22,7 @@ export default class DatePicker extends Component<DatePickerProps> {
 	public state = {
 		date: this.props.date,
 		currentDate: new Date(),
-		selectedDate: null
+		selectedDate: this.props.selectedDate
 	};
 
 	public yearSelect: any;

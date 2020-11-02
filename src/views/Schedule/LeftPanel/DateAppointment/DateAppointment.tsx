@@ -21,6 +21,7 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 	public state = {
 		patient: this.props.patient,
 		showDatePicker: false,
+		date: this.props.date,
 		selectedDate: this.props.date
 	};
 
@@ -34,20 +35,22 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 		});
 	};
 
-	public setDate = (selectedDate: Date) => {
+	public setSelectedDate = (selectedDate: Date) => {
 		this.setState({selectedDate});
 	};
 
 	public okClick = () => {
 		console.log('okClick', this.state.selectedDate);
 		this.showToggle();
-		this.props.setDate(this.state.selectedDate);
+
+		this.setState({date: this.state.selectedDate});
+		this.props.setDate(this.state.date);
 	};
 
 	render() {
 		return (
 			<div className="date-appointment__root">
-				<input disabled className="date-appointment__input" placeholder="ДД.ММ.ГГГГ" value={dateFormatter(this.state.selectedDate)}/>
+				<input disabled className="date-appointment__input" placeholder="ДД.ММ.ГГГГ" value={dateFormatter(this.state.date)}/>
 				<button
 					className="date-appointment__button"
 					disabled={!Boolean(this.props.patient)}
@@ -58,7 +61,7 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 
 				{ this.state.showDatePicker ? (
 					<div className="date-appointment__calendar">
-						<DatePicker onChange={(date: Date) => this.setDate(date)}/>
+						<DatePicker selectedDate={this.state.date} onChange={(date: Date) => this.setSelectedDate(date)}/>
 
 						<div className="date-appointment__button-row">
 							<button className="date-appointment__button" onClick={this.showToggle}>Отменить</button>
