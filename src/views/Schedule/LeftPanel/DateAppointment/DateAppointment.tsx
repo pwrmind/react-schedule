@@ -6,20 +6,20 @@ import DatePicker from '../../../../components/DatePicker/DatePicker';
 import './DateAppointment.scss';
 
 interface DateAppointmentProps {
-	patient: any;
+	resource: any;
 	date: Date | null;
 	setDate: Function;
 }
 
 export default class DateAppointment extends Component<DateAppointmentProps> {
 	static defaultProps: DateAppointmentProps = {
-		patient: null,
+		resource: null,
 		date: null,
 		setDate: Function.prototype
 	};
 
 	public state = {
-		patient: this.props.patient,
+		resource: this.props.resource,
 		showDatePicker: false,
 		date: this.props.date,
 		selectedDate: this.props.date
@@ -53,7 +53,7 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 				<input disabled className="date-appointment__input" placeholder="ДД.ММ.ГГГГ" value={dateFormatter(this.state.date)}/>
 				<button
 					className="date-appointment__button"
-					disabled={!Boolean(this.props.patient)}
+					// disabled={!Boolean(this.props.resource)}
 					onClick={this.showToggle}
 				>
 					🗓▼

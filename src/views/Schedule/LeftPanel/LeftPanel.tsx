@@ -20,6 +20,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 	public state = {
 		patient: null,
 		patients: [],
+		resource: null,
 		resources: []
 	};
 
@@ -55,7 +56,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 						</div>
 
 						<div className="left-panel__date--body">
-							<DateAppointment patient={this.state.patient} setDate={this.changeDate}/>
+							<DateAppointment resource={this.state.resource} setDate={this.changeDate}/>
 						</div>
 					</div>
 					<div className="left-panel__specialists">
