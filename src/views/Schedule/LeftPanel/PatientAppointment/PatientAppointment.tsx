@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { dateFormatter } from '../../../../services/formatter';
 
 import './PatientAppointment.scss';
 
@@ -105,17 +106,13 @@ export default class PatientAppointment extends Component<PatientAppointmentProp
 				<div className="patient-appointment__body">
 					<div className="patient-appointment__body-result">
 						<p>{patient.name},</p>
-						<p>{this.addZero(patient.bDay.getDate())}.{this.addZero(patient.bDay.getMonth() + 1)}.{this.addZero(patient.bDay.getFullYear())} г.р.</p>
+						<p>{dateFormatter(patient.bDay)} г.р.</p>
 						<p>Полис ОМС: {patient.OMS}</p>
 					</div>
 				</div>
 			)
 		}
 	};
-
-	private addZero(number: number): string | number {
-		return number < 10 ? '0' + number : number;
-	}
 
 	render() {
 		return (

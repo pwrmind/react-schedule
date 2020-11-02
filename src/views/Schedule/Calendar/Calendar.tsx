@@ -13,9 +13,15 @@ export const Calendar: React.FC<any> = (props) => {
 		const filterDays = props.filterDays,
 			selectDate = props.selectDate + '',
 			resources = props.resources,
-			today = new Date();
+			today = (new Date()).setHours(0);
 
 		const columns = columnsTest;
+
+		const test = [];
+
+		for (let i = 0; i < resources.length; i += 1) {
+			console.log(today)
+		}
 
 		return (
 			<div className="calendar__schedule">
