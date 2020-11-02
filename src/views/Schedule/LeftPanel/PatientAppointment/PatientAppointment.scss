@@ -89,13 +89,17 @@
     &-list {
       margin: 5px;
 
-      &_patient {
+      &_patient, &_nopatient {
         white-space: nowrap;
         padding: 2px;
         cursor: pointer;
         box-sizing: content-box;
         border: 1px solid transparent;
         border-radius: 2px;
+
+        & p {
+          margin: 0;
+        }
 
         &:hover {
           background-color: #fefefe;
