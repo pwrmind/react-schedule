@@ -19,7 +19,7 @@ export const Calendar: React.FC<any> = (props) => {
 
 		
 
-		debugger;
+		// debugger;
 
 		return (
 			<div className="calendar__schedule">

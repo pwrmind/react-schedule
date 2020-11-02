@@ -20,9 +20,18 @@
 		top: 32px;
 
 		display: flex;
+		flex-direction: column;
 		width: 100%;
 
 		background-color: #fff;
 		border: 1px solid #dbdbdc;
+	}
+
+	&__button-row {
+		display: flex;
+	}
+
+	&__button {
+		flex: 1;
 	}
 }
