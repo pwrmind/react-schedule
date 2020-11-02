@@ -151,7 +151,7 @@ export default class DatePicker extends Component<DatePickerProps> {
 					</div>
 
 					{monthData.map((week, index) =>
-						<div className="date-picker__week">
+						<div key={index} className="date-picker__week">
 							{week.map((date, index) =>
 								<div
 									key={index}
