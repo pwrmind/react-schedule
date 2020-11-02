@@ -52,8 +52,9 @@ export default class PatientAppointment extends Component<PatientAppointmentProp
 			});
 		}
 		else {
+			let field = isNaN(+search) ? 'name' : 'OMS';
 			this.setState({
-				searchPatients: this.state.patients.filter((patient: any) => patient.name.toLowerCase().includes(search))
+				searchPatients: this.state.patients.filter((patient: any) => (patient[field]).toString().toLowerCase().includes(search))
 			});
 		}
 	};
