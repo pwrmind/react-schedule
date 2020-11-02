@@ -20,7 +20,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 	public state = {
 		patients: [],
 		resources: [],
-		selectDate: new Date()
+		selectDate: ''
 	};
 
 	public componentDidMount(): void {
@@ -34,10 +34,9 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 		});
 	}
 
-	public changeDate = () => {
-		const date: any = !this.state.selectDate ? new Date() : this.state.selectDate;
+	public changeDate = (date: any) => {
 		this.setState({
-			selectDate: new Date(date.setDate(date.getDate() + 1))
+			selectDate: date
 		});
 
 		this.props.click(this.state.selectDate);
@@ -48,7 +47,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 			<div className="left-panel">
 				<div className="left-panel__container">
 					<div className="left-panel__patient">
-						{this.state.patients.length ? <PatientAppointment patients={this.state.patients}></PatientAppointment> : null}
+						{this.state.patients.length ? <PatientAppointment patients={this.state.patients}/> : null}
 					</div>
 					<div className="left-panel__date">
 						<div className="left-panel__date--header">
@@ -56,7 +55,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 						</div>
 
 						<div className="left-panel__date--body">
-							<DateAppointment/>
+							<DateAppointment setDate={this.changeDate}/>
 						</div>
 					</div>
 					<div className="left-panel__specialists">

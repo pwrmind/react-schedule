@@ -23,7 +23,7 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 		this.setState({
 			showDatePicker: !this.state.showDatePicker
 		});
-	}
+	};
 
 	public setDate = (selectedDate: Date) => {
 		this.setState({selectedDate});
