@@ -40,6 +40,12 @@ export default class PatientAppointment extends Component<PatientAppointmentProp
 		})
 	};
 
+	public closePanel = () => {
+		this.setState({
+			panelOpened: false
+		})
+	};
+
 	public toggleLogout = () => {
 		this.setState({
 			logoutOpened: !this.state.logoutOpened
@@ -54,10 +60,16 @@ export default class PatientAppointment extends Component<PatientAppointmentProp
 			});
 		}
 		else {
-			let field = isNaN(+search) ? 'name' : 'OMS';
-			this.setState({
-				searchPatients: this.state.patients.filter((patient: any) => (patient[field]).toString().toLowerCase().includes(search))
-			});
+			if (search.length >= 3) {
+				let field = isNaN(+search) ? 'name' : 'OMS';
+				this.openPanel();
+				this.setState({
+					searchPatients: this.state.patients.filter((patient: any) => (patient[field]).toString().toLowerCase().includes(search))
+				});
+			}
+			else {
+				this.closePanel();
+			}
 		}
 	};
 
@@ -83,7 +95,7 @@ export default class PatientAppointment extends Component<PatientAppointmentProp
 		if (patient === null) {
 			return (
 				<div className="patient-appointment__body">
-					<input className="patient-appointment__body-input" placeholder="Введите текст для поиска" onFocus={this.openPanel} onChange={this.searchPatient}/>
+					<input className="patient-appointment__body-input" placeholder="Введите текст для поиска" onChange={this.searchPatient}/>
 					<button className="patient-appointment__body-button" onClick={this.togglePanel}>🔍</button>
 				</div>
 			)
@@ -93,16 +105,18 @@ export default class PatientAppointment extends Component<PatientAppointmentProp
 				<div className="patient-appointment__body">
 					<div className="patient-appointment__body-result">
 						<p>{patient.name},</p>
-						<p>{patient.bDay.getDate()}.{patient.bDay.getMonth()}.{patient.bDay.getFullYear()} г.р.</p>
+						<p>{this.addZero(patient.bDay.getDate())}.{this.addZero(patient.bDay.getMonth() + 1)}.{this.addZero(patient.bDay.getFullYear())} г.р.</p>
 						<p>Полис ОМС: {patient.OMS}</p>
 					</div>
 				</div>
 			)
 		}
+	};
 
-
+	private addZero(number: number): string | number {
+		return number < 10 ? '0' + number : number;
 	}
-	
+
 	render() {
 		return (
 			<div className="patient-appointment__root">
@@ -117,9 +131,12 @@ export default class PatientAppointment extends Component<PatientAppointmentProp
 				<div className={"patient-appointment__footer" + (this.state.panelOpened ? '' : ' closed')}>
 					<div className="patient-appointment__footer-list">
 						{this.state.searchPatients.map((patient: any) => (
-							<div className="patient-appointment__footer-list_patient" key={patient.id} onClick={() => {this.selectPatient(patient)}}>{patient.name}</div>
+							<div className="patient-appointment__footer-list_patient" key={patient.id} onClick={() => {this.selectPatient(patient)}}>
+								<p>Полис ОМС: {patient.OMS}, </p>
+								<p>{patient.name}</p>
+							</div>
 						))}
-						{this.state.searchPatients.length ? null : <div className="patient-appointment__footer-list_nopatient">Пациент не найден</div>}
+						{this.state.searchPatients.length ? null : <div className="patient-appointment__footer-list_nopatient">Совпадений не найдено</div>}
 					</div>
 				</div>
 			</div>
