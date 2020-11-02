@@ -44,7 +44,7 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 		this.showToggle();
 
 		this.setState({date: this.state.selectedDate});
-		this.props.setDate(this.state.date);
+		this.props.setDate(this.state.selectedDate);
 	};
 
 	render() {
