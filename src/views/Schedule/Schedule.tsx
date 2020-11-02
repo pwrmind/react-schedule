@@ -1,8 +1,9 @@
-import React, { Component } from "react";
-import { LeftPanel } from "./LeftPanel/LeftPanel"
-import { FilterPanel } from "./FilterPanel/FilterPanel"
-import { Calendar } from "./Calendar/Calendar"
-import "./Schedule.scss";
+import React, { Component } from 'react';
+import './Schedule.scss';
+
+import LeftPanel from './LeftPanel/LeftPanel';
+import { FilterPanel } from './FilterPanel/FilterPanel';
+import { Calendar } from './Calendar/Calendar';
 
 export default class Schedule extends Component<any> {
 	render() {
