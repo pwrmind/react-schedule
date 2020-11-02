@@ -60,7 +60,8 @@ export default class PatientAppointment extends Component<PatientAppointmentProp
 
 	public selectPatient = (patient: any) => {
 		this.setState({
-			patient: patient
+			patient: patient,
+			searchPatients: this.state.patients
 		});
 		this.togglePanel();
 	};
