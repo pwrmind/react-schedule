@@ -4,11 +4,13 @@ import './PatientAppointment.scss';
 
 interface PatientAppointmentProps {
 	patients: any[];
+	onSetPatient: Function;
 }
 
 export default class PatientAppointment extends Component<PatientAppointmentProps> {
 	static defaultProps: PatientAppointmentProps = {
-		patients: []
+		patients: [],
+		onSetPatient: Function.prototype
 	};
 	
 	public state = {
@@ -65,6 +67,7 @@ export default class PatientAppointment extends Component<PatientAppointmentProp
 			searchPatients: this.state.patients
 		});
 		this.togglePanel();
+		this.props.onSetPatient(patient);
 	};
 
 	public logoutPatient = () => {

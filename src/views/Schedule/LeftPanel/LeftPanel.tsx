@@ -18,6 +18,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 	};
 
 	public state = {
+		patient: null,
 		patients: [],
 		resources: [],
 		selectDate: ''
@@ -42,12 +43,16 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 		this.props.click(this.state.selectDate);
 	};
 
+	public setPatient = (patient: any) => {
+		this.setState({patient});
+	}
+
 	render() {
 		return (
 			<div className="left-panel">
 				<div className="left-panel__container">
 					<div className="left-panel__patient">
-						{this.state.patients.length ? <PatientAppointment patients={this.state.patients}/> : null}
+						{this.state.patients.length ? <PatientAppointment patients={this.state.patients} onSetPatient={(patient: any) => {this.setPatient(patient)}}/> : null}
 					</div>
 					<div className="left-panel__date">
 						<div className="left-panel__date--header">
@@ -55,7 +60,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 						</div>
 
 						<div className="left-panel__date--body">
-							<DateAppointment setDate={this.changeDate}/>
+							<DateAppointment patient={this.state.patient} setDate={this.changeDate}/>
 						</div>
 					</div>
 					<div className="left-panel__specialists">

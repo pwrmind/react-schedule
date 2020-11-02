@@ -1,23 +1,32 @@
 import React, { Component } from 'react';
+import { dateFormatter } from '../../../../services/formatter';
+
 import DatePicker from '../../../../components/DatePicker/DatePicker';
 
 import './DateAppointment.scss';
 
 interface DateAppointmentProps {
-	selectedDate: Date | null;
+	patient: any;
+	date: Date | null;
 	setDate: Function;
 }
 
 export default class DateAppointment extends Component<DateAppointmentProps> {
 	static defaultProps: DateAppointmentProps = {
-		selectedDate: null,
+		patient: null,
+		date: null,
 		setDate: Function.prototype
 	};
 
 	public state = {
+		patient: this.props.patient,
 		showDatePicker: false,
-		selectedDate: this.props.selectedDate
+		selectedDate: this.props.date
 	};
+
+	public dateFormat(date: Date) {
+		return 
+	}
 
 	public showToggle = () => {
 		this.setState({
@@ -38,9 +47,10 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 	render() {
 		return (
 			<div className="date-appointment__root">
-				<input disabled className="date-appointment__input" placeholder="ДД.ММ.ГГГГ"/>
+				<input disabled className="date-appointment__input" placeholder="ДД.ММ.ГГГГ" value={dateFormatter(this.state.selectedDate)}/>
 				<button
 					className="date-appointment__button"
+					disabled={!Boolean(this.props.patient)}
 					onClick={this.showToggle}
 				>
 					🗓▼
