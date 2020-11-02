@@ -34,7 +34,6 @@ export default class Schedule extends Component<any> {
 	};
 
 	private selectDate = (date: any) => {
-		console.log(date)
 		this.setState({
 			selectDate: date
 		});
