@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./Calendar.scss";
 
 export const Calendar: React.FC<any> = () => {
+
 	const columns = [
 		{
 			id: 1,
@@ -140,7 +141,7 @@ export const Calendar: React.FC<any> = () => {
 				{ 0 ?
 					<span>Для просмотра расписания выберите хотя бы один Доступный ресурс.</span> :
 					<div className="calendar__schedule">
-						<div className="calendar__schedule--header">
+						<div className="calendar__schedule--header" style={ {width: (columns.length * 210 + 10) + 'px'} }>
 						{columns.map((column) => (
 							<div className={"calendar__schedule--header-column" + (column.status ? ' warning' : '')} key={column.id}>
 								<div className="calendar__schedule--header-column-day">{column.date}</div>
