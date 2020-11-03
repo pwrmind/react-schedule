@@ -3,11 +3,12 @@ import "./FilterPanel.scss";
 
 export const FilterPanel: React.FC<any> = (props) => {
 	const {
-		click
+		click,
+		filter
 	} = props;
 
-	const daysFilter = (e: any) => {
-		props.click(e.currentTarget.dataset.days);
+	const daysFilter = (num: number) => {
+		props.click(num);
 	};
 
 	return (
@@ -15,9 +16,9 @@ export const FilterPanel: React.FC<any> = (props) => {
 			<div className="filter-panel__container">
 				<h1 className="filter-panel__header">Расписание специалистов</h1>
 				<div className="filter-panel__buttons-wrapper">
-					<button className="filter-panel__button" data-days="1" onClick={daysFilter}>1 день</button>
-					<button className="filter-panel__button" data-days="2" onClick={daysFilter}>2 дня</button>
-					<button className="filter-panel__button" data-days="7" onClick={daysFilter}>Неделя</button>
+					<button className={"filter-panel__button" + (props.filter === 1 ? ' active' : '')} onClick={() => {daysFilter(1)}}>1 день</button>
+					<button className={"filter-panel__button" + (props.filter === 2 ? ' active' : '')} onClick={() => {daysFilter(2)}}>2 дня</button>
+					<button className={"filter-panel__button" + (props.filter === 7 ? ' active' : '')} onClick={() => {daysFilter(7)}}>Неделя</button>
 				</div>
 			</div>
 		</div>

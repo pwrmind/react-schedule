@@ -17,7 +17,8 @@ export const Calendar: React.FC<any> = (props) => {
 		const filterDays = props.filterDays, selectDate: Date = props.selectDate, resources = props.resources, columns = [];
 
 		for (let j = 0; j < filterDays; j += 1) {
-			const filterDate = new Date(selectDate.setDate(selectDate.getDate() + j));
+			const filterDate = new Date(selectDate.getTime());
+			filterDate.setDate(filterDate.getDate() + j);
 
 			for (let i = 0; i < resources.length; i += 1) {
 				if (resources[i].schedule.workDays.includes(filterDate.getDay())) {
@@ -73,14 +74,14 @@ export const Calendar: React.FC<any> = (props) => {
 							<div className="calendar__schedule--header-column-cabinet">{column.cabinet}</div>
 							<div className="calendar__schedule--header-column-schedule">{column.schedule}</div>
 							{column.appointment.length ?
-									<div className="calendar__schedule--header-column-schedule">{column.appointment.map((appointment: any, index: number) => (
-											<div key={index}>{appointment.desc} ({appointment.time})</div>
-									))}</div> :
-									''
+								<div className="calendar__schedule--header-column-schedule">{column.appointment.map((appointment: any, index: number) => (
+										<div key={index}>{appointment.desc} ({appointment.time})</div>
+								))}</div> :
+								''
 							}
 							{column.status ?
-									<div className="calendar__schedule--header-column-status">{column.status}</div> :
-									''
+								<div className="calendar__schedule--header-column-status">{column.status}</div> :
+								''
 							}
 						</div>
 					))}

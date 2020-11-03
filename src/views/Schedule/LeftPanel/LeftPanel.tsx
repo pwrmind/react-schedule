@@ -41,7 +41,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 
 	public setPatient = (patient: any) => {
 		this.setState({patient});
-	}
+	};
 
 	render() {
 		return (
