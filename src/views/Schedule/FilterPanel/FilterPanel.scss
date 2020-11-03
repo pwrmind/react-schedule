@@ -36,6 +36,15 @@
     border-right: 1px solid #3a5e1c;
     padding: 5px 10px;
 
+    &:disabled {
+      cursor: default;
+      filter: grayscale(1);
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
     &.active {
       background: rgb(58,94,28);
       background: linear-gradient(180deg, rgba(58,94,28,1) 0%, rgba(76,121,44,1) 100%);
@@ -47,7 +56,16 @@
 
     &:focus {
       border: 0;
+      border-right: 1px solid #3a5e1c;
       outline: 0;
+
+      &:last-child {
+        border-right: 0;
+      }
+    }
+
+    &:hover {
+      opacity: 0.9;
     }
   }
 }
