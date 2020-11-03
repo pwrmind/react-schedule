@@ -35,7 +35,7 @@ export const Calendar: React.FC<any> = (props) => {
 					timeStart.setHours(splitStart[0], splitStart[1], 0);
 					timeEnd.setHours(splitEnd[0], splitEnd[1], 0);
 
-					while (timeStart.getTime() <= timeEnd.getTime()) {
+					while (timeStart.getTime() < timeEnd.getTime()) {
 						hours.push(`${addZero(timeStart.getHours())}:${addZero(timeStart.getMinutes())}`);
 
 						timeStart.setMinutes(timeStart.getMinutes() + resources[i].schedule.timeGrid);
