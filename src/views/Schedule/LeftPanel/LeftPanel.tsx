@@ -41,24 +41,28 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 
 	public setPatient = (patient: any) => {
 		this.setState({patient});
-	}
+	};
 
 	render() {
 		return (
 			<div className="left-panel">
 				<div className="left-panel__container">
 					<div className="left-panel__patient">
-						{this.state.patients.length ? <PatientAppointment patients={this.state.patients} onSetPatient={(patient: any) => {this.setPatient(patient)}}/> : null}
+						{this.state.patients.length ? (
+							<PatientAppointment
+								patients={this.state.patients}
+								onSetPatient={(patient: any) => {this.setPatient(patient)}}
+							/>
+						 ) : null}
 					</div>
-					<div className="left-panel__date">
-						<div className="left-panel__date--header">
-							<h1 className="left-panel__date--header-text">Дата записи</h1>
-						</div>
 
-						<div className="left-panel__date--body">
-							<DateAppointment resource={this.state.resource} setDate={this.changeDate}/>
-						</div>
+					<div className="left-panel__date">
+						<DateAppointment
+							resource={this.state.resource}
+							setDate={this.changeDate}
+						/>
 					</div>
+
 					<div className="left-panel__specialists">
 						<div className="left-panel__specialists--header">
 							<h1 className="left-panel__specialists--header-text">Специалисты <span>(0/0)</span></h1>
