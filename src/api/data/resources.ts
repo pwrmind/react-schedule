@@ -72,7 +72,7 @@ const resourceList: Array<Resource> = [
 			workStart: '08:00',
 			workEnd: '15:00',
 			workDays: [1, 2, 3, 4],
-			workMonth: 2,
+			workMonth: 1,
 			timeGrid: 30,
 			quotas: [
 				{
@@ -86,7 +86,7 @@ const resourceList: Array<Resource> = [
 					quotaEnd: '15:00',
 					quotaDays: [1],
 					name: 'Обучение',
-					active: true
+					active: false
 				}
 			]
 		}
@@ -138,13 +138,13 @@ const resourceList: Array<Resource> = [
 					quotaStart: '14:30',
 					quotaEnd: '14:55',
 					name: 'Работа с документами',
-					active: true
+					active: false
 				},
 				{
 					quotaStart: '16:20',
 					quotaEnd: '16:40',
 					name: 'Работа с документами',
-					active: true
+					active: false
 				}
 			]
 		}
