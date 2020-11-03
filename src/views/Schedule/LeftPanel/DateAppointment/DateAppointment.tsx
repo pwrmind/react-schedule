@@ -50,25 +50,31 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 	render() {
 		return (
 			<div className="date-appointment__root">
-				<input disabled className="date-appointment__input" placeholder="ДД.ММ.ГГГГ" value={dateFormatter(this.state.date)}/>
-				<button
-					className="date-appointment__button"
-					// disabled={!Boolean(this.props.resource)}
-					onClick={this.showToggle}
-				>
-					🗓▼
-				</button>
+				<div className="date-appointment__header">
+					<h1 className="date-appointment__header-text">Дата записи</h1>
+				</div>
 
-				{ this.state.showDatePicker ? (
-					<div className="date-appointment__calendar">
-						<DatePicker selectedDate={this.state.date} onChange={(date: Date) => this.setSelectedDate(date)}/>
+				<div className="date-appointment__body">
+					<input disabled className="date-appointment__input" placeholder="ДД.ММ.ГГГГ" value={dateFormatter(this.state.date)}/>
+					<button
+						className="date-appointment__button"
+						// disabled={!Boolean(this.props.resource)}
+						onClick={this.showToggle}
+					>
+						🗓▼
+					</button>
 
-						<div className="date-appointment__button-row">
-							<button className="date-appointment__button" onClick={this.showToggle}>Отменить</button>
-							<button className="date-appointment__button" onClick={this.okClick}>Ок</button>
+					{ this.state.showDatePicker ? (
+						<div className="date-appointment__calendar">
+							<DatePicker selectedDate={this.state.date} onChange={(date: Date) => this.setSelectedDate(date)}/>
+
+							<div className="date-appointment__button-row">
+								<button className="date-appointment__button-footer" onClick={this.showToggle}>Отменить</button>
+								<button className="date-appointment__button-footer" onClick={this.okClick}>Ок</button>
+							</div>
 						</div>
-					</div>
-				) : null }
+					) : null }
+				</div>
 			</div>
 		);
 	}

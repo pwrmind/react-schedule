@@ -45,9 +45,20 @@
 			color: white;
 		}
 
-		&:hover {
-			background-color: #eaeaea;
-			cursor: pointer;
+		&--active {
+			// background-color: #d5d5d5;
+			// color: #a7a7a7;
+
+			&:hover {
+				background-color: #eaeaea;
+				cursor: pointer;
+			}
+		}
+
+		&--disabled {
+			background-color: #d5d5d5;
+			color: #a7a7a7;
+			cursor: default;
 		}
 	}
 }

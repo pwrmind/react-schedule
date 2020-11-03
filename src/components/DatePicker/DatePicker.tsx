@@ -21,7 +21,7 @@ export default class DatePicker extends Component<DatePickerProps> {
 
 	public state = {
 		date: this.props.date,
-		currentDate: new Date(),
+		currentDate: this.getCurrentDate(),
 		selectedDate: this.props.selectedDate
 	};
 
@@ -45,45 +45,34 @@ export default class DatePicker extends Component<DatePickerProps> {
 		return this.state.date.getDate();
 	}
 
+	public getCurrentDate(): Date {
+		const date: Date = new Date();
+		return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+	}
+
 	public areEqual(a: Date, b: Date | null) {
 		if (!a || !b) {
 			return false;
 		}
-	
-		return (
-			a.getFullYear() === b.getFullYear() &&
-			a.getMonth() === b.getMonth() &&
-			a.getDate() === b.getDate()
-		);
+
+		const MILSEC_DAY: number = 86400000;
+		return (a.getTime() - b.getTime()) / MILSEC_DAY;
 	}
 
-	public isLeapYear(year: number) {
-		return !((year % 4) || (!(year % 100) && (year % 400)));
+	public getDaysInMonth(date: Date): number {
+		return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 	}
 
-	public getDaysInMonth(date: Date) {
-		const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
-			February = 1,
-			month = date.getMonth(),
-			year = date.getFullYear();
-		
-		if (month === February && this.isLeapYear(year)) {
-			return DAYS_IN_MONTH[month] + 1;
-		}
-	
-		return DAYS_IN_MONTH[month];
+	public getDayOfWeek(date: Date): number {
+		return (date.getDay() || 7) - 1;
 	}
 
-	public getDayOfWeek(date: Date) {
-		return Math.abs(date.getDay() - 6);
-	}
-
-	public getMonthData(year: number, month: number) {
-		const DAYS_IN_WEEK = 7;
-		const result: Array<Array<Date>> = [];
-		const date = new Date(year, month);
-		const daysInMonth = this.getDaysInMonth(date);
-		const monthStartsOn = this.getDayOfWeek(date);
+	public getMonthData(year: number, month: number): Array<Array<Date>> {
+		const DAYS_IN_WEEK = 7,
+			result: Array<Array<Date>> = [],
+			date = new Date(year, month),
+			daysInMonth = this.getDaysInMonth(date),
+			monthStartsOn = this.getDayOfWeek(date);
 		let day = 1 - monthStartsOn;
 	
 		for (let i = 0; i < (daysInMonth + monthStartsOn) / DAYS_IN_WEEK; i++) {
@@ -107,7 +96,11 @@ export default class DatePicker extends Component<DatePickerProps> {
 		this.setState({ date });
 	};
 
-	public onDayClick = (date: Date) => {
+	public onDayClick = (date: Date | null) => {
+		if (date === null) {
+			return;
+		}
+
 		this.setState({ selectedDate: date });
 		this.props.onChange(date);
 	};
@@ -115,7 +108,6 @@ export default class DatePicker extends Component<DatePickerProps> {
 	render() {
 		const { weekDayNames } = this.props;
 		const { currentDate, selectedDate } = this.state;
-
 		const monthData: Array<Array<Date>> = this.getMonthData(this.year, this.month);
 
 		return (
@@ -158,7 +150,7 @@ export default class DatePicker extends Component<DatePickerProps> {
 								<div
 									key={index}
 									className={
-										`date-picker__day ${this.areEqual(date, currentDate) ? 'date-picker__day--today' : ''} ${this.areEqual(date, selectedDate) ? 'date-picker__day--selected' : ''}`
+										` date-picker__day ${(this.areEqual(date, currentDate) < 0 || this.areEqual(date, currentDate) > 13) ? 'date-picker__day--disabled' : 'date-picker__day--active'} ${this.areEqual(date, currentDate) === 0 ? 'date-picker__day--today' : ''} ${this.areEqual(date, selectedDate) === 0 ? 'date-picker__day--selected' : ''}`
 									}
 									onClick={() => this.onDayClick(date)}
 								>
