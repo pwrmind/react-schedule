@@ -12,6 +12,70 @@ export const Calendar: React.FC<any> = (props) => {
 
 	const days = ['Вс.', 'Пн.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Сб.'];
 	const month = ['янв.', 'февр.', 'март',  'апр.',  'май',  'июнь',  'июль',  'авг.',  'сен.',  'окт.',  'нояб.',  'дек.'];
+	const workTime = {
+		workStart: '08:00',
+		workEnd: '21:00'
+	};
+
+	const makeHour = (column: any, hour: any, index: number) => {
+		let returnHour = <span>{hour}</span>, className = ' ';
+
+		if (hour === '') {
+			className = ' not-dashed';
+			returnHour = <div className="calendar__schedule--body-column-hour_notwork">Врач не принимает</div>;
+		}
+		else {
+			for (let i = 0; i < column.appointment.length; i += 1) {
+				const appointmentTimeSplit = column.appointment[i].time.split('-'),
+					hourTime = new Date().setHours(hour.split(':')[0], hour.split(':')[1], 0),
+					lastHourTime = new Date(hourTime).setMinutes(new Date(hourTime).getMinutes() - column.scheduleGrid),
+					nextHourTime = new Date(hourTime).setMinutes(new Date(hourTime).getMinutes() + column.scheduleGrid),
+					appointmentTime = {
+						timeStart: new Date().setHours(appointmentTimeSplit[0].split(':')[0], appointmentTimeSplit[0].split(':')[1], 0),
+						timeEnd: new Date().setHours(appointmentTimeSplit[1].split(':')[0], appointmentTimeSplit[1].split(':')[1], 0)
+					};
+
+				/*console.log(' ');
+				console.log('***********************');
+				console.log('LastHour:', (addZero(new Date(lastHourTime).getHours()) + ':' + addZero(new Date(lastHourTime).getMinutes())), 'Hour:', hour, 'NextHour:', (addZero(new Date(nextHourTime).getHours()) + ':' + addZero(new Date(nextHourTime).getMinutes())),  ', apTimeStart:', appointmentTimeSplit[0], ', apTimeEnd:', appointmentTimeSplit[1]);
+				console.log('LastHour >= apTimeStart:', lastHourTime >= appointmentTime.timeStart, ', LastHour < apTimeEnd:', lastHourTime < appointmentTime.timeEnd);
+				console.log('Hour >= apTimeStart:', hourTime >= appointmentTime.timeStart, 'Hour < apTimeEnd:', hourTime < appointmentTime.timeEnd);
+				console.log('NextHour >= apTimeStart:', nextHourTime >= appointmentTime.timeStart, ', NextHour < apTimeEnd:', nextHourTime <= appointmentTime.timeEnd);
+				console.log('***********************');*/
+
+				if (hourTime >= appointmentTime.timeStart && hourTime < appointmentTime.timeEnd) {
+					className = ' not-dashed';
+					if (!(lastHourTime >= appointmentTime.timeStart) && nextHourTime < appointmentTime.timeEnd) {
+						returnHour = <div className="calendar__schedule--body-column-hour_notwork">{column.appointment[i].desc}</div>
+					}
+					else if (!(lastHourTime >= appointmentTime.timeStart)) {
+						returnHour = <div className="calendar__schedule--body-column-hour_notwork">{column.appointment[i].desc}</div>
+
+						if (appointmentTime.timeEnd >= hourTime && appointmentTime.timeEnd < nextHourTime) {
+							returnHour = (
+								<div className="calendar__schedule--body-column-hour_double">
+									<div className="calendar__schedule--body-column-hour_notwork">{column.appointment[i].desc}</div>
+									<div className="calendar__schedule--body-column-hour_notwork">Нет записии</div>
+								</div>
+							);
+						}
+					}
+					else {
+						return null
+					}
+				}
+				else if (appointmentTime.timeStart >= hourTime && appointmentTime.timeStart < nextHourTime) {
+					className = ' not-dashed';
+					returnHour = <div className="calendar__schedule--body-column-hour_notwork">Нет записии</div>
+				}
+			}
+		}
+		return (
+			<div className={"calendar__schedule--body-column-hour" + className} key={index}>
+				{returnHour}
+			</div>
+		);
+	};
 
 	const makeCalendar = () => {
 		const filterDays = props.filterDays, selectDate: Date = props.selectDate, resources = props.resources, columns = [];
@@ -31,15 +95,24 @@ export const Calendar: React.FC<any> = (props) => {
 					}
 
 					const splitStart = resources[i].schedule.workStart.split(':'), timeStart = new Date(),
+							splitWorkStart = workTime.workStart.split(':'), splitWorkEnd = workTime.workEnd.split(':'),
 							splitEnd = resources[i].schedule.workEnd.split(':'), timeEnd = new Date(), hours = [];
 
 					timeStart.setHours(splitStart[0], splitStart[1], 0);
 					timeEnd.setHours(splitEnd[0], splitEnd[1], 0);
 
+					if ((splitStart[0] >= splitWorkStart[0] && splitStart[1] > splitWorkStart[1]) || splitStart[0] > splitWorkStart[0]) {
+						hours.push('');
+					}
+
 					while (timeStart.getTime() < timeEnd.getTime()) {
 						hours.push(`${addZero(timeStart.getHours())}:${addZero(timeStart.getMinutes())}`);
 
 						timeStart.setMinutes(timeStart.getMinutes() + resources[i].schedule.timeGrid);
+					}
+
+					if (splitEnd[0] < splitWorkEnd[0]) {
+						hours.push('');
 					}
 
 					const column: any = {
@@ -49,6 +122,7 @@ export const Calendar: React.FC<any> = (props) => {
 						specialty: resources[i].specialty.toLowerCase(),
 						cabinet: `${resources[i].workPlace}, (к. ${resources[i].roomNumber})`,
 						schedule: `${resources[i].schedule.workStart}-${resources[i].schedule.workEnd}`,
+						scheduleGrid: resources[i].schedule.timeGrid,
 						appointment: resources[i].schedule.quotas
 							.filter((quota: any) => !quota.active && (!quota.quotaDays || (quota.quotaDays && quota.quotaDays.includes(filterDate.getDay()))))
 							.map((quota: any) => {
@@ -65,7 +139,7 @@ export const Calendar: React.FC<any> = (props) => {
 
 		return (
 			<div className="calendar__schedule">
-				<div className="calendar__schedule--header" style={ {width: (columns.length * 210 + 10) + 'px'} }>
+				<div className="calendar__schedule--header" style={ {width: (columns.length * 210 + 30) + 'px'} }>
 					{columns.map((column) => (
 						<div className={"calendar__schedule--header-column" + (column.status ? ' warning' : '')} key={column.id}>
 							<div className="calendar__schedule--header-column-day">{column.date}</div>
@@ -90,7 +164,7 @@ export const Calendar: React.FC<any> = (props) => {
 					{columns.map((column) => (
 						<div className={"calendar__schedule--body-column" + (column.status ? ' warning' : '')} key={column.id} style={ {minHeight: column.hours.length * 30 + 'px'} }>
 							{column.status ? '' : column.hours.map((hour: any, index: number) => (
-								<div className="calendar__schedule--body-column-hour" key={index}>{hour}</div>
+								makeHour(column, hour, index)
 							))}
 						</div>
 					))}
