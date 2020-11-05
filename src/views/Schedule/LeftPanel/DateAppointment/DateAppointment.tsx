@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { dateFormatter } from '../../../../services/formatter';
+import { dateFormatter } from 'services/formatter';
 
-import DatePicker from '../../../../components/DatePicker/DatePicker';
+import DatePicker from 'components/DatePicker/DatePicker';
 
 import './DateAppointment.scss';
 
@@ -13,7 +13,7 @@ interface DateAppointmentProps {
 
 export default class DateAppointment extends Component<DateAppointmentProps> {
 	static defaultProps: DateAppointmentProps = {
-		resource: null,
+		resource: [],
 		date: null,
 		setDate: Function.prototype
 	};
@@ -47,6 +47,14 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 		this.props.setDate(this.state.selectedDate);
 	};
 
+	public componentDidUpdate(prevProps: DateAppointmentProps) {
+		if (prevProps.resource !== this.props.resource) {
+			this.setState({
+				resource: this.props.resource
+			})
+		}
+	}
+
 	render() {
 		return (
 			<div className="date-appointment__root">
@@ -58,7 +66,7 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 					<input disabled className="date-appointment__input" placeholder="ДД.ММ.ГГГГ" value={dateFormatter(this.state.date)}/>
 					<button
 						className="date-appointment__button"
-						// disabled={!Boolean(this.props.resource)}
+						disabled={this.state.resource.length === 0}
 						onClick={this.showToggle}
 					>
 						🗓▼

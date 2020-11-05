@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import API from '../../api/api';
+import API from 'api/api';
 import './Schedule.scss';
 
 import LeftPanel from './LeftPanel/LeftPanel';
