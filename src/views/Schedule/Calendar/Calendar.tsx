@@ -313,7 +313,7 @@ export const Calendar: React.FC<any> = (props) => {
 	return (
 		<div className="calendar">
 			<div className="calendar__container">
-				{ !props.selectDate ?
+				{ !props.selectDate || !props.selectResource.length ?
 					<span>Для просмотра расписания выберите хотя бы один Доступный ресурс.</span> :
 					makeCalendar()
 				}
