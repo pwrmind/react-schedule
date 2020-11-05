@@ -66,6 +66,8 @@ export default class ResourceAppointment extends Component<ResourceAppointmentPr
 		this.setState({
 			headerOpened: !this.state.headerOpened
 		})
+
+		this.closeSearch();
 	};
 
 	public toggleSearch = () => {
@@ -86,17 +88,20 @@ export default class ResourceAppointment extends Component<ResourceAppointmentPr
 		})
 	};
 
+	public scrollToResource(resource: Resource): void {
+		this.itemRefs[resource.id].scrollIntoView({
+			behavior: 'smooth',
+			block: 'start',
+		});
+	}
+
 	public selectResource = (resource: Resource) => {
 		if (!this.selectedCheckboxes.has(resource)) {
 			this.setResource(resource);
 		}
 
 		this.toggleSearch();
-		console.log('this.refs', this.itemRefs);
-		this.itemRefs[resource.id].scrollIntoView({
-			behavior: 'smooth',
-			block: 'start',
-		});
+		this.scrollToResource(resource);
 	};
 
 	public setFilter = (activeFilter: number) => {
