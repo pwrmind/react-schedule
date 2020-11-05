@@ -7,6 +7,7 @@ export const Calendar: React.FC<any> = (props) => {
 	const {
 		resources,
 		selectDate,
+		selectResource,
 		filterDays
 	} = props;
 
@@ -78,7 +79,7 @@ export const Calendar: React.FC<any> = (props) => {
 	};
 
 	const makeCalendar = () => {
-		const filterDays = props.filterDays, selectDate: Date = props.selectDate, resources = props.resources, columns = [];
+		const filterDays = props.filterDays, selectDate: Date = props.selectDate, resources = props.selectResource, columns = [];
 
 		for (let j = 0; j < filterDays; j += 1) {
 			const filterDate = new Date(selectDate.getTime());

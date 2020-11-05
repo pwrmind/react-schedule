@@ -12,13 +12,15 @@ import './LeftPanel.scss';
 
 interface LeftPanelProps {
 	click: Function;
+	selectResource: Function;
 }
 
 export default class LeftPanel extends Component<LeftPanelProps> {
 	private _apiService = API;
 
 	static defaultProps: LeftPanelProps = {
-		click: Function.prototype
+		click: Function.prototype,
+		selectResource: Function.prototype
 	};
 
 	public state = {
@@ -58,7 +60,8 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 
 	public setResource = (resource: Resource[]) => {
 		this.setState({resource});
-	}
+		this.props.selectResource(resource);
+	};
 
 	render() {
 		return (
