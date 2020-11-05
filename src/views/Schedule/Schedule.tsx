@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import API from '../../api/api';
+import API from 'api/api';
 import './Schedule.scss';
 
 import LeftPanel from './LeftPanel/LeftPanel';
@@ -13,7 +13,8 @@ export default class Schedule extends Component<any> {
 	public state = {
 		selectDate: '',
 		filterDays: 7,
-		resources: []
+		resources: [],
+		selectResource: []
 	};
 
 	public componentDidMount(): void {
@@ -39,13 +40,19 @@ export default class Schedule extends Component<any> {
 		});
 	};
 
+	private selectResource = (date: any) => {
+		this.setState({
+			selectResource: date
+		});
+	};
+
 	render() {
 		return (
 			<div className="schedule">
-				<LeftPanel click={this.selectDate}></LeftPanel>
+				<LeftPanel click={this.selectDate} selectResource={this.selectResource}></LeftPanel>
 				<div className="schedule__container">
 					<FilterPanel click={this.filterDays} filter={this.state.filterDays} enabled={!!this.state.selectDate}></FilterPanel>
-					{this.state.resources.length ? <Calendar resources={this.state.resources} selectDate={this.state.selectDate} filterDays={this.state.filterDays}></Calendar> : null}
+					{this.state.resources.length ? <Calendar resources={this.state.resources} selectDate={this.state.selectDate} selectResource={this.state.selectResource} filterDays={this.state.filterDays}></Calendar> : null}
 				</div>
 			</div>
 		)
