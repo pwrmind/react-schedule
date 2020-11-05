@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { addZero } from '../../../services/formatter';
+import { addZero } from 'services/formatter';
 
 import "./Calendar.scss";
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { dateFormatter } from '../../../../services/formatter';
+import { dateFormatter } from 'services/formatter';
 
 import './PatientAppointment.scss';
 
@@ -15,18 +15,20 @@ export default class PatientAppointment extends Component<PatientAppointmentProp
 	};
 	
 	public state = {
-		patients: [],
-		searchPatients: [],
+		patients: this.props.patients,
+		searchPatients: this.props.patients,
 		patient: null,
 		panelOpened: false,
 		logoutOpened: false
 	};
 
-	public componentDidMount(): void {
-		this.setState({
-			patients: this.props.patients,
-			searchPatients: this.props.patients
-		})
+	public componentDidUpdate(prevProps: PatientAppointmentProps) {
+		if (prevProps.patients !== this.props.patients) {
+			this.setState({
+				patients: this.props.patients,
+				searchPatients: this.props.patients
+			})
+		}
 	}
 
 	public togglePanel = () => {
