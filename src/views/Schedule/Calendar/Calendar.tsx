@@ -137,6 +137,10 @@ export const Calendar: React.FC<any> = (props) => {
 			}
 		}
 
+		if (!columns.length) {
+			return <span>На выбранный период отсутствуют свободные временные интервалы для записи. Выберите другой период</span>
+		}
+
 		return (
 			<div className="calendar__schedule">
 				<div className="calendar__schedule--header" style={ {width: (columns.length * 210 + 30) + 'px'} }>
