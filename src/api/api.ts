@@ -1,5 +1,6 @@
 import patientList, { Patient } from './data/patients';
 import resourceList, { Resource } from './data/resources';
+import slotList, { Slot } from './data/slots';
 
 class API {
 	private _latency: number = 30;
@@ -87,6 +88,44 @@ class API {
 			setTimeout(() => {
 				resolve(resourceList);
 				this._isLoading['delResource'] = false;
+			}, this._latency)
+		});
+	}
+
+	public getSlots(): Promise<Array<Slot>> {
+		this._isLoading['getSlots'] = true;
+
+		return new Promise((resolve, reject) => {
+			setTimeout(() => {
+				resolve(slotList);
+				this._isLoading['getSlots'] = false;
+			}, this._latency)
+		});
+	}
+
+	public postSlot(slot: Slot): Promise<Array<Slot>> {
+		this._isLoading['postSlot'] = true;
+
+		return new Promise((resolve, reject) => {
+			slotList.push(slot);
+
+			setTimeout(() => {
+				resolve(slotList);
+				this._isLoading['postSlot'] = false;
+			}, this._latency)
+		});
+	}
+
+	public delSlot(id: number): Promise<Array<Slot>> {
+		this._isLoading['delSlot'] = true;
+
+		return new Promise((resolve, reject) => {
+			const i: number = slotList.findIndex((slot: Slot) => slot.id === id);
+			slotList.splice(i, 1);
+
+			setTimeout(() => {
+				resolve(slotList);
+				this._isLoading['delSlot'] = false;
 			}, this._latency)
 		});
 	}

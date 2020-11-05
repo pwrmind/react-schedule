@@ -230,7 +230,7 @@ export default class ResourceAppointment extends Component<ResourceAppointmentPr
 		}
 
 		if (this.state.activeFilter === 1) {
-			return resources.map((resource: any, index: any) =>
+			return resources.map((resource: Resource, index: any) =>
 				<li
 					key={index}
 				>
