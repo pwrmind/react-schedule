@@ -44,7 +44,7 @@ export default class Schedule extends Component<any> {
 			<div className="schedule">
 				<LeftPanel click={this.selectDate}></LeftPanel>
 				<div className="schedule__container">
-					<FilterPanel click={this.filterDays}></FilterPanel>
+					<FilterPanel click={this.filterDays} filter={this.state.filterDays} enabled={!!this.state.selectDate}></FilterPanel>
 					{this.state.resources.length ? <Calendar resources={this.state.resources} selectDate={this.state.selectDate} filterDays={this.state.filterDays}></Calendar> : null}
 				</div>
 			</div>
