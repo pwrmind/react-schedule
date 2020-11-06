@@ -1,5 +1,6 @@
 import patientList, { Patient } from './data/patients';
 import resourceList, { Resource } from './data/resources';
+import scheduleList, { Schedule } from './data/schedules';
 import slotList, { Slot } from './data/slots';
 
 class API {
@@ -16,6 +17,7 @@ class API {
 		return false;
 	};
 
+	// Patients
 	public getPatients(): Promise<Array<Patient>> {
 		this._isLoading['getPatients'] = true;
 
@@ -54,6 +56,7 @@ class API {
 		});
 	}
 
+	// Resources
 	public getResources(): Promise<Array<Resource>> {
 		this._isLoading['getResources'] = true;
 
@@ -92,6 +95,46 @@ class API {
 		});
 	}
 
+	// Schedules
+	public getSchedules(): Promise<Array<Schedule>> {
+		this._isLoading['getSchedules'] = true;
+
+		return new Promise((resolve, reject) => {
+			setTimeout(() => {
+				resolve(scheduleList);
+				this._isLoading['getSchedules'] = false;
+			}, this._latency)
+		});
+	}
+
+	public postSchedule(schedule: Schedule): Promise<Array<Schedule>> {
+		this._isLoading['postSchedule'] = true;
+
+		return new Promise((resolve, reject) => {
+			scheduleList.push(schedule);
+
+			setTimeout(() => {
+				resolve(scheduleList);
+				this._isLoading['postSchedule'] = false;
+			}, this._latency)
+		});
+	}
+
+	public delSchedule(id: number): Promise<Array<Schedule>> {
+		this._isLoading['delSchedule'] = true;
+
+		return new Promise((resolve, reject) => {
+			const i: number = scheduleList.findIndex((schedule: Schedule) => schedule.id === id);
+			scheduleList.splice(i, 1);
+
+			setTimeout(() => {
+				resolve(scheduleList);
+				this._isLoading['delSchedule'] = false;
+			}, this._latency)
+		});
+	}
+
+	// Slots
 	public getSlots(): Promise<Array<Slot>> {
 		this._isLoading['getSlots'] = true;
 
