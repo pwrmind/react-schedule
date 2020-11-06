@@ -27,34 +27,55 @@ export default class Calendar extends Component<CalendarProps> {
 		workEnd: '21:00'
 	};
 
+	public lastHour: any;
+
 	public makeHour = (column: any, hour: any, index: number) => {
-		let returnHour = <span>{hour}</span>, className = ' ';
+		let returnHour = <span>{hour}</span>, className = '';
 
 		if (hour === '') {
 			className = ' not-dashed';
 			returnHour = <div className="calendar__schedule--body-column-hour_notwork">Врач не принимает</div>;
 		}
 		else {
-			for (let i = 0; i < column.appointment.length; i += 1) {
-				const appointmentTimeSplit = column.appointment[i].time.split('-'),
-					hourTime = new Date().setHours(hour.split(':')[0], hour.split(':')[1], 0),
-					lastHourTime = new Date(hourTime).setMinutes(new Date(hourTime).getMinutes() - column.scheduleGrid),
-					nextHourTime = new Date(hourTime).setMinutes(new Date(hourTime).getMinutes() + column.scheduleGrid),
-					appointmentTime = {
-						timeStart: new Date().setHours(appointmentTimeSplit[0].split(':')[0], appointmentTimeSplit[0].split(':')[1], 0),
-						timeEnd: new Date().setHours(appointmentTimeSplit[1].split(':')[0], appointmentTimeSplit[1].split(':')[1], 0)
-					};
+			const hourTime = new Date().setHours(hour.split(':')[0], hour.split(':')[1], 0),
+				lastHourTime = new Date(hourTime).setMinutes(new Date(hourTime).getMinutes() - column.scheduleGrid),
+				nextHourTime = new Date(hourTime).setMinutes(new Date(hourTime).getMinutes() + column.scheduleGrid),
+				quotaTest = {
+					hourInQuota: false
+				};
 
-				/*console.log(' ');
-				console.log('***********************');
-				console.log('LastHour:', (addZero(new Date(lastHourTime).getHours()) + ':' + addZero(new Date(lastHourTime).getMinutes())), 'Hour:', hour, 'NextHour:', (addZero(new Date(nextHourTime).getHours()) + ':' + addZero(new Date(nextHourTime).getMinutes())),  ', apTimeStart:', appointmentTimeSplit[0], ', apTimeEnd:', appointmentTimeSplit[1]);
-				console.log('LastHour >= apTimeStart:', lastHourTime >= appointmentTime.timeStart, ', LastHour < apTimeEnd:', lastHourTime < appointmentTime.timeEnd);
-				console.log('Hour >= apTimeStart:', hourTime >= appointmentTime.timeStart, 'Hour < apTimeEnd:', hourTime < appointmentTime.timeEnd);
-				console.log('NextHour >= apTimeStart:', nextHourTime >= appointmentTime.timeStart, ', NextHour < apTimeEnd:', nextHourTime <= appointmentTime.timeEnd);
-				console.log('***********************');*/
+			for (let i = 0; i < column.activeQuotas.length; i += 1) {
+				const activeQuota = column.activeQuotas[i], quotaTime = {
+					timeStart: new Date().setHours(activeQuota.quotaStart.split(':')[0], activeQuota.quotaStart.split(':')[1], 0),
+					timeEnd: new Date().setHours(activeQuota.quotaEnd.split(':')[0], activeQuota.quotaEnd.split(':')[1], 0)
+				};
+
+				if (hourTime >= quotaTime.timeStart && hourTime < quotaTime.timeEnd) {
+					quotaTest.hourInQuota = true;
+				}
+			}
+
+			if (!quotaTest.hourInQuota) {
+				className = ' not-dashed';
+				if (!this.lastHour) {
+					returnHour = <div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>;
+					this.lastHour = returnHour;
+				} else {
+					return null;
+				}
+			}
+
+			for (let i = 0; i < column.appointment.length; i += 1) {
+				const appointment = column.appointment[i],
+					appointmentTime = {
+						timeStart: new Date().setHours(appointment.timeStart.split(':')[0], appointment.timeStart.split(':')[1], 0),
+						timeEnd: new Date().setHours(appointment.timeEnd.split(':')[0], appointment.timeEnd.split(':')[1], 0)
+					};
 
 				if (hourTime >= appointmentTime.timeStart && hourTime < appointmentTime.timeEnd) {
 					className = ' not-dashed';
+					this.lastHour = false;
+					
 					if (!(lastHourTime >= appointmentTime.timeStart) && nextHourTime < appointmentTime.timeEnd) {
 						returnHour = <div className="calendar__schedule--body-column-hour_notwork">{column.appointment[i].desc}</div>
 					}
@@ -65,7 +86,7 @@ export default class Calendar extends Component<CalendarProps> {
 							returnHour = (
 								<div className="calendar__schedule--body-column-hour_double">
 									<div className="calendar__schedule--body-column-hour_notwork">{column.appointment[i].desc}</div>
-									<div className="calendar__schedule--body-column-hour_notwork">Нет записии</div>
+									<div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>
 								</div>
 							);
 						}
@@ -76,7 +97,8 @@ export default class Calendar extends Component<CalendarProps> {
 				}
 				else if (appointmentTime.timeStart >= hourTime && appointmentTime.timeStart < nextHourTime) {
 					className = ' not-dashed';
-					returnHour = <div className="calendar__schedule--body-column-hour_notwork">Нет записии</div>
+					this.lastHour = false;
+					returnHour = <div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>
 				}
 			}
 		}
@@ -144,12 +166,14 @@ export default class Calendar extends Component<CalendarProps> {
 						name: schedules[i].resource.name,
 						specialty: schedules[i].resource.specialty.toLowerCase(),
 						cabinet: `${schedules[i].clinic.name}, (к. ${schedules[i].clinic.roomNumber})`,
-						schedule: `${schedules[i].workStart}-${schedules[i].workEnd}`,
+						scheduleStart: schedules[i].workStart,
+						scheduleEnd: schedules[i].workEnd,
 						scheduleGrid: schedules[i].timeGrid,
+						activeQuotas: schedules[i].quotas.filter((quota: any) => quota.active && (!quota.quotaDays || (quota.quotaDays && quota.quotaDays.includes(filterDate.getDay())))),
 						appointment: schedules[i].quotas
 							.filter((quota: any) => !quota.active && (!quota.quotaDays || (quota.quotaDays && quota.quotaDays.includes(filterDate.getDay()))))
 							.map((quota: any) => {
-								return {time: `${quota.quotaStart}-${quota.quotaEnd}`, desc: quota.name}
+								return {timeStart: quota.quotaStart, timeEnd: quota.quotaEnd, desc: quota.name}
 							}),
 						status: '',
 						hours
@@ -173,10 +197,10 @@ export default class Calendar extends Component<CalendarProps> {
 							<div className="calendar__schedule--header-column-name">{column.name}</div>
 							<div className="calendar__schedule--header-column-specialty">{column.specialty}</div>
 							<div className="calendar__schedule--header-column-cabinet">{column.cabinet}</div>
-							<div className="calendar__schedule--header-column-schedule">{column.schedule}</div>
+							<div className="calendar__schedule--header-column-schedule">{column.scheduleStart}-{column.scheduleEnd}</div>
 							{column.appointment.length ?
 								<div className="calendar__schedule--header-column-schedule">{column.appointment.map((appointment: any, index: number) => (
-										<div key={index}>{appointment.desc} ({appointment.time})</div>
+										<div key={index}>{appointment.desc} ({appointment.timeStart}-{appointment.timeEnd})</div>
 								))}</div> :
 								''
 							}

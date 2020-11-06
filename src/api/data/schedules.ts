@@ -44,25 +44,25 @@ const scheduleList: Array<ISchedule> = [
 		workMonth: 2,
 		timeGrid: 30,
 		quotas: [
-				{
-					quotaStart: '10:00',
-					quotaEnd: '14:00',
-					name: 'Запись на прием',
-					active: true
-				},
-				{
-					quotaStart: '14:00',
-					quotaEnd: '15:00',
-					name: 'Врач не работает',
-					active: false
-				},
-				{
-					quotaStart: '15:00',
-					quotaEnd: '20:00',
-					name: 'Запись на прием',
-					active: true
-				},
-			]
+			{
+				quotaStart: '10:00',
+				quotaEnd: '14:00',
+				name: 'Запись на прием',
+				active: true
+			},
+			{
+				quotaStart: '14:00',
+				quotaEnd: '15:00',
+				name: 'Врач не работает',
+				active: false
+			},
+			{
+				quotaStart: '15:00',
+				quotaEnd: '20:00',
+				name: 'Запись на прием',
+				active: true
+			},
+		]
 	},
 	{
 		id: 1,
