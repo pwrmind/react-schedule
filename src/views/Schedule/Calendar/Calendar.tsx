@@ -13,6 +13,11 @@ export const Calendar: React.FC<any> = (props) => {
 
 	const days = ['Вс.', 'Пн.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Сб.'];
 	const month = ['янв.', 'февр.', 'март',  'апр.',  'май',  'июнь',  'июль',  'авг.',  'сен.',  'окт.',  'нояб.',  'дек.'];
+	const messages = {
+		c007: 'На выбранный период отсутствуют свободные временные интервалы для записи. Выберите другой период.',
+		c008: 'Для просмотра расписания выберите хотя бы один Доступный ресурс.',
+		c009: 'Запись создана'
+	};
 	const workTime = {
 		workStart: '08:00',
 		workEnd: '21:00'
@@ -139,7 +144,7 @@ export const Calendar: React.FC<any> = (props) => {
 		}
 
 		if (!columns.length) {
-			return <span>На выбранный период отсутствуют свободные временные интервалы для записи. Выберите другой период</span>
+			return <span>{messages.c007}</span>
 		}
 
 		return (
@@ -313,8 +318,8 @@ export const Calendar: React.FC<any> = (props) => {
 	return (
 		<div className="calendar">
 			<div className="calendar__container">
-				{ !props.selectDate ?
-					<span>Для просмотра расписания выберите хотя бы один Доступный ресурс.</span> :
+				{ !props.selectDate || !props.selectResource.length ?
+					<span>{props.selectResource.length ? messages.c007 : messages.c008}</span> :
 					makeCalendar()
 				}
 			</div>
