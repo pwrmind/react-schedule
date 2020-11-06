@@ -1,11 +1,11 @@
-export interface Patient {
+export interface IPatient {
 	id: number;
 	name: string;
 	bDay: Date;
 	OMS: number;
 }
 
-const patientList: Array<Patient> = [
+const patientList: Array<IPatient> = [
 	{
 		id: 0,
 		name: 'Иванов Иван Иванович',

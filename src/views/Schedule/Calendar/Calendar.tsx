@@ -1,29 +1,33 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import { addZero } from 'services/formatter';
 
-import "./Calendar.scss";
+import { IResource } from 'api/data/resources';
+import { ISchedule } from 'api/data/schedules';
 
-export const Calendar: React.FC<any> = (props) => {
-	const {
-		resources,
-		selectDate,
-		selectResource,
-		filterDays
-	} = props;
+import './Calendar.scss';
 
-	const days = ['Вс.', 'Пн.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Сб.'];
-	const month = ['янв.', 'февр.', 'март',  'апр.',  'май',  'июнь',  'июль',  'авг.',  'сен.',  'окт.',  'нояб.',  'дек.'];
-	const messages = {
+interface CalendarProps {
+	resources?: Array<IResource>,
+	schedules: Array<ISchedule>,
+	selectDate: any;
+	selectResource: Array<IResource>;
+	filterDays: any;
+}
+
+export default class Calendar extends Component<CalendarProps> {
+	public DAYS = ['Вс.', 'Пн.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Сб.'];
+	public MONTHS = ['янв.', 'февр.', 'март', 'апр.', 'май', 'июнь', 'июль', 'авг.', 'сен.', 'окт.', 'нояб.', 'дек.'];
+	public MESSAGES = {
 		c007: 'На выбранный период отсутствуют свободные временные интервалы для записи. Выберите другой период.',
 		c008: 'Для просмотра расписания выберите хотя бы один Доступный ресурс.',
 		c009: 'Запись создана'
 	};
-	const workTime = {
+	public WORK_TIME = {
 		workStart: '08:00',
 		workEnd: '21:00'
 	};
 
-	const makeHour = (column: any, hour: any, index: number) => {
+	public makeHour = (column: any, hour: any, index: number) => {
 		let returnHour = <span>{hour}</span>, className = ' ';
 
 		if (hour === '') {
@@ -83,29 +87,42 @@ export const Calendar: React.FC<any> = (props) => {
 		);
 	};
 
-	const makeCalendar = () => {
-		const filterDays = props.filterDays, selectDate: Date = props.selectDate, resources = props.selectResource, columns = [];
+	public makeCalendar = () => {
+		const filterDays = this.props.filterDays,
+			selectDate: Date = this.props.selectDate,
+			columns = [],
+			schedules: Array<ISchedule> = this.props.schedules.filter((schedule: ISchedule) => {
+				for (const resource of this.props.selectResource) {
+					if (resource.id === schedule.resource.id) {
+						return true;
+					}
+				}
+
+				return false;
+			});
+		
+		console.log('makeCalendar', this.props.schedules, schedules);
 
 		for (let j = 0; j < filterDays; j += 1) {
 			const filterDate = new Date(selectDate.getTime());
 			filterDate.setDate(filterDate.getDate() + j);
 
-			for (let i = 0; i < resources.length; i += 1) {
-				if (resources[i].schedule.workDays.includes(filterDate.getDay())) {
-					if (resources[i].schedule.workMonth) {
+			for (let i = 0; i < schedules.length; i += 1) {
+				if (schedules[i].workDays.includes(filterDate.getDay())) {
+					if (schedules[i].workMonth) {
 						const today = new Date(new Date().setHours(0, 0, 0, 0));
 
-						if (filterDate.getTime() > new Date(today.setMonth(today.getMonth() + resources[i].schedule.workMonth)).getTime()) {
+						if (filterDate.getTime() > new Date(today.setMonth(today.getMonth() + (schedules[i].workMonth || 0))).getTime()) {
 							continue;
 						}
 					}
 
-					const splitStart = resources[i].schedule.workStart.split(':'), timeStart = new Date(),
-							splitWorkStart = workTime.workStart.split(':'), splitWorkEnd = workTime.workEnd.split(':'),
-							splitEnd = resources[i].schedule.workEnd.split(':'), timeEnd = new Date(), hours = [];
+					const splitStart = schedules[i].workStart.split(':'), timeStart = new Date(),
+							splitWorkStart = this.WORK_TIME.workStart.split(':'), splitWorkEnd = this.WORK_TIME.workEnd.split(':'),
+							splitEnd = schedules[i].workEnd.split(':'), timeEnd = new Date(), hours = [];
 
-					timeStart.setHours(splitStart[0], splitStart[1], 0);
-					timeEnd.setHours(splitEnd[0], splitEnd[1], 0);
+					timeStart.setHours(+splitStart[0], +splitStart[1], 0);
+					timeEnd.setHours(+splitEnd[0], +splitEnd[1], 0);
 
 					if ((splitStart[0] >= splitWorkStart[0] && splitStart[1] > splitWorkStart[1]) || splitStart[0] > splitWorkStart[0]) {
 						hours.push('');
@@ -114,7 +131,7 @@ export const Calendar: React.FC<any> = (props) => {
 					while (timeStart.getTime() < timeEnd.getTime()) {
 						hours.push(`${addZero(timeStart.getHours())}:${addZero(timeStart.getMinutes())}`);
 
-						timeStart.setMinutes(timeStart.getMinutes() + resources[i].schedule.timeGrid);
+						timeStart.setMinutes(timeStart.getMinutes() + schedules[i].timeGrid);
 					}
 
 					if (splitEnd[0] < splitWorkEnd[0]) {
@@ -123,13 +140,13 @@ export const Calendar: React.FC<any> = (props) => {
 
 					const column: any = {
 						id: columns.length + 1,
-						date: `${days[filterDate.getDay()]} ${filterDate.getDate()} ${month[filterDate.getMonth()]}`,
-						name: resources[i].name,
-						specialty: resources[i].specialty.toLowerCase(),
-						cabinet: `${resources[i].workPlace}, (к. ${resources[i].roomNumber})`,
-						schedule: `${resources[i].schedule.workStart}-${resources[i].schedule.workEnd}`,
-						scheduleGrid: resources[i].schedule.timeGrid,
-						appointment: resources[i].schedule.quotas
+						date: `${this.DAYS[filterDate.getDay()]} ${filterDate.getDate()} ${this.MONTHS[filterDate.getMonth()]}`,
+						name: schedules[i].resource.name,
+						specialty: schedules[i].resource.specialty.toLowerCase(),
+						cabinet: `${schedules[i].clinic.name}, (к. ${schedules[i].clinic.roomNumber})`,
+						schedule: `${schedules[i].workStart}-${schedules[i].workEnd}`,
+						scheduleGrid: schedules[i].timeGrid,
+						appointment: schedules[i].quotas
 							.filter((quota: any) => !quota.active && (!quota.quotaDays || (quota.quotaDays && quota.quotaDays.includes(filterDate.getDay()))))
 							.map((quota: any) => {
 								return {time: `${quota.quotaStart}-${quota.quotaEnd}`, desc: quota.name}
@@ -144,7 +161,7 @@ export const Calendar: React.FC<any> = (props) => {
 		}
 
 		if (!columns.length) {
-			return <span>{messages.c007}</span>
+			return <span>{this.MESSAGES.c007}</span>
 		}
 
 		return (
@@ -174,7 +191,7 @@ export const Calendar: React.FC<any> = (props) => {
 					{columns.map((column) => (
 						<div className={"calendar__schedule--body-column" + (column.status ? ' warning' : '')} key={column.id} style={ {minHeight: column.hours.length * 30 + 'px'} }>
 							{column.status ? '' : column.hours.map((hour: any, index: number) => (
-								makeHour(column, hour, index)
+								this.makeHour(column, hour, index)
 							))}
 						</div>
 					))}
@@ -183,146 +200,16 @@ export const Calendar: React.FC<any> = (props) => {
 		);
 	};
 
-	const columnsTest = [
-		{
-			id: 1,
-			date: 'Пт. 30 окт.',
-			name: 'Григорьева Г.Г.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 110)',
-			schedule: '08:00-18:00',
-			appointment: [
-				{
-					time: '14:30-14:55',
-					desc: 'Работа с документами'
-				},
-				{
-					time: '16:20-16:40',
-					desc: 'Работа с документами'
-				},
-			],
-			status: ''
-		}, {
-			id: 2,
-			date: 'Пт. 30 окт.',
-			name: 'Сидорова С.С.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 120)',
-			schedule: '09:00-21:00',
-			appointment: [
-
-			],
-			status: ''
-		}, {
-			id: 3,
-			date: 'Пт. 30 окт.',
-			name: 'Елисеева Е.Е.',
-			specialty: 'офтальмолог',
-			cabinet: 'ГП №128, (к. 130)',
-			schedule: '14:00-18:00',
-			appointment: [
-
-			],
-			status: ''
-		}, {
-			id: 4,
-			date: 'Пт. 30 окт.',
-			name: 'Константинова-Щедрина А.А.',
-			specialty: 'офтальмолог',
-			cabinet: 'ГП №128, (к. 140)',
-			schedule: '',
-			appointment: [
-
-			],
-			status: 'Врач на больничном'
-		}, {
-			id: 5,
-			date: 'Пн. 2 нояб.',
-			name: 'Григорьева Г.Г.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 110)',
-			schedule: '10:00-20:00',
-			appointment: [
-				{
-					time: '14:00-15:00',
-					desc: 'Врач не работает'
-				}
-
-			],
-			status: ''
-		}, {
-			id: 6,
-			date: 'Пн. 2 нояб.',
-			name: 'Сидорова С.С.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 120)',
-			schedule: '08:00-15:00',
-			appointment: [
-
-			],
-			status: ''
-		}, {
-			id: 7,
-			date: 'Вт. 3 нояб.',
-			name: 'Григорьева Г.Г.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 110)',
-			schedule: '08:00-18:00',
-			appointment: [
-
-			],
-			status: ''
-		}, {
-			id: 8,
-			date: 'Ср 4 нояб.',
-			name: 'Григорьева Г.Г.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 110)',
-			schedule: '10:00-21:00',
-			appointment: [
-
-			],
-			status: ''
-		}, {
-			id: 9,
-			date: 'Ср 4 нояб.',
-			name: 'Сидорова С.С.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 120)',
-			schedule: '11:00-16:00',
-			appointment: [
-
-			],
-			status: ''
-		}, {
-			id: 10,
-			date: 'Пт. 6 нояб.',
-			name: 'Григорьева Г.Г.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 110)',
-			schedule: '09:00-21:00',
-			appointment: [
-
-			],
-			status: ''
-		}
-	];
-
-	const hours = [
-		'4:00', '4:30', '5:00', '5:30', '6:00', '6:30', '7:00', '7:30', '8:00', '8:30',
-		'9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30',
-		'14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30',
-		'19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'
-	];
-
-	return (
-		<div className="calendar">
-			<div className="calendar__container">
-				{ !props.selectDate || !props.selectResource.length ?
-					<span>{props.selectResource.length ? messages.c007 : messages.c008}</span> :
-					makeCalendar()
-				}
+	render() {
+		return (
+			<div className="calendar">
+				<div className="calendar__container">
+					{ !this.props.selectDate || !this.props.selectResource.length ?
+						<span>{this.props.selectResource.length ? this.MESSAGES.c007 : this.MESSAGES.c008}</span> :
+						this.makeCalendar()
+					}
+				</div>
 			</div>
-		</div>
-	)
+		)
+	}
 };

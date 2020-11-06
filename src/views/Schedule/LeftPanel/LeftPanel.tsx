@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 
-import { Patient } from 'api/data/patients';
-import { Resource } from 'api/data/resources';
+import { IPatient } from 'api/data/patients';
+import { IResource } from 'api/data/resources';
+import { ISchedule } from 'api/data/schedules';
 import API from 'api/api';
 
 import DateAppointment from './DateAppointment/DateAppointment';
@@ -27,12 +28,13 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 		patient: null,
 		patients: [],
 		resource: [],
-		resources: []
+		resources: [],
+		schedules: [],
 	};
 
 	public componentDidMount(): void {
 		this._apiService.getPatients()
-		.then((patients: Patient[]) => {
+		.then((patients: IPatient[]) => {
 			console.log('getPatients:', patients);
 
 			this.setState({
@@ -41,11 +43,20 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 		});
 
 		this._apiService.getResources()
-		.then((resources: Resource[]) => {
+		.then((resources: IResource[]) => {
 			console.log('getResources:', resources);
 
 			this.setState({
 				resources
+			});
+		});
+
+		this._apiService.getSchedules()
+		.then((schedules: ISchedule[]) => {
+			console.log('getSchedules:', schedules);
+
+			this.setState({
+				schedules
 			});
 		});
 	}
@@ -58,7 +69,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 		this.setState({patient});
 	};
 
-	public setResource = (resource: Resource[]) => {
+	public setResource = (resource: IResource[]) => {
 		this.setState({resource});
 		this.props.selectResource(resource);
 	};
@@ -84,7 +95,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 					<div className="left-panel__specialists">
 						<ResourceAppointment
 							resources={this.state.resources}
-							onSetResource={(resources: Array<Resource>) => {this.setResource(resources)}}
+							onSetResource={(resources: Array<IResource>) => {this.setResource(resources)}}
 						/>
 					</div>
 				</div>

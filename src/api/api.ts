@@ -1,7 +1,7 @@
-import patientList, { Patient } from './data/patients';
-import resourceList, { Resource } from './data/resources';
-import scheduleList, { Schedule } from './data/schedules';
-import slotList, { Slot } from './data/slots';
+import patientList, { IPatient } from './data/patients';
+import resourceList, { IResource } from './data/resources';
+import scheduleList, { ISchedule } from './data/schedules';
+import slotList, { ISlot } from './data/slots';
 
 class API {
 	private _latency: number = 30;
@@ -18,7 +18,7 @@ class API {
 	};
 
 	// Patients
-	public getPatients(): Promise<Array<Patient>> {
+	public getPatients(): Promise<Array<IPatient>> {
 		this._isLoading['getPatients'] = true;
 
 		return new Promise((resolve, reject) => {
@@ -29,7 +29,7 @@ class API {
 		});
 	}
 
-	public postPatient(patient: Patient): Promise<Array<Patient>> {
+	public postPatient(patient: IPatient): Promise<Array<IPatient>> {
 		this._isLoading['postPatient'] = true;
 
 		return new Promise((resolve, reject) => {
@@ -42,11 +42,11 @@ class API {
 		});
 	}
 
-	public delPatient(id: number): Promise<Array<Patient>> {
+	public delPatient(id: number): Promise<Array<IPatient>> {
 		this._isLoading['delPatient'] = true;
 
 		return new Promise((resolve, reject) => {
-			const i: number = patientList.findIndex((patient: Patient) => patient.id === id);
+			const i: number = patientList.findIndex((patient: IPatient) => patient.id === id);
 			patientList.splice(i, 1);
 
 			setTimeout(() => {
@@ -57,7 +57,7 @@ class API {
 	}
 
 	// Resources
-	public getResources(): Promise<Array<Resource>> {
+	public getResources(): Promise<Array<IResource>> {
 		this._isLoading['getResources'] = true;
 
 		return new Promise((resolve, reject) => {
@@ -68,7 +68,7 @@ class API {
 		});
 	}
 
-	public postResource(resource: Resource): Promise<Array<Resource>> {
+	public postResource(resource: IResource): Promise<Array<IResource>> {
 		this._isLoading['postResource'] = true;
 
 		return new Promise((resolve, reject) => {
@@ -81,11 +81,11 @@ class API {
 		});
 	}
 
-	public delResource(id: number): Promise<Array<Resource>> {
+	public delResource(id: number): Promise<Array<IResource>> {
 		this._isLoading['delResource'] = true;
 
 		return new Promise((resolve, reject) => {
-			const i: number = resourceList.findIndex((resource: Resource) => resource.id === id);
+			const i: number = resourceList.findIndex((resource: IResource) => resource.id === id);
 			resourceList.splice(i, 1);
 
 			setTimeout(() => {
@@ -96,7 +96,7 @@ class API {
 	}
 
 	// Schedules
-	public getSchedules(): Promise<Array<Schedule>> {
+	public getSchedules(): Promise<Array<ISchedule>> {
 		this._isLoading['getSchedules'] = true;
 
 		return new Promise((resolve, reject) => {
@@ -107,7 +107,7 @@ class API {
 		});
 	}
 
-	public postSchedule(schedule: Schedule): Promise<Array<Schedule>> {
+	public postSchedule(schedule: ISchedule): Promise<Array<ISchedule>> {
 		this._isLoading['postSchedule'] = true;
 
 		return new Promise((resolve, reject) => {
@@ -120,11 +120,11 @@ class API {
 		});
 	}
 
-	public delSchedule(id: number): Promise<Array<Schedule>> {
+	public delSchedule(id: number): Promise<Array<ISchedule>> {
 		this._isLoading['delSchedule'] = true;
 
 		return new Promise((resolve, reject) => {
-			const i: number = scheduleList.findIndex((schedule: Schedule) => schedule.id === id);
+			const i: number = scheduleList.findIndex((schedule: ISchedule) => schedule.id === id);
 			scheduleList.splice(i, 1);
 
 			setTimeout(() => {
@@ -135,7 +135,7 @@ class API {
 	}
 
 	// Slots
-	public getSlots(): Promise<Array<Slot>> {
+	public getSlots(): Promise<Array<ISlot>> {
 		this._isLoading['getSlots'] = true;
 
 		return new Promise((resolve, reject) => {
@@ -146,7 +146,7 @@ class API {
 		});
 	}
 
-	public postSlot(slot: Slot): Promise<Array<Slot>> {
+	public postSlot(slot: ISlot): Promise<Array<ISlot>> {
 		this._isLoading['postSlot'] = true;
 
 		return new Promise((resolve, reject) => {
@@ -159,11 +159,11 @@ class API {
 		});
 	}
 
-	public delSlot(id: number): Promise<Array<Slot>> {
+	public delSlot(id: number): Promise<Array<ISlot>> {
 		this._isLoading['delSlot'] = true;
 
 		return new Promise((resolve, reject) => {
-			const i: number = slotList.findIndex((slot: Slot) => slot.id === id);
+			const i: number = slotList.findIndex((slot: ISlot) => slot.id === id);
 			slotList.splice(i, 1);
 
 			setTimeout(() => {

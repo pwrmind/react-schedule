@@ -1,4 +1,4 @@
-export interface Slot {
+export interface ISlot {
 	id: number;
 	visitDate: Date;
 	status: number;
@@ -8,7 +8,7 @@ export interface Slot {
 	duration: number;
 }
 
-const slotList: Array<Slot> = [
+const slotList: Array<ISlot> = [
 	{
 		id: 0,
 		visitDate: new Date(2020, 11, 5),

@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { Resource } from 'api/data/resources';
+import { IResource } from 'api/data/resources';
 
 import './ResourceAppointment.scss';
 
-interface ResourceAppointmentProps {
-	resources: Resource[];
+interface IResourceAppointmentProps {
+	resources: IResource[];
 	onSetResource: Function;
 }
 
-export default class ResourceAppointment extends Component<ResourceAppointmentProps> {
-	static defaultProps: ResourceAppointmentProps = {
+export default class ResourceAppointment extends Component<IResourceAppointmentProps> {
+	static defaultProps: IResourceAppointmentProps = {
 		resources: [],
 		onSetResource: Function.prototype
 	};
@@ -23,11 +23,11 @@ export default class ResourceAppointment extends Component<ResourceAppointmentPr
 		searchResources: []
 	};
 
-	public selectedCheckboxes: Set<Resource> = new Set();
+	public selectedCheckboxes: Set<IResource> = new Set();
 
 	public itemRefs: any = {};
 
-	public componentDidUpdate(prevProps: ResourceAppointmentProps) {
+	public componentDidUpdate(prevProps: IResourceAppointmentProps) {
 		if (prevProps.resources !== this.props.resources) {
 			this.setState({
 				resources: this.props.resources,
@@ -47,7 +47,7 @@ export default class ResourceAppointment extends Component<ResourceAppointmentPr
 
 		if (search.length >= 3) {
 			const searchResources = this.state.resources.filter(
-				(resource: Resource) => {
+				(resource: IResource) => {
 					return resource.name.toLowerCase().includes(search) ||
 						resource.specialty.toLowerCase().includes(search);
 				}
@@ -88,14 +88,14 @@ export default class ResourceAppointment extends Component<ResourceAppointmentPr
 		})
 	};
 
-	public scrollToResource(resource: Resource): void {
+	public scrollToResource(resource: IResource): void {
 		this.itemRefs[resource.id].scrollIntoView({
 			behavior: 'smooth',
 			block: 'start',
 		});
 	}
 
-	public selectResource = (resource: Resource) => {
+	public selectResource = (resource: IResource) => {
 		if (!this.selectedCheckboxes.has(resource)) {
 			this.setResource(resource);
 		}
@@ -108,7 +108,7 @@ export default class ResourceAppointment extends Component<ResourceAppointmentPr
 		this.setState({activeFilter});
 	}
 
-	public isCheckedGroupResource(resources: Resource[]): boolean {
+	public isCheckedGroupResource(resources: IResource[]): boolean {
 		for (const resource of resources) {
 			if (!this.selectedCheckboxes.has(resource)) {
 				return false;
@@ -118,7 +118,7 @@ export default class ResourceAppointment extends Component<ResourceAppointmentPr
 		return true;
 	}
 
-	public checkResource(resource: Resource): void {
+	public checkResource(resource: IResource): void {
 		if (this.selectedCheckboxes.has(resource)) {
 			this.selectedCheckboxes.delete(resource);
 		} else {
@@ -126,7 +126,7 @@ export default class ResourceAppointment extends Component<ResourceAppointmentPr
 		}
 	}
 
-	public checkGroupResource(resources: Resource[]): void {
+	public checkGroupResource(resources: IResource[]): void {
 		if (this.isCheckedGroupResource(resources)) {
 			for (const key in resources) {
 				this.selectedCheckboxes.delete(resources[key]);
@@ -154,7 +154,7 @@ export default class ResourceAppointment extends Component<ResourceAppointmentPr
 		this.setSelectedResources();
 	}
 
-	public setAllChecks = (resources: Resource[]) => {
+	public setAllChecks = (resources: IResource[]) => {
 		this.setResource({data: resources});
 		this.toggleHeaderPopup();
 	}
@@ -230,7 +230,7 @@ export default class ResourceAppointment extends Component<ResourceAppointmentPr
 		}
 
 		if (this.state.activeFilter === 1) {
-			return resources.map((resource: Resource, index: any) =>
+			return resources.map((resource: IResource, index: any) =>
 				<li
 					key={index}
 				>

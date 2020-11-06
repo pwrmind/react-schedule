@@ -1,22 +1,31 @@
-import { Resource } from './resources';
+import { IResource } from './resources';
 
-export interface Clinic {
+export interface IClinic {
 	name: string;
 	roomNumber: number;
 }
 
-export interface Schedule {
+export interface IQuota {
+	quotaStart: string;
+	quotaEnd: string;
+	quotaDays?: number[];
+	name: string;
+	active: boolean;
+}
+
+export interface ISchedule {
 	id: number;
-	clinic: Clinic;
-	resource: Resource;
+	clinic: IClinic;
+	resource: IResource;
 	workStart: string;
 	workEnd: string;
 	workDays: number[];
 	workMonth?: number;
 	timeGrid: number;
+	quotas: IQuota[];
 }
 
-const scheduleList: Array<Schedule> = [
+const scheduleList: Array<ISchedule> = [
 	{
 		id: 0,
 		clinic: {
@@ -33,7 +42,27 @@ const scheduleList: Array<Schedule> = [
 		workEnd: '20:00',
 		workDays: [1, 2, 3, 4, 5],
 		workMonth: 2,
-		timeGrid: 30
+		timeGrid: 30,
+		quotas: [
+				{
+					quotaStart: '10:00',
+					quotaEnd: '14:00',
+					name: 'Запись на прием',
+					active: true
+				},
+				{
+					quotaStart: '14:00',
+					quotaEnd: '15:00',
+					name: 'Врач не работает',
+					active: false
+				},
+				{
+					quotaStart: '15:00',
+					quotaEnd: '20:00',
+					name: 'Запись на прием',
+					active: true
+				},
+			]
 	},
 	{
 		id: 1,
@@ -52,22 +81,21 @@ const scheduleList: Array<Schedule> = [
 		workDays: [1, 2, 3, 4],
 		workMonth: 1,
 		timeGrid: 30,
-		// quotas: [
-		// 	{
-		// 		quotaStart: '10:00',
-		// 		quotaEnd: '15:00',
-		// 		name: 'Запись на прием',
-		// 		active: true
-		// 	},
-		// 	{
-		// 		quotaStart: '10:00',
-		// 		quotaEnd: '15:00',
-		// 		quotaDays: [1],
-		// 		name: 'Обучение',
-		// 		active: false
-		// 	}
-		// ]
-		// }
+		quotas: [
+			{
+				quotaStart: '10:00',
+				quotaEnd: '15:00',
+				name: 'Запись на прием',
+				active: true
+			},
+			{
+				quotaStart: '10:00',
+				quotaEnd: '15:00',
+				quotaDays: [1],
+				name: 'Обучение',
+				active: false
+			}
+		]
 	},
 	{
 		id: 2,
@@ -86,15 +114,14 @@ const scheduleList: Array<Schedule> = [
 		workDays: [5, 6],
 		workMonth: 2,
 		timeGrid: 10,
-		// quotas: [
-		// 	{
-		// 		quotaStart: '14:00',
-		// 		quotaEnd: '18:00',
-		// 		name: 'Запись на прием',
-		// 		active: true
-		// 	}
-		// ]
-		// }
+		quotas: [
+			{
+				quotaStart: '14:00',
+				quotaEnd: '18:00',
+				name: 'Запись на прием',
+				active: true
+			}
+		]
 	},
 	{
 		id: 3,
@@ -103,7 +130,7 @@ const scheduleList: Array<Schedule> = [
 			roomNumber: 140,
 		},
 		resource: {
-			id: 1,
+			id: 2,
 			name: 'Елисеева Е.Е.',
 			specialty: 'Офтальмолог',
 			description: 'description',
@@ -113,27 +140,26 @@ const scheduleList: Array<Schedule> = [
 		workDays: [1, 2, 3, 4, 5],
 		workMonth: 2,
 		timeGrid: 30,
-		// quotas: [
-		// 	{
-		// 		quotaStart: '10:00',
-		// 		quotaEnd: '17:45',
-		// 		name: 'Запись на прием',
-		// 		active: true
-		// 	},
-		// 	{
-		// 		quotaStart: '14:30',
-		// 		quotaEnd: '14:55',
-		// 		name: 'Работа с документами',
-		// 		active: false
-		// 	},
-		// 	{
-		// 		quotaStart: '16:20',
-		// 		quotaEnd: '16:40',
-		// 		name: 'Работа с документами',
-		// 		active: false
-		// 	}
-		// ]
-		// }
+		quotas: [
+			{
+				quotaStart: '10:00',
+				quotaEnd: '17:45',
+				name: 'Запись на прием',
+				active: true
+			},
+			{
+				quotaStart: '14:30',
+				quotaEnd: '14:55',
+				name: 'Работа с документами',
+				active: false
+			},
+			{
+				quotaStart: '16:20',
+				quotaEnd: '16:40',
+				name: 'Работа с документами',
+				active: false
+			}
+		]
 	},
 	{
 		id: 4,
@@ -142,7 +168,7 @@ const scheduleList: Array<Schedule> = [
 			roomNumber: 150,
 		},
 		resource: {
-			id: 1,
+			id: 3,
 			name: 'Константинова-Щедрина А.А.',
 			specialty: 'Офтальмолог',
 			description: 'description',
@@ -151,16 +177,15 @@ const scheduleList: Array<Schedule> = [
 		workEnd: '21:00',
 		workDays: [2, 3, 4, 5, 6],
 		timeGrid: 30,
-		// quotas: [
-		// 	{
-		// 		quotaStart: '09:00',
-		// 		quotaEnd: '21:00',
-		// 		quotaDays: [3, 4, 5, 6],
-		// 		name: 'Запись на прием',
-		// 		active: true
-		// 	}
-		// ]
-		// }
+		quotas: [
+			{
+				quotaStart: '09:00',
+				quotaEnd: '21:00',
+				quotaDays: [3, 4, 5, 6],
+				name: 'Запись на прием',
+				active: true
+			}
+		]
 	}
 ];
 
