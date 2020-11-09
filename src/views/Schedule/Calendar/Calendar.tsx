@@ -26,9 +26,11 @@ interface IAppointment {
 }
 
 interface IHourState {
-	quota: IQuota | boolean,
-	slots: ISlot[],
-	appointment: IAppointment | boolean
+	quota: IQuota | boolean;
+	slots: ISlot[];
+	appointment: IAppointment | boolean;
+	intervalStart: boolean;
+	intervalEnd: boolean;
 }
 
 export default class Calendar extends Component<CalendarProps> {
@@ -44,8 +46,6 @@ export default class Calendar extends Component<CalendarProps> {
 		workEnd: '21:00'
 	};
 
-	public lastHour: any;
-
 	public getPatient = (id: number): string => {
 		const patient = this.props.patients.filter((patient: IPatient) => patient.id === id)[0];
 		return `${patient.lName} ${patient.fName[0]}. ${patient.mName[0]}.`
@@ -55,17 +55,26 @@ export default class Calendar extends Component<CalendarProps> {
 		let lastRender: string = '';
 
 		const renderHours = [],
-			renderAppointment = (appointment: IAppointment, index: number) => {
+			renderAppointment = (hourState: IHourState, index: number) => {
+				const appointment = hourState.appointment as IAppointment;
 				if (lastRender === appointment.desc) {
 					return null
 				}
 				lastRender = appointment.desc;
+				if (!hourState.intervalStart || !hourState.intervalEnd) {
+					return (
+						<div key={index} className="calendar__schedule--body-column-hour_double">
+							{ hourState.intervalStart ? null : <div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>}
+							<div className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div>
+							{ hourState.intervalEnd ? null : <div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>}
+						</div>
+					);
+				}
 				return <div key={index} className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div>
 			},
 			renderSlot = (slots: ISlot[], hour: string, index: number) => {
 				const patients = column.slots.map((slot: ISlot) => {
 					if (slot.interval === hour) {
-						this.lastHour = 'patient';
 						return <span key={slot.id}>{this.getPatient(slot.patientId)}</span>
 					}
 				});
@@ -101,7 +110,9 @@ export default class Calendar extends Component<CalendarProps> {
 				hourState: IHourState = {
 					quota: false,
 					slots: [],
-					appointment: false
+					appointment: false,
+					intervalStart: true,
+					intervalEnd: true
 				};
 
 			let renderHour;
@@ -116,7 +127,7 @@ export default class Calendar extends Component<CalendarProps> {
 			else {
 				const hourTime = new Date().setHours(hour.split(':')[0], hour.split(':')[1], 0, 0),
 					lastHourTime = new Date(hourTime).setMinutes(new Date(hourTime).getMinutes() - column.scheduleGrid, 0, 0),
-					nextHourTime = new Date(hourTime).setMinutes(new Date(hourTime).getMinutes() + column.scheduleGrid, 0, 0)
+					nextHourTime = new Date(hourTime).setMinutes(new Date(hourTime).getMinutes() + column.scheduleGrid, 0, 0);
 
 				column.activeQuotas.filter((quota: IQuota) => {
 					const quotaTime = {
@@ -124,7 +135,8 @@ export default class Calendar extends Component<CalendarProps> {
 						timeEnd: new Date().setHours(+quota.quotaEnd.split(':')[0], +quota.quotaEnd.split(':')[1], 0, 0)
 					};
 
-					if ((hourTime >= quotaTime.timeStart || (quotaTime.timeStart >= hourTime && quotaTime.timeStart < nextHourTime)) && (quotaTime.timeEnd >= nextHourTime || (quotaTime.timeEnd > hourTime && quotaTime.timeEnd < nextHourTime))) {
+					if ((hourTime >= quotaTime.timeStart || (quotaTime.timeStart >= hourTime && quotaTime.timeStart < nextHourTime)) &&
+						(quotaTime.timeEnd >= nextHourTime || (quotaTime.timeEnd > hourTime && quotaTime.timeEnd < nextHourTime))) {
 						hourState.quota = quota;
 					}
 				});
@@ -141,7 +153,11 @@ export default class Calendar extends Component<CalendarProps> {
 						timeEnd: new Date().setHours(+appointment.timeEnd.split(':')[0], +appointment.timeEnd.split(':')[1], 0, 0)
 					};
 
-					if ((hourTime >= appointmentTime.timeStart || (appointmentTime.timeStart >= hourTime && appointmentTime.timeStart < nextHourTime)) && (appointmentTime.timeEnd >= nextHourTime || (appointmentTime.timeEnd > hourTime && appointmentTime.timeEnd < nextHourTime))) {
+					if ((hourTime >= appointmentTime.timeStart || (appointmentTime.timeStart >= hourTime && appointmentTime.timeStart < nextHourTime)) &&
+						(appointmentTime.timeEnd >= nextHourTime || (appointmentTime.timeEnd > hourTime && appointmentTime.timeEnd < nextHourTime))) {
+						hourState.intervalStart = hours.includes(appointment.timeStart);
+						hourState.intervalEnd = hours.includes(appointment.timeEnd) || column.scheduleEnd === appointment.timeEnd;
+
 						hourState.appointment = appointment;
 					}
 				});
@@ -149,7 +165,7 @@ export default class Calendar extends Component<CalendarProps> {
 
 				if (hourState.appointment) {
 					if (!hourState.slots.length) {
-						renderHour = renderAppointment(hourState.appointment as IAppointment, i)
+						renderHour = renderAppointment(hourState, i)
 					}
 					else {
 						renderHour = renderSlot(hourState.slots, hour, i);
