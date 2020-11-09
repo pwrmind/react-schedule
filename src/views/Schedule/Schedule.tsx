@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import { IResource } from 'api/data/resources';
 import { ISchedule } from 'api/data/schedules';
+import { ISlot } from 'api/data/slots';
+import { IPatient } from 'api/data/patients';
 import API from 'api/api';
 
 import LeftPanel from './LeftPanel/LeftPanel';
@@ -15,6 +17,8 @@ interface IScheduleState {
 	filterDays: number;
 	resources: Array<IResource>,
 	schedules: Array<ISchedule>,
+	slots: Array<ISlot>,
+	patients: Array<IPatient>,
 	selectResource: Array<IResource>
 }
 
@@ -26,6 +30,8 @@ export default class Schedule extends Component {
 		filterDays: 7,
 		resources: [],
 		schedules: [],
+		slots: [],
+		patients: [],
 		selectResource: []
 	};
 
@@ -45,6 +51,24 @@ export default class Schedule extends Component {
 
 				this.setState({
 					schedules
+				});
+			});
+
+		this._apiService.getSlots()
+			.then((slots: ISlot[]) => {
+				console.log('getSlots:', slots);
+
+				this.setState({
+					slots
+				});
+			});
+
+		this._apiService.getPatients()
+			.then((patients: IPatient[]) => {
+				console.log('getPatients:', patients);
+
+				this.setState({
+					patients
 				});
 			});
 	}
@@ -86,6 +110,8 @@ export default class Schedule extends Component {
 						<Calendar
 							// resources={this.state.resources}
 							schedules={this.state.schedules}
+							slots={this.state.slots}
+							patients={this.state.patients}
 							selectDate={this.state.selectDate}
 							selectResource={this.state.selectResource}
 							filterDays={this.state.filterDays}
