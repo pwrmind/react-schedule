@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { dateFormatter } from 'services/formatter';
 
 import DatePicker from 'components/DatePicker/DatePicker';
+import Tooltip from 'components/Tooltip/Tooltip';
 
 import './DateAppointment.scss';
 
@@ -64,13 +65,15 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 
 				<div className="date-appointment__body">
 					<input disabled className="date-appointment__input" placeholder="ДД.ММ.ГГГГ" value={dateFormatter(this.state.date)}/>
-					<button
-						className="date-appointment__button"
-						disabled={this.state.resource.length === 0}
-						onClick={this.showToggle}
-					>
-						🗓▼
-					</button>
+					<Tooltip disabled={this.state.resource.length > 0} content="Выберите доступный ресурс">
+						<button
+							className="date-appointment__button"
+							disabled={this.state.resource.length === 0}
+							onClick={this.showToggle}
+						>
+							🗓▼
+						</button>
+					</Tooltip>
 
 					{ this.state.showDatePicker ? (
 						<div className="date-appointment__calendar">

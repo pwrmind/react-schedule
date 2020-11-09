@@ -1,29 +1,74 @@
 import React, { Component } from 'react';
 
+import { IResource } from 'api/data/resources';
+import { ISchedule } from 'api/data/schedules';
+import { ISlot } from 'api/data/slots';
+import { IPatient } from 'api/data/patients';
 import API from 'api/api';
-import './Schedule.scss';
 
 import LeftPanel from './LeftPanel/LeftPanel';
 import { FilterPanel } from './FilterPanel/FilterPanel';
-import { Calendar } from './Calendar/Calendar';
+import Calendar from './Calendar/Calendar';
 
-export default class Schedule extends Component<any> {
+import './Schedule.scss';
+
+interface IScheduleState {
+	selectDate: any;
+	filterDays: number;
+	resources: Array<IResource>,
+	schedules: Array<ISchedule>,
+	slots: Array<ISlot>,
+	patients: Array<IPatient>,
+	selectResource: Array<IResource>
+}
+
+export default class Schedule extends Component {
 	private _apiService = API;
 
-	public state = {
+	public state: IScheduleState = {
 		selectDate: '',
 		filterDays: 7,
 		resources: [],
+		schedules: [],
+		slots: [],
+		patients: [],
 		selectResource: []
 	};
 
 	public componentDidMount(): void {
 		this._apiService.getResources()
-			.then((resources: any) => {
+			.then((resources: IResource[]) => {
 				console.log('getResources:', resources);
 
 				this.setState({
 					resources
+				});
+			});
+
+		this._apiService.getSchedules()
+			.then((schedules: ISchedule[]) => {
+				console.log('getSchedules:', schedules);
+
+				this.setState({
+					schedules
+				});
+			});
+
+		this._apiService.getSlots()
+			.then((slots: ISlot[]) => {
+				console.log('getSlots:', slots);
+
+				this.setState({
+					slots
+				});
+			});
+
+		this._apiService.getPatients()
+			.then((patients: IPatient[]) => {
+				console.log('getPatients:', patients);
+
+				this.setState({
+					patients
 				});
 			});
 	}
@@ -49,10 +94,31 @@ export default class Schedule extends Component<any> {
 	render() {
 		return (
 			<div className="schedule">
-				<LeftPanel click={this.selectDate} selectResource={this.selectResource}></LeftPanel>
+				<LeftPanel
+					resources={this.state.resources}
+					schedules={this.state.schedules}
+					click={this.selectDate}
+					selectResource={this.selectResource}
+				/>
+
 				<div className="schedule__container">
-					<FilterPanel click={this.filterDays} filter={this.state.filterDays} enabled={!!this.state.selectDate}></FilterPanel>
-					{this.state.resources.length ? <Calendar resources={this.state.resources} selectDate={this.state.selectDate} selectResource={this.state.selectResource} filterDays={this.state.filterDays}></Calendar> : null}
+					<FilterPanel
+						click={this.filterDays}
+						filter={this.state.filterDays}
+						enabled={!!this.state.selectDate}
+					/>
+
+					{this.state.resources.length ? (
+						<Calendar
+							// resources={this.state.resources}
+							schedules={this.state.schedules}
+							slots={this.state.slots}
+							patients={this.state.patients}
+							selectDate={this.state.selectDate}
+							selectResource={this.state.selectResource}
+							filterDays={this.state.filterDays}
+						/>
+					 ) : null}
 				</div>
 			</div>
 		)

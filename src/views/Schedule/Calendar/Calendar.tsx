@@ -1,106 +1,218 @@
-import React, { Component } from "react";
+import React, {Component, ReactElement} from 'react';
 import { addZero } from 'services/formatter';
 
-import "./Calendar.scss";
+import { IResource } from 'api/data/resources';
+import { ISchedule } from 'api/data/schedules';
+import { IQuota } from 'api/data/schedules';
+import { ISlot } from 'api/data/slots';
+import { IPatient } from 'api/data/patients';
 
-export const Calendar: React.FC<any> = (props) => {
-	const {
-		resources,
-		selectDate,
-		selectResource,
-		filterDays
-	} = props;
+import './Calendar.scss';
 
-	const days = ['Вс.', 'Пн.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Сб.'];
-	const month = ['янв.', 'февр.', 'март',  'апр.',  'май',  'июнь',  'июль',  'авг.',  'сен.',  'окт.',  'нояб.',  'дек.'];
-	const workTime = {
+interface CalendarProps {
+	resources?: Array<IResource>,
+	schedules: Array<ISchedule>,
+	slots: Array<ISlot>,
+	patients: Array<IPatient>,
+	selectDate: any;
+	selectResource: Array<IResource>;
+	filterDays: any;
+}
+
+interface IAppointment {
+	timeStart: string;
+	timeEnd: string;
+	desc: string;
+}
+
+interface IHourState {
+	quota: IQuota | boolean,
+	slots: ISlot[],
+	appointment: IAppointment | boolean
+}
+
+export default class Calendar extends Component<CalendarProps> {
+	public DAYS = ['Вс.', 'Пн.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Сб.'];
+	public MONTHS = ['янв.', 'февр.', 'март', 'апр.', 'май', 'июнь', 'июль', 'авг.', 'сен.', 'окт.', 'нояб.', 'дек.'];
+	public MESSAGES = {
+		c007: 'На выбранный период отсутствуют свободные временные интервалы для записи. Выберите другой период.',
+		c008: 'Для просмотра расписания выберите хотя бы один Доступный ресурс.',
+		c009: 'Запись создана'
+	};
+	public WORK_TIME = {
 		workStart: '08:00',
 		workEnd: '21:00'
 	};
 
-	const makeHour = (column: any, hour: any, index: number) => {
-		let returnHour = <span>{hour}</span>, className = ' ';
+	public lastHour: any;
 
-		if (hour === '') {
-			className = ' not-dashed';
-			returnHour = <div className="calendar__schedule--body-column-hour_notwork">Врач не принимает</div>;
-		}
-		else {
-			for (let i = 0; i < column.appointment.length; i += 1) {
-				const appointmentTimeSplit = column.appointment[i].time.split('-'),
-					hourTime = new Date().setHours(hour.split(':')[0], hour.split(':')[1], 0),
-					lastHourTime = new Date(hourTime).setMinutes(new Date(hourTime).getMinutes() - column.scheduleGrid),
-					nextHourTime = new Date(hourTime).setMinutes(new Date(hourTime).getMinutes() + column.scheduleGrid),
-					appointmentTime = {
-						timeStart: new Date().setHours(appointmentTimeSplit[0].split(':')[0], appointmentTimeSplit[0].split(':')[1], 0),
-						timeEnd: new Date().setHours(appointmentTimeSplit[1].split(':')[0], appointmentTimeSplit[1].split(':')[1], 0)
-					};
-
-				/*console.log(' ');
-				console.log('***********************');
-				console.log('LastHour:', (addZero(new Date(lastHourTime).getHours()) + ':' + addZero(new Date(lastHourTime).getMinutes())), 'Hour:', hour, 'NextHour:', (addZero(new Date(nextHourTime).getHours()) + ':' + addZero(new Date(nextHourTime).getMinutes())),  ', apTimeStart:', appointmentTimeSplit[0], ', apTimeEnd:', appointmentTimeSplit[1]);
-				console.log('LastHour >= apTimeStart:', lastHourTime >= appointmentTime.timeStart, ', LastHour < apTimeEnd:', lastHourTime < appointmentTime.timeEnd);
-				console.log('Hour >= apTimeStart:', hourTime >= appointmentTime.timeStart, 'Hour < apTimeEnd:', hourTime < appointmentTime.timeEnd);
-				console.log('NextHour >= apTimeStart:', nextHourTime >= appointmentTime.timeStart, ', NextHour < apTimeEnd:', nextHourTime <= appointmentTime.timeEnd);
-				console.log('***********************');*/
-
-				if (hourTime >= appointmentTime.timeStart && hourTime < appointmentTime.timeEnd) {
-					className = ' not-dashed';
-					if (!(lastHourTime >= appointmentTime.timeStart) && nextHourTime < appointmentTime.timeEnd) {
-						returnHour = <div className="calendar__schedule--body-column-hour_notwork">{column.appointment[i].desc}</div>
-					}
-					else if (!(lastHourTime >= appointmentTime.timeStart)) {
-						returnHour = <div className="calendar__schedule--body-column-hour_notwork">{column.appointment[i].desc}</div>
-
-						if (appointmentTime.timeEnd >= hourTime && appointmentTime.timeEnd < nextHourTime) {
-							returnHour = (
-								<div className="calendar__schedule--body-column-hour_double">
-									<div className="calendar__schedule--body-column-hour_notwork">{column.appointment[i].desc}</div>
-									<div className="calendar__schedule--body-column-hour_notwork">Нет записии</div>
-								</div>
-							);
-						}
-					}
-					else {
-						return null
-					}
-				}
-				else if (appointmentTime.timeStart >= hourTime && appointmentTime.timeStart < nextHourTime) {
-					className = ' not-dashed';
-					returnHour = <div className="calendar__schedule--body-column-hour_notwork">Нет записии</div>
-				}
-			}
-		}
-		return (
-			<div className={"calendar__schedule--body-column-hour" + className} key={index}>
-				{returnHour}
-			</div>
-		);
+	public getPatient = (id: number): string => {
+		const patient = this.props.patients.filter((patient: IPatient) => patient.id === id)[0];
+		return `${patient.lName} ${patient.fName[0]}. ${patient.mName[0]}.`
 	};
 
-	const makeCalendar = () => {
-		const filterDays = props.filterDays, selectDate: Date = props.selectDate, resources = props.selectResource, columns = [];
+	public makeHours = (column: any, hours: string[]) => {
+		let lastRender: string = '';
+
+		const renderHours = [],
+			renderAppointment = (appointment: IAppointment, index: number) => {
+				if (lastRender === appointment.desc) {
+					return null
+				}
+				lastRender = appointment.desc;
+				return <div key={index} className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div>
+			},
+			renderSlot = (slots: ISlot[], hour: string, index: number) => {
+				const patients = column.slots.map((slot: ISlot) => {
+					if (slot.interval === hour) {
+						this.lastHour = 'patient';
+						return <span key={slot.id}>{this.getPatient(slot.patientId)}</span>
+					}
+				});
+				lastRender = patients;
+				return (
+					<div key={index} className="calendar__schedule--body-column-hour solid">
+						<div className="calendar__schedule--body-column-hour_patients">
+							<div className="calendar__schedule--body-column-hour_patients-time">{hour}</div>
+							<div className="calendar__schedule--body-column-hour_patients-list">{patients}</div>
+						</div>
+					</div>
+				)
+			},
+			renderQuota = (hour: string, index: number) => {
+				lastRender = hour;
+				return (
+					<div key={index} className="calendar__schedule--body-column-hour">
+						<div className="calendar__schedule--body-column-hour_time">{hour}</div>
+					</div>
+				)
+			},
+			renderEmpty = (index: number) => {
+				const text = 'Нет записи';
+				if (lastRender === text) {
+					return null
+				}
+				lastRender = text;
+				return <div key={index} className="calendar__schedule--body-column-hour_notwork">{text}</div>
+			};
+
+		for (let i = 0; i < hours.length; i += 1) {
+			const hour: any = hours[i],
+				hourState: IHourState = {
+					quota: false,
+					slots: [],
+					appointment: false
+				};
+
+			let renderHour;
+
+			if (hour === '') {
+				renderHour = (
+					<div className="calendar__schedule--body-column-hour not-dashed" key={i}>
+						<div className="calendar__schedule--body-column-hour_notwork">Врач не принимает</div>
+					</div>
+				);
+			}
+			else {
+				const hourTime = new Date().setHours(hour.split(':')[0], hour.split(':')[1], 0, 0),
+					lastHourTime = new Date(hourTime).setMinutes(new Date(hourTime).getMinutes() - column.scheduleGrid, 0, 0),
+					nextHourTime = new Date(hourTime).setMinutes(new Date(hourTime).getMinutes() + column.scheduleGrid, 0, 0)
+
+				column.activeQuotas.filter((quota: IQuota) => {
+					const quotaTime = {
+						timeStart: new Date().setHours(+quota.quotaStart.split(':')[0], +quota.quotaStart.split(':')[1], 0, 0),
+						timeEnd: new Date().setHours(+quota.quotaEnd.split(':')[0], +quota.quotaEnd.split(':')[1], 0, 0)
+					};
+
+					if ((hourTime >= quotaTime.timeStart || (quotaTime.timeStart >= hourTime && quotaTime.timeStart < nextHourTime)) && (quotaTime.timeEnd >= nextHourTime || (quotaTime.timeEnd > hourTime && quotaTime.timeEnd < nextHourTime))) {
+						hourState.quota = quota;
+					}
+				});
+
+				column.slots.filter((slot: ISlot) => {
+					if (slot.interval === hour) {
+						hourState.slots.push(slot);
+					}
+				});
+
+				column.appointment.filter((appointment: IAppointment) => {
+					const appointmentTime = {
+						timeStart: new Date().setHours(+appointment.timeStart.split(':')[0], +appointment.timeStart.split(':')[1], 0, 0),
+						timeEnd: new Date().setHours(+appointment.timeEnd.split(':')[0], +appointment.timeEnd.split(':')[1], 0, 0)
+					};
+
+					if ((hourTime >= appointmentTime.timeStart || (appointmentTime.timeStart >= hourTime && appointmentTime.timeStart < nextHourTime)) && (appointmentTime.timeEnd >= nextHourTime || (appointmentTime.timeEnd > hourTime && appointmentTime.timeEnd < nextHourTime))) {
+						hourState.appointment = appointment;
+					}
+				});
+
+
+				if (hourState.appointment) {
+					if (!hourState.slots.length) {
+						renderHour = renderAppointment(hourState.appointment as IAppointment, i)
+					}
+					else {
+						renderHour = renderSlot(hourState.slots, hour, i);
+					}
+				}
+				else if (hourState.quota) {
+					if (!hourState.slots.length) {
+						renderHour = renderQuota(hour, i)
+					}
+					else {
+						renderHour = renderSlot(hourState.slots, hour, i);
+					}
+				}
+				else if (hourState.slots.length) {
+					renderHour = renderSlot(hourState.slots, hour, i)
+				}
+				else {
+					renderHour = renderEmpty(i);
+				}
+			}
+
+			renderHours.push(renderHour);
+		}
+
+		return renderHours;
+	};
+
+	public makeCalendar = () => {
+		const filterDays = this.props.filterDays,
+			selectDate: Date = this.props.selectDate,
+			columns = [], slots = this.props.slots,
+			schedules: Array<ISchedule> = this.props.schedules.filter((schedule: ISchedule) => {
+				for (const resource of this.props.selectResource) {
+					if (resource.id === schedule.resource.id) {
+						return true;
+					}
+				}
+
+				return false;
+			});
+		
+		console.log('makeCalendar', this.props.schedules, schedules);
 
 		for (let j = 0; j < filterDays; j += 1) {
 			const filterDate = new Date(selectDate.getTime());
 			filterDate.setDate(filterDate.getDate() + j);
 
-			for (let i = 0; i < resources.length; i += 1) {
-				if (resources[i].schedule.workDays.includes(filterDate.getDay())) {
-					if (resources[i].schedule.workMonth) {
+			for (let i = 0; i < schedules.length; i += 1) {
+				if (schedules[i].workDays.includes(filterDate.getDay())) {
+					if (schedules[i].workMonth) {
 						const today = new Date(new Date().setHours(0, 0, 0, 0));
 
-						if (filterDate.getTime() > new Date(today.setMonth(today.getMonth() + resources[i].schedule.workMonth)).getTime()) {
+						if (filterDate.getTime() > new Date(today.setMonth(today.getMonth() + (schedules[i].workMonth || 0))).getTime()) {
 							continue;
 						}
 					}
 
-					const splitStart = resources[i].schedule.workStart.split(':'), timeStart = new Date(),
-							splitWorkStart = workTime.workStart.split(':'), splitWorkEnd = workTime.workEnd.split(':'),
-							splitEnd = resources[i].schedule.workEnd.split(':'), timeEnd = new Date(), hours = [];
+					const splitStart = schedules[i].workStart.split(':'), timeStart = new Date(),
+							splitWorkStart = this.WORK_TIME.workStart.split(':'), splitWorkEnd = this.WORK_TIME.workEnd.split(':'),
+							splitEnd = schedules[i].workEnd.split(':'), timeEnd = new Date(), hours = [];
 
-					timeStart.setHours(splitStart[0], splitStart[1], 0);
-					timeEnd.setHours(splitEnd[0], splitEnd[1], 0);
+					timeStart.setHours(+splitStart[0], +splitStart[1], 0, 0);
+					timeEnd.setHours(+splitEnd[0], +splitEnd[1], 0, 0);
 
 					if ((splitStart[0] >= splitWorkStart[0] && splitStart[1] > splitWorkStart[1]) || splitStart[0] > splitWorkStart[0]) {
 						hours.push('');
@@ -109,7 +221,7 @@ export const Calendar: React.FC<any> = (props) => {
 					while (timeStart.getTime() < timeEnd.getTime()) {
 						hours.push(`${addZero(timeStart.getHours())}:${addZero(timeStart.getMinutes())}`);
 
-						timeStart.setMinutes(timeStart.getMinutes() + resources[i].schedule.timeGrid);
+						timeStart.setMinutes(timeStart.getMinutes() + schedules[i].timeGrid);
 					}
 
 					if (splitEnd[0] < splitWorkEnd[0]) {
@@ -118,20 +230,26 @@ export const Calendar: React.FC<any> = (props) => {
 
 					const column: any = {
 						id: columns.length + 1,
-						date: `${days[filterDate.getDay()]} ${filterDate.getDate()} ${month[filterDate.getMonth()]}`,
-						name: resources[i].name,
-						specialty: resources[i].specialty.toLowerCase(),
-						cabinet: `${resources[i].workPlace}, (к. ${resources[i].roomNumber})`,
-						schedule: `${resources[i].schedule.workStart}-${resources[i].schedule.workEnd}`,
-						scheduleGrid: resources[i].schedule.timeGrid,
-						appointment: resources[i].schedule.quotas
-							.filter((quota: any) => !quota.active && (!quota.quotaDays || (quota.quotaDays && quota.quotaDays.includes(filterDate.getDay()))))
-							.map((quota: any) => {
-								return {time: `${quota.quotaStart}-${quota.quotaEnd}`, desc: quota.name}
+						date: `${this.DAYS[filterDate.getDay()]} ${filterDate.getDate()} ${this.MONTHS[filterDate.getMonth()]}`,
+						dateTest: filterDate,
+						name: schedules[i].resource.name,
+						specialty: schedules[i].resource.specialty.toLowerCase(),
+						cabinet: `${schedules[i].clinic.name}, (к. ${schedules[i].clinic.roomNumber})`,
+						scheduleStart: schedules[i].workStart,
+						scheduleEnd: schedules[i].workEnd,
+						scheduleGrid: schedules[i].timeGrid,
+						slots: slots.filter((slot: ISlot) => (slot.visitDate.getTime() === filterDate.getTime() && slot.scheduleId === schedules[i].id)),
+						activeQuotas: schedules[i].quotas.filter((quota: IQuota) => quota.active && (!quota.quotaDays || (quota.quotaDays && quota.quotaDays.includes(filterDate.getDay())))),
+						appointment: schedules[i].quotas
+							.filter((quota: IQuota) => !quota.active && (!quota.quotaDays || (quota.quotaDays && quota.quotaDays.includes(filterDate.getDay()))))
+							.map((quota: IQuota) => {
+								return {timeStart: quota.quotaStart, timeEnd: quota.quotaEnd, desc: quota.name}
 							}),
 						status: '',
-						hours
+						hours: []
 					};
+
+					column.hours = this.makeHours(column, hours);
 
 					columns.push(column);
 				}
@@ -139,7 +257,7 @@ export const Calendar: React.FC<any> = (props) => {
 		}
 
 		if (!columns.length) {
-			return <span>На выбранный период отсутствуют свободные временные интервалы для записи. Выберите другой период</span>
+			return <span>{this.MESSAGES.c007}</span>
 		}
 
 		return (
@@ -151,10 +269,10 @@ export const Calendar: React.FC<any> = (props) => {
 							<div className="calendar__schedule--header-column-name">{column.name}</div>
 							<div className="calendar__schedule--header-column-specialty">{column.specialty}</div>
 							<div className="calendar__schedule--header-column-cabinet">{column.cabinet}</div>
-							<div className="calendar__schedule--header-column-schedule">{column.schedule}</div>
+							<div className="calendar__schedule--header-column-schedule">{column.scheduleStart}-{column.scheduleEnd}</div>
 							{column.appointment.length ?
 								<div className="calendar__schedule--header-column-schedule">{column.appointment.map((appointment: any, index: number) => (
-										<div key={index}>{appointment.desc} ({appointment.time})</div>
+										<div key={index}>{appointment.desc} ({appointment.timeStart}-{appointment.timeEnd})</div>
 								))}</div> :
 								''
 							}
@@ -168,9 +286,7 @@ export const Calendar: React.FC<any> = (props) => {
 				<div className="calendar__schedule--body">
 					{columns.map((column) => (
 						<div className={"calendar__schedule--body-column" + (column.status ? ' warning' : '')} key={column.id} style={ {minHeight: column.hours.length * 30 + 'px'} }>
-							{column.status ? '' : column.hours.map((hour: any, index: number) => (
-								makeHour(column, hour, index)
-							))}
+							{column.status ? null : column.hours}
 						</div>
 					))}
 				</div>
@@ -178,146 +294,16 @@ export const Calendar: React.FC<any> = (props) => {
 		);
 	};
 
-	const columnsTest = [
-		{
-			id: 1,
-			date: 'Пт. 30 окт.',
-			name: 'Григорьева Г.Г.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 110)',
-			schedule: '08:00-18:00',
-			appointment: [
-				{
-					time: '14:30-14:55',
-					desc: 'Работа с документами'
-				},
-				{
-					time: '16:20-16:40',
-					desc: 'Работа с документами'
-				},
-			],
-			status: ''
-		}, {
-			id: 2,
-			date: 'Пт. 30 окт.',
-			name: 'Сидорова С.С.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 120)',
-			schedule: '09:00-21:00',
-			appointment: [
-
-			],
-			status: ''
-		}, {
-			id: 3,
-			date: 'Пт. 30 окт.',
-			name: 'Елисеева Е.Е.',
-			specialty: 'офтальмолог',
-			cabinet: 'ГП №128, (к. 130)',
-			schedule: '14:00-18:00',
-			appointment: [
-
-			],
-			status: ''
-		}, {
-			id: 4,
-			date: 'Пт. 30 окт.',
-			name: 'Константинова-Щедрина А.А.',
-			specialty: 'офтальмолог',
-			cabinet: 'ГП №128, (к. 140)',
-			schedule: '',
-			appointment: [
-
-			],
-			status: 'Врач на больничном'
-		}, {
-			id: 5,
-			date: 'Пн. 2 нояб.',
-			name: 'Григорьева Г.Г.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 110)',
-			schedule: '10:00-20:00',
-			appointment: [
-				{
-					time: '14:00-15:00',
-					desc: 'Врач не работает'
-				}
-
-			],
-			status: ''
-		}, {
-			id: 6,
-			date: 'Пн. 2 нояб.',
-			name: 'Сидорова С.С.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 120)',
-			schedule: '08:00-15:00',
-			appointment: [
-
-			],
-			status: ''
-		}, {
-			id: 7,
-			date: 'Вт. 3 нояб.',
-			name: 'Григорьева Г.Г.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 110)',
-			schedule: '08:00-18:00',
-			appointment: [
-
-			],
-			status: ''
-		}, {
-			id: 8,
-			date: 'Ср 4 нояб.',
-			name: 'Григорьева Г.Г.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 110)',
-			schedule: '10:00-21:00',
-			appointment: [
-
-			],
-			status: ''
-		}, {
-			id: 9,
-			date: 'Ср 4 нояб.',
-			name: 'Сидорова С.С.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 120)',
-			schedule: '11:00-16:00',
-			appointment: [
-
-			],
-			status: ''
-		}, {
-			id: 10,
-			date: 'Пт. 6 нояб.',
-			name: 'Григорьева Г.Г.',
-			specialty: 'терапевт',
-			cabinet: 'ГП №128, (к. 110)',
-			schedule: '09:00-21:00',
-			appointment: [
-
-			],
-			status: ''
-		}
-	];
-
-	const hours = [
-		'4:00', '4:30', '5:00', '5:30', '6:00', '6:30', '7:00', '7:30', '8:00', '8:30',
-		'9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30',
-		'14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30',
-		'19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'
-	];
-
-	return (
-		<div className="calendar">
-			<div className="calendar__container">
-				{ !props.selectDate ?
-					<span>Для просмотра расписания выберите хотя бы один Доступный ресурс.</span> :
-					makeCalendar()
-				}
+	render() {
+		return (
+			<div className="calendar">
+				<div className="calendar__container">
+					{ !this.props.selectDate || !this.props.selectResource.length ?
+						<span>{this.props.selectResource.length ? this.MESSAGES.c007 : this.MESSAGES.c008}</span> :
+						this.makeCalendar()
+					}
+				</div>
 			</div>
-		</div>
-	)
+		)
+	}
 };

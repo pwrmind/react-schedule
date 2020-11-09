@@ -50,7 +50,7 @@ export default class DatePicker extends Component<DatePickerProps> {
 		return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 	}
 
-	public areEqual(a: Date, b: Date | null) {
+	public diffDate(a: Date, b: Date | null) {
 		if (!a || !b) {
 			return false;
 		}
@@ -150,7 +150,7 @@ export default class DatePicker extends Component<DatePickerProps> {
 								<div
 									key={index}
 									className={
-										` date-picker__day ${(this.areEqual(date, currentDate) < 0 || this.areEqual(date, currentDate) > 13) ? 'date-picker__day--disabled' : 'date-picker__day--active'} ${this.areEqual(date, currentDate) === 0 ? 'date-picker__day--today' : ''} ${this.areEqual(date, selectedDate) === 0 ? 'date-picker__day--selected' : ''}`
+										` date-picker__day ${(this.diffDate(date, currentDate) < 0 || this.diffDate(date, currentDate) > 13) ? 'date-picker__day--disabled' : 'date-picker__day--active'} ${this.diffDate(date, currentDate) === 0 ? 'date-picker__day--today' : ''} ${this.diffDate(date, selectedDate) === 0 ? 'date-picker__day--selected' : ''}`
 									}
 									onClick={() => this.onDayClick(date)}
 								>

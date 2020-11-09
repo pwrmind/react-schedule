@@ -3,13 +3,13 @@ import { dateFormatter } from 'services/formatter';
 
 import './PatientAppointment.scss';
 
-interface PatientAppointmentProps {
+interface IPatientAppointmentProps {
 	patients: any[];
 	onSetPatient: Function;
 }
 
-export default class PatientAppointment extends Component<PatientAppointmentProps> {
-	static defaultProps: PatientAppointmentProps = {
+export default class PatientAppointment extends Component<IPatientAppointmentProps> {
+	static defaultProps: IPatientAppointmentProps = {
 		patients: [],
 		onSetPatient: Function.prototype
 	};
@@ -22,7 +22,7 @@ export default class PatientAppointment extends Component<PatientAppointmentProp
 		logoutOpened: false
 	};
 
-	public componentDidUpdate(prevProps: PatientAppointmentProps) {
+	public componentDidUpdate(prevProps: IPatientAppointmentProps) {
 		if (prevProps.patients !== this.props.patients) {
 			this.setState({
 				patients: this.props.patients,
