@@ -191,6 +191,10 @@
                 font-weight: bold;
                 overflow: hidden;
                 text-overflow: ellipsis;
+
+                &:nth-child(even):before {
+                  content: ' | ';
+                }
               }
             }
           }
