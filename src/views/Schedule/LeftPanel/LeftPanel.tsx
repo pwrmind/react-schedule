@@ -14,12 +14,16 @@ import './LeftPanel.scss';
 interface LeftPanelProps {
 	click: Function;
 	selectResource: Function;
+	resources: Array<IResource>;
+	schedules: Array<ISchedule>;
 }
 
 export default class LeftPanel extends Component<LeftPanelProps> {
 	private _apiService = API;
 
 	static defaultProps: LeftPanelProps = {
+		resources: [],
+		schedules: [],
 		click: Function.prototype,
 		selectResource: Function.prototype
 	};
@@ -41,24 +45,20 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 				patients
 			});
 		});
+	}
 
-		this._apiService.getResources()
-		.then((resources: IResource[]) => {
-			console.log('getResources:', resources);
-
+	public componentDidUpdate(prevProps: LeftPanelProps) {
+		if (prevProps.resources !== this.props.resources) {
 			this.setState({
-				resources
-			});
-		});
+				resources: this.props.resources
+			})
+		}
 
-		this._apiService.getSchedules()
-		.then((schedules: ISchedule[]) => {
-			console.log('getSchedules:', schedules);
-
+		if (prevProps.schedules !== this.props.schedules) {
 			this.setState({
-				schedules
-			});
-		});
+				schedules: this.props.schedules
+			})
+		}
 	}
 
 	public changeDate = (date: any) => {

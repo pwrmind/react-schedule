@@ -95,6 +95,8 @@ export default class Schedule extends Component {
 		return (
 			<div className="schedule">
 				<LeftPanel
+					resources={this.state.resources}
+					schedules={this.state.schedules}
 					click={this.selectDate}
 					selectResource={this.selectResource}
 				/>
