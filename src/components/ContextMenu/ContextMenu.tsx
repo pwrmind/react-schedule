@@ -70,11 +70,11 @@ export default class ContextMenu extends Component<ContextMenuProps> {
 	render() {
 		const children: any = React.Children.only(this.props.children);
 		return (
-			<div
-				className="context-menu__root"
-				onClick={(e: any) => {this.show(e)}}
-			>
-				{React.cloneElement(children, {ref: (el: any) => this.childrenREF = el})}
+			<>
+				{React.cloneElement(children, {
+					ref: ((el: any) => this.childrenREF = el),
+					onClick: ((e: any) => {this.show(e)})
+				})}
 
 				{this.state.isShow && createPortal(
 					<div
@@ -90,7 +90,7 @@ export default class ContextMenu extends Component<ContextMenuProps> {
 					</div>,
 					modalRoot || document.body
 				)}
-			</div>
+			</>
 		);
 	}
 }
