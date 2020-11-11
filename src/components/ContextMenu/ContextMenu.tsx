@@ -69,6 +69,7 @@ export default class ContextMenu extends Component<ContextMenuProps> {
 
 	render() {
 		const children: any = React.Children.only(this.props.children);
+		const content: any = React.Children.only(this.props.content);
 		return (
 			<>
 				{React.cloneElement(children, {
@@ -85,7 +86,9 @@ export default class ContextMenu extends Component<ContextMenuProps> {
 							className="context-menu__container"
 							style={{transform: `translate3d(${this.state.positionX}px, ${this.state.positionY}px, 0)`}}
 						>
-							{ this.props.content }
+							{React.cloneElement(content, {
+								close: ((e: any) => {this.hide(e)})
+							})}
 						</div>
 					</div>,
 					modalRoot || document.body
