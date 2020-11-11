@@ -185,14 +185,16 @@
               background-color: #eba741;
               white-space: nowrap;
 
-              & > span {
-                white-space: nowrap;
-                margin-left: 5px;
-                font-weight: bold;
-                overflow: hidden;
-                text-overflow: ellipsis;
+              & > div {
+                & > span {
+                  white-space: nowrap;
+                  margin-left: 5px;
+                  font-weight: bold;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                }
 
-                &:nth-child(even):before {
+                &:nth-child(even) > span:before {
                   content: ' | ';
                 }
               }

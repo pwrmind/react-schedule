@@ -82,7 +82,7 @@ export default class ContextMenu extends Component<ContextMenuProps> {
 						onClick={(e: any) => {this.hide(e)}}
 					>
 						<div
-							className="context-menu__content"
+							className="context-menu__container"
 							style={{transform: `translate3d(${this.state.positionX}px, ${this.state.positionY}px, 0)`}}
 						>
 							{ this.props.content }
