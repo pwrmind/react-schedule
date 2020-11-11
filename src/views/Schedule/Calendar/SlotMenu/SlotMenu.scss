@@ -1,0 +1,46 @@
+.slot-menu {
+  &__content {
+    width: 230px;
+    padding: 20px;
+    font-size: 15px;
+
+    &-title {
+
+      &.slot {
+        color: #2e4a68
+      }
+
+    }
+
+    &-menu {
+      padding-top: 30px;
+
+      &-item {
+        padding: 5px 0;
+        border-bottom: 1px solid gray;
+        cursor: pointer;
+
+        &.disabled {
+          color: gray;
+          pointer-events: none;
+        }
+
+        &.black {
+          color: black;
+        }
+
+        &.blue {
+          color: #51a8ff;
+        }
+
+        &.red {
+          color: #d73937;
+        }
+
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
+    }
+  }
+}

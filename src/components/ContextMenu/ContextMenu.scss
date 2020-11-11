@@ -19,52 +19,8 @@
         position: absolute;
         top: 0;
         left: 0;
-        padding: 20px;
         background: white;
         text-align: center;
         border: 1px solid gray;
-    }
-
-    &__content {
-        width: 230px;
-        font-size: 15px;
-
-        &-title {
-
-            &.slot {
-                color: #2e4a68
-            }
-
-        }
-
-        &-menu {
-            padding-top: 30px;
-
-            &-item {
-                padding: 5px 0;
-                border-bottom: 1px solid gray;
-                cursor: pointer;
-
-                &.disabled {
-                    color: gray
-                }
-
-                &.black {
-                    color: black;
-                }
-
-                &.blue {
-                    color: #51a8ff;
-                }
-
-                &.red {
-                    color: #d73937;
-                }
-
-                &:last-child {
-                    border-bottom: 0;
-                }
-            }
-        }
     }
 }

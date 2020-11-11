@@ -8,6 +8,7 @@ import { ISlot } from 'api/data/slots';
 import { IPatient } from 'api/data/patients';
 
 import ContextMenu from 'components/ContextMenu/ContextMenu';
+import SlotMenu from './SlotMenu/SlotMenu';
 
 import './Calendar.scss';
 
@@ -57,17 +58,9 @@ export default class Calendar extends Component<CalendarProps> {
 		let lastRender: string = '';
 
 		const renderHours = [],
-			renderMenu = (title: string, slot: boolean, freeSlot: boolean) => {
-				return (
-					<div className="context-menu__content">
-						<div className={"context-menu__content-title" + (slot ? ' user' : ' slot')}>{title}</div>
-						<div className="context-menu__content-menu">
-							<div className={"context-menu__content-menu-item" + (slot ? ' black' : ' disabled')}>Посмотреть запись</div>
-							<div className={"context-menu__content-menu-item" + (freeSlot ? ' blue' : ' disabled')}>Создать запись</div>
-							<div className={"context-menu__content-menu-item" + (slot ? ' red' : ' disabled')}>Отменить запись</div>
-						</div>
-					</div>
-				)
+			renderMenu = (title: string, slot: ISlot | boolean, freeSlot: boolean) => {
+				console.log(slot);
+				return <SlotMenu title={title} slot={slot} freeSlot={freeSlot}/>
 			},
 			renderAppointment = (hourState: IHourState, index: number) => {
 				const appointment = hourState.appointment as IAppointment;
@@ -93,7 +86,7 @@ export default class Calendar extends Component<CalendarProps> {
 							<ContextMenu
 								key={slot.id}
 								content={
-									renderMenu(this.getPatient(slot.patientId), true, column.slots.filter((slot: ISlot) => slot.interval === hour).length < 2)
+									renderMenu(this.getPatient(slot.patientId), slot, column.slots.filter((slot: ISlot) => slot.interval === hour).length < 2)
 								}
 							>
 								<span key={slot.id}>{this.getPatient(slot.patientId)}</span>
