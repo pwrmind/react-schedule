@@ -14,22 +14,6 @@ export default class Modal extends Component<ModalProps> {
 		isShow: false,
 	}
 
-	public element = document.createElement( 'div' );
-
-	componentDidMount() {
-		if (modalRoot === null) {
-			return;
-		}
-		modalRoot.appendChild(this.element);
-	}
-
-	componentWillUnmount() {
-		if (modalRoot === null) {
-			return;
-		}
-		modalRoot.removeChild(this.element);
-	}
-
 	render() {
 		return (
 			this.props.isShow &&
@@ -43,7 +27,7 @@ export default class Modal extends Component<ModalProps> {
 						{this.props.children}
 					</div>
 				</div>,
-				this.element
+				modalRoot || document.body
 			)
 		);
 	}

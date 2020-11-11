@@ -1,4 +1,4 @@
-import React, {Component, ReactElement} from 'react';
+import React, { Component } from 'react';
 import { addZero } from 'services/formatter';
 
 import { IResource } from 'api/data/resources';
@@ -6,6 +6,8 @@ import { ISchedule } from 'api/data/schedules';
 import { IQuota } from 'api/data/schedules';
 import { ISlot } from 'api/data/slots';
 import { IPatient } from 'api/data/patients';
+
+import ContextMenu from 'components/ContextMenu/ContextMenu';
 
 import './Calendar.scss';
 
@@ -91,9 +93,16 @@ export default class Calendar extends Component<CalendarProps> {
 			renderQuota = (hour: string, index: number) => {
 				lastRender = hour;
 				return (
-					<div key={index} className="calendar__schedule--body-column-hour">
-						<div className="calendar__schedule--body-column-hour_time">{hour}</div>
-					</div>
+					<ContextMenu
+						key={index}
+						content={
+							<div>TEST</div>
+						}
+					>
+						<div className="calendar__schedule--body-column-hour">
+							<div className="calendar__schedule--body-column-hour_time">{hour}</div>
+						</div>
+					</ContextMenu>
 				)
 			},
 			renderEmpty = (index: number) => {
@@ -287,9 +296,11 @@ export default class Calendar extends Component<CalendarProps> {
 							<div className="calendar__schedule--header-column-cabinet">{column.cabinet}</div>
 							<div className="calendar__schedule--header-column-schedule">{column.scheduleStart}-{column.scheduleEnd}</div>
 							{column.appointment.length ?
-								<div className="calendar__schedule--header-column-schedule">{column.appointment.map((appointment: any, index: number) => (
+								<div className="calendar__schedule--header-column-schedule">
+									{column.appointment.map((appointment: any, index: number) => (
 										<div key={index}>{appointment.desc} ({appointment.timeStart}-{appointment.timeEnd})</div>
-								))}</div> :
+									))}
+								</div> :
 								''
 							}
 							{column.status ?

@@ -4,8 +4,6 @@ import { dateFormatter } from 'services/formatter';
 import DatePicker from 'components/DatePicker/DatePicker';
 import Tooltip from 'components/Tooltip/Tooltip';
 
-import Modal from 'components/Modal/Modal';
-
 import './DateAppointment.scss';
 
 interface DateAppointmentProps {
@@ -77,8 +75,6 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 						</button>
 					</Tooltip>
 				</div>
-				
-				{/* <Modal isShow={true}>Test</Modal> */}
 
 				<div className="date-appointment__calendar-wrapper">
 					{ this.state.showDatePicker ? (
