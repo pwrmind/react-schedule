@@ -13,12 +13,13 @@ import SlotMenu from './SlotMenu/SlotMenu';
 import './Calendar.scss';
 
 interface CalendarProps {
-	resources?: Array<IResource>,
-	schedules: Array<ISchedule>,
-	slots: Array<ISlot>,
-	patients: Array<IPatient>,
+	resources?: Array<IResource>;
+	schedules: Array<ISchedule>;
+	slots: Array<ISlot>;
+	patients: Array<IPatient>;
 	selectDate: any;
 	selectResource: Array<IResource>;
+	selectPatient: IPatient | null;
 	filterDays: any;
 }
 
@@ -59,8 +60,7 @@ export default class Calendar extends Component<CalendarProps> {
 
 		const renderHours = [],
 			renderMenu = (title: string, slot: ISlot | boolean, freeSlot: boolean) => {
-				console.log(slot);
-				return <SlotMenu title={title} slot={slot} freeSlot={freeSlot}/>
+				return <SlotMenu title={title} slot={slot} freeSlot={freeSlot} selectPatient={this.props.selectPatient as IPatient} schedules={this.props.schedules}/>
 			},
 			renderAppointment = (hourState: IHourState, index: number) => {
 				const appointment = hourState.appointment as IAppointment;

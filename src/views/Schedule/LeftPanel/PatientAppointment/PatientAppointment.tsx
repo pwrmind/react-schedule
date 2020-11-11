@@ -89,6 +89,7 @@ export default class PatientAppointment extends Component<IPatientAppointmentPro
 		this.setState({
 			patient: null
 		});
+		this.props.onSetPatient(null);
 		this.toggleLogout();
 	};
 
