@@ -18,19 +18,26 @@
 	}
 
 	&__button {
+		height: 100%;
 		white-space: nowrap;
+
+		&:disabled {
+			pointer-events: none;
+		}
 	}
 
 	&__body {
-		position: relative;
 		display: flex;
 		flex: 1;
+	}
+
+	&__calendar-wrapper {
+		position: relative;
 	}
 
 	&__calendar {
 		z-index: 4;
 		position: absolute;
-		top: 32px;
 
 		display: flex;
 		flex-direction: column;
