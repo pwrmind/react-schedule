@@ -39,10 +39,10 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 				</div>
 			</div>
 		), renderListSlot = (
-			<div className="slot-menu__content" onClick={(e: any) => {e.stopPropagation()}}>
+			<div className="slot-menu__content cancel" onClick={(e: any) => {e.stopPropagation()}}>
 				<div className="slot-menu__content-header">Отмена записи</div>
-				<div className="slot-menu__content-text">Врач и пациент будут уведомлены об отмене записи</div>
-				<button className="slot-menu__content-button">Отменить</button>
+				<div className="slot-menu__content-text">Врач и пациент будут уведомлены об отмене записи.</div>
+				<button className="slot-menu__content-button" onClick={this.renderRemoveSlot}>Отменить</button>
 				<div className="slot-menu__content-cancel">Вернуться к расписанию</div>
 			</div>
 		);
