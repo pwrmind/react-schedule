@@ -57,6 +57,18 @@ export default class Calendar extends Component<CalendarProps> {
 		let lastRender: string = '';
 
 		const renderHours = [],
+			renderMenu = (title: string, slot: boolean, freeSlot: boolean) => {
+				return (
+					<div className="context-menu__content">
+						<div className={"context-menu__content-title" + (slot ? ' user' : ' slot')}>{title}</div>
+						<div className="context-menu__content-menu">
+							<div className={"context-menu__content-menu-item" + (slot ? ' black' : ' disabled')}>Посмотреть запись</div>
+							<div className={"context-menu__content-menu-item" + (freeSlot ? ' blue' : ' disabled')}>Создать запись</div>
+							<div className={"context-menu__content-menu-item" + (slot ? ' red' : ' disabled')}>Отменить запись</div>
+						</div>
+					</div>
+				)
+			},
 			renderAppointment = (hourState: IHourState, index: number) => {
 				const appointment = hourState.appointment as IAppointment;
 				if (lastRender === appointment.desc) {
@@ -77,7 +89,16 @@ export default class Calendar extends Component<CalendarProps> {
 			renderSlot = (slots: ISlot[], hour: string, index: number) => {
 				const patients = column.slots.map((slot: ISlot) => {
 					if (slot.interval === hour) {
-						return <span key={slot.id}>{this.getPatient(slot.patientId)}</span>
+						return (
+							<ContextMenu
+								key={slot.id}
+								content={
+									renderMenu(this.getPatient(slot.patientId), true, column.slots.filter((slot: ISlot) => slot.interval === hour).length < 2)
+								}
+							>
+								<span key={slot.id}>{this.getPatient(slot.patientId)}</span>
+							</ContextMenu>
+						)
 					}
 				});
 				lastRender = patients;
@@ -90,13 +111,13 @@ export default class Calendar extends Component<CalendarProps> {
 					</div>
 				)
 			},
-			renderQuota = (hour: string, index: number) => {
+			renderQuota = (hour: string, index: number, nextHour: string) => {
 				lastRender = hour;
 				return (
 					<ContextMenu
 						key={index}
 						content={
-							<div>TEST</div>
+							renderMenu(`Выбран интервал времени ${hour} - ${nextHour}`, false, true)
 						}
 					>
 						<div className="calendar__schedule--body-column-hour">
@@ -182,7 +203,7 @@ export default class Calendar extends Component<CalendarProps> {
 				}
 				else if (hourState.quota) {
 					if (!hourState.slots.length) {
-						renderHour = renderQuota(hour, i)
+						renderHour = renderQuota(hour, i, (hours[i + 1] ? hours[i + 1] : column.scheduleEnd))
 					}
 					else {
 						renderHour = renderSlot(hourState.slots, hour, i);
