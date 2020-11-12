@@ -60,10 +60,10 @@ export default class Calendar extends Component<CalendarProps> {
 		let lastRender: string = '';
 
 		const renderHours = [],
-			renderMenu = (title: string, slot: ISlot | boolean, freeSlot: boolean, newSlot: INewSlot) => {
+			renderMenu = (title: string, slot: ISlot | boolean, freeSlot: boolean, newSlot: INewSlot, patientsInSlotId: number | null) => {
 				return (
 					<SlotMenu
-						title={title} slot={slot} freeSlot={freeSlot} newSlot={newSlot}
+						title={title} slot={slot} freeSlot={freeSlot} newSlot={newSlot} patientsInSlotId={patientsInSlotId}
 						selectPatient={this.props.selectPatient as IPatient}
 						schedules={this.props.schedules}
 						patients={this.props.patients}
@@ -97,11 +97,12 @@ export default class Calendar extends Component<CalendarProps> {
 					interval: hour
 				}, patients = column.slots.map((slot: ISlot) => {
 					if (slot.interval === hour) {
+						const slotsInHour = column.slots.filter((slot: ISlot) => slot.interval === hour);
 						return (
 							<ContextMenu
 								key={slot.id}
 								content={
-									renderMenu(this.getPatient(slot.patientId), slot, column.slots.filter((slot: ISlot) => slot.interval === hour).length < 2, newSlot)
+									renderMenu(this.getPatient(slot.patientId), slot, slotsInHour.length < 2, newSlot, slotsInHour[0].patientId)
 								}
 							>
 								<span key={slot.id}>{this.getPatient(slot.patientId)}</span>
@@ -132,7 +133,7 @@ export default class Calendar extends Component<CalendarProps> {
 					<ContextMenu
 						key={index}
 						content={
-							renderMenu(`Выбран интервал времени ${hour} - ${nextHour}`, false, true, newSlot)
+							renderMenu(`Выбран интервал времени ${hour} - ${nextHour}`, false, true, newSlot, null)
 						}
 					>
 						<div className="calendar__schedule--body-column-hour">

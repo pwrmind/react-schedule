@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { ISlot } from 'api/data/slots';
+import { ISlot, INewSlot } from 'api/data/slots';
 import { IPatient } from 'api/data/patients';
 import { ISchedule } from 'api/data/schedules';
 import API from 'api/api';
@@ -14,7 +14,9 @@ import './SlotMenu.scss';
 interface SlotMenuProps {
 	title: string;
 	slot: boolean | ISlot;
-	freeSlot: boolean;
+	newSlot: INewSlot;
+	freeSlot: boolean | ISlot;
+	patientsInSlotId: number | null;
 	close?: Function;
 	reload: Function;
 	selectPatient: IPatient;
@@ -38,6 +40,13 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 	};
 
 	public createSlot = () => {
+		const newSlot = this.props.newSlot;
+		newSlot.patientId = this.props.selectPatient.id;
+
+		this._apiService.postSlot(newSlot);
+		
+		this.props.reload();
+
 		this.setState({
 			createPopupActive: true
 		});
@@ -80,7 +89,7 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 				<div className={"slot-menu__content-title" + (this.props.slot ? ' user' : ' slot')}>{this.props.title}</div>
 				<div className="slot-menu__content-menu">
 					<div className={"slot-menu__content-menu-item" + (this.props.slot ? ' black' : ' disabled')} onClick={this.toggleModal}>Посмотреть запись</div>
-					<div className={"slot-menu__content-menu-item" + (this.props.freeSlot && this.props.selectPatient ? ' blue' : ' disabled')} onClick={this.createSlot}>Создать запись</div>
+					<div className={"slot-menu__content-menu-item" + (this.props.freeSlot && this.props.selectPatient && this.props.patientsInSlotId !== this.props.selectPatient.id ? ' blue' : ' disabled')} onClick={this.createSlot}>Создать запись</div>
 					<div className={"slot-menu__content-menu-item" + (this.props.slot ? ' red' : ' disabled')} onClick={() => {this.renderRemoveSlot()}}>Отменить запись</div>
 				</div>
 			</div>
