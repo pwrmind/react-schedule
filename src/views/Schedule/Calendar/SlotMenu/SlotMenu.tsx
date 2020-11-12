@@ -37,7 +37,7 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 		});
 	};
 
-	public createSlot = (e: any) => {
+	public createSlot = () => {
 		this.setState({
 			createPopupActive: true
 		});
@@ -47,7 +47,7 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 				createPopupActive: false
 			});
 
-			this.onClose(e);
+			this.onClose();
 		}, 3000)
 	};
 
@@ -63,15 +63,15 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 		this._apiService.delSlot(slot.id);
 
 		this.props.reload();
-		this.onClose(e);
+		this.onClose();
 	};
 
-	public onClose = (e: MouseEvent) => {
+	public onClose = () => {
 		if (this.props.close === undefined) {
 			return;
 		}
 
-		this.props.close(e);
+		this.props.close();
 	};
 
 	render() {
@@ -100,7 +100,7 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 				<div className="slot-menu__content-header">Отмена записи</div>
 				<div className="slot-menu__content-text">Врач и пациент будут уведомлены об отмене записи.</div>
 				<button className="slot-menu__content-button" onClick={this.removeSlot}>Отменить</button>
-				<div className="slot-menu__content-cancel" onClick={(e: any) => this.onClose(e)}>Вернуться к расписанию</div>
+				<div className="slot-menu__content-cancel" onClick={this.onClose}>Вернуться к расписанию</div>
 			</div>
 		);
 		return this.state.removeSlotActive ? renderRemoveSlot : (this.state.slotPopupActive ? renderPopupSlot : (this.state.createPopupActive ? renderPopupCreate : renderListSlot));

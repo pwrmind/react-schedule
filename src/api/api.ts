@@ -150,6 +150,8 @@ class API {
 		this._isLoading['postSlot'] = true;
 
 		return new Promise((resolve, reject) => {
+			slot.id = slotList[slotList.length - 1].id + 1;
+			console.log('slot', slot);
 			slotList.push(slot);
 
 			setTimeout(() => {
