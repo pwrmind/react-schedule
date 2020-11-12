@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { ISlot, INewSlot } from 'api/data/slots';
+import { ISlot } from 'api/data/slots';
 import { IPatient } from 'api/data/patients';
 import { ISchedule } from 'api/data/schedules';
 import API from 'api/api';
@@ -14,7 +14,6 @@ import './SlotMenu.scss';
 interface SlotMenuProps {
 	title: string;
 	slot: boolean | ISlot;
-	newSlot: INewSlot;
 	freeSlot: boolean;
 	close?: Function;
 	reload: Function;
@@ -38,12 +37,7 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 		});
 	};
 
-	public createSlot = (e: any) => {
-		const newSlot = this.props.newSlot;
-		newSlot.patientId = this.props.selectPatient.id;
-		this._apiService.postSlot(newSlot);
-		this.props.reload();
-		
+	public createSlot = () => {
 		this.setState({
 			createPopupActive: true
 		});
@@ -53,8 +47,8 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 				createPopupActive: false
 			});
 
-			this.onClose(e);
-		}, 30000);
+			this.onClose();
+		}, 3000)
 	};
 
 	public renderRemoveSlot = () => {
@@ -69,15 +63,15 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 		this._apiService.delSlot(slot.id);
 
 		this.props.reload();
-		this.onClose(e);
+		this.onClose();
 	};
 
-	public onClose = (e: MouseEvent) => {
+	public onClose = () => {
 		if (this.props.close === undefined) {
 			return;
 		}
 
-		this.props.close(e);
+		this.props.close();
 	};
 
 	render() {
@@ -106,7 +100,7 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 				<div className="slot-menu__content-header">Отмена записи</div>
 				<div className="slot-menu__content-text">Врач и пациент будут уведомлены об отмене записи.</div>
 				<button className="slot-menu__content-button" onClick={this.removeSlot}>Отменить</button>
-				<div className="slot-menu__content-cancel" onClick={(e: any) => this.onClose(e)}>Вернуться к расписанию</div>
+				<div className="slot-menu__content-cancel" onClick={this.onClose}>Вернуться к расписанию</div>
 			</div>
 		);
 		return this.state.removeSlotActive ? renderRemoveSlot : (this.state.slotPopupActive ? renderPopupSlot : (this.state.createPopupActive ? renderPopupCreate : renderListSlot));

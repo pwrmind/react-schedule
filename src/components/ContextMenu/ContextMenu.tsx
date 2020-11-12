@@ -61,8 +61,7 @@ export default class ContextMenu extends Component<ContextMenuProps> {
 		}, this.props.delay);
 	}
 	
-	public hide = (e: MouseEvent) => {
-		e.stopPropagation();
+	public hide = () => {
 		clearInterval(this.timer);
 		this.setVisibility(false);
 	}
@@ -80,14 +79,14 @@ export default class ContextMenu extends Component<ContextMenuProps> {
 				{this.state.isShow && createPortal(
 					<div
 						className="context-menu__popup"
-						onClick={(e: any) => {this.hide(e)}}
+						onClick={this.hide}
 					>
 						<div
 							className="context-menu__container"
 							style={{transform: `translate3d(${this.state.positionX}px, ${this.state.positionY}px, 0)`}}
 						>
 							{React.cloneElement(content, {
-								close: ((e: any) => {this.hide(e)})
+								close: (() => this.hide())
 							})}
 						</div>
 					</div>,
