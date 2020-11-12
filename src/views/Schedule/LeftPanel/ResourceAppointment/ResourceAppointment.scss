@@ -62,7 +62,7 @@
   }
 
   &__header-popup {
-    z-index: 99999;
+    z-index: 1;
     position: absolute;
     top: 25px;
     width: 100%;
@@ -88,7 +88,7 @@
     width: 100%;
     background-color: white;
     border: 1px solid black;
-    z-index: 99999;
+    z-index: 1;
     overflow: hidden;
 
     &.closed {

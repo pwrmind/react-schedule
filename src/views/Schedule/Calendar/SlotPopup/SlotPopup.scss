@@ -1,0 +1,36 @@
+.slot-popup {
+  &__content {
+    position: relative;
+    width: 230px;
+    height: 155px;
+    padding: 20px;
+    color: #2e4a68;
+  }
+
+  &__header {
+    margin-bottom: 20px;
+    &-close {
+      display: flex;
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      font-size: 20px;
+    }
+  }
+
+  &__table {
+    text-align: left;
+
+    & td:first-child {
+      padding: 5px 0;
+      font-weight: bold;
+    }
+
+    & tr {
+      margin-bottom: 10px;
+    }
+  }
+}

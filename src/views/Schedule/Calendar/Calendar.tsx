@@ -21,6 +21,7 @@ interface CalendarProps {
 	selectResource: Array<IResource>;
 	selectPatient: IPatient | null;
 	filterDays: any;
+	reload: Function;
 }
 
 interface IAppointment {
@@ -60,7 +61,15 @@ export default class Calendar extends Component<CalendarProps> {
 
 		const renderHours = [],
 			renderMenu = (title: string, slot: ISlot | boolean, freeSlot: boolean) => {
-				return <SlotMenu title={title} slot={slot} freeSlot={freeSlot} selectPatient={this.props.selectPatient as IPatient} schedules={this.props.schedules}/>
+				return (
+					<SlotMenu
+						title={title} slot={slot} freeSlot={freeSlot}
+						selectPatient={this.props.selectPatient as IPatient}
+						schedules={this.props.schedules}
+						patients={this.props.patients}
+						reload={this.props.reload}
+					/>
+				)
 			},
 			renderAppointment = (hourState: IHourState, index: number) => {
 				const appointment = hourState.appointment as IAppointment;
