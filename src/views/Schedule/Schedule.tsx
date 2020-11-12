@@ -37,6 +37,17 @@ export default class Schedule extends Component {
 		selectPatient: null
 	};
 
+	public reloadSlots = (): void => {
+		this._apiService.getSlots()
+			.then((slots: ISlot[]) => {
+				console.log('getSlots:', slots);
+
+				this.setState({
+					slots
+				});
+			});
+	}
+
 	public componentDidMount(): void {
 		this._apiService.getResources()
 			.then((resources: IResource[]) => {
@@ -127,6 +138,7 @@ export default class Schedule extends Component {
 							selectResource={this.state.selectResource}
 							selectPatient={this.state.selectPatient}
 							filterDays={this.state.filterDays}
+							reload={this.reloadSlots}
 						/>
 					 ) : null}
 				</div>

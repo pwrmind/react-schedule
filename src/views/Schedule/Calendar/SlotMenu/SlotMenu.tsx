@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { ISlot } from 'api/data/slots';
 import { IPatient } from 'api/data/patients';
 import { ISchedule } from 'api/data/schedules';
+import API from 'api/api';
 
 import Modal from 'components/Modal/Modal';
 import Tooltip from 'components/Tooltip/Tooltip';
@@ -15,12 +16,15 @@ interface SlotMenuProps {
 	slot: boolean | ISlot;
 	freeSlot: boolean;
 	close?: Function;
+	reload: Function;
 	selectPatient: IPatient;
 	patients: Array<IPatient>;
 	schedules: Array<ISchedule>;
 }
 
 export default class SlotMenu extends Component<SlotMenuProps> {
+	private _apiService = API;
+
 	public state: any = {
 		removeSlotActive: false,
 		slotPopupActive: false,
@@ -33,14 +37,33 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 		});
 	};
 
-	public createSlot = () => {
-		console.log('slot created');
+	public createSlot = (e: any) => {
+		this.setState({
+			createPopupActive: true
+		});
+
+		setTimeout(() => {
+			this.setState({
+				createPopupActive: false
+			});
+
+			this.onClose(e);
+		}, 3000)
 	};
 
 	public renderRemoveSlot = () => {
 		this.setState({
 			removeSlotActive: true
 		});
+	};
+
+	public removeSlot = (e: any) => {
+		const slot: ISlot = this.props.slot as ISlot;
+
+		this._apiService.delSlot(slot.id);
+
+		this.props.reload();
+		this.onClose(e);
 	};
 
 	public onClose = (e: MouseEvent) => {
@@ -63,14 +86,23 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 			</div>
 		), renderPopupSlot = (
 				<Modal isShow={this.state.slotPopupActive}><SlotPopup closePopup={this.toggleModal} slot={this.props.slot as ISlot} patients={this.props.patients} schedules={this.props.schedules}/></Modal>
+		), renderPopupCreate = (
+				<Modal isShow={this.state.createPopupActive}>
+					<div className="create-popup__content">
+						<div className="create-popup__header">Запись создана</div>
+						<div className="create-popup__body">
+							<div className="create-popup__body-icon">✓</div>
+						</div>
+					</div>
+				</Modal>
 		), renderRemoveSlot = (
 			<div className="slot-menu__content cancel" onClick={(e: any) => {e.stopPropagation()}}>
 				<div className="slot-menu__content-header">Отмена записи</div>
 				<div className="slot-menu__content-text">Врач и пациент будут уведомлены об отмене записи.</div>
-				<button className="slot-menu__content-button" onClick={this.renderRemoveSlot}>Отменить</button>
+				<button className="slot-menu__content-button" onClick={this.removeSlot}>Отменить</button>
 				<div className="slot-menu__content-cancel" onClick={(e: any) => this.onClose(e)}>Вернуться к расписанию</div>
 			</div>
 		);
-		return this.state.removeSlotActive ? renderRemoveSlot : (this.state.slotPopupActive ? renderPopupSlot : renderListSlot);
+		return this.state.removeSlotActive ? renderRemoveSlot : (this.state.slotPopupActive ? renderPopupSlot : (this.state.createPopupActive ? renderPopupCreate : renderListSlot));
 	}
 }
