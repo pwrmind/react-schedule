@@ -87,3 +87,41 @@
     }
   }
 }
+
+.create-popup {
+  &__content {
+    position: relative;
+    width: 270px;
+    height: 200px;
+    background-color: #e1ead9;
+    border: 2px solid #689d41;
+    border-radius: 10px;
+  }
+
+  &__header {
+    width: 100%;
+    height: 35px;
+    padding-bottom: 5px;
+    background-color: #689d41;
+    font-size: 30px;
+  }
+
+  &__body {
+    height: calc(100% - 40px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &-icon {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 90px;
+      background-color: #689d41;
+      color: #e1ead9;
+      border-radius: 50%;
+    }
+  }
+}

@@ -1,9 +1,12 @@
-export interface ISlot {
+export interface ISlot extends INewSlot{
 	id: number;
+}
+
+export interface INewSlot {
 	visitDate: Date;
 	status: number;
 	scheduleId: number;
-	patientId: number;
+	patientId?: number;
 	resourceId: number;
 	interval: string;
 }

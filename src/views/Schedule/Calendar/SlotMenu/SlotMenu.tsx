@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { ISlot } from 'api/data/slots';
+import { ISlot, INewSlot } from 'api/data/slots';
 import { IPatient } from 'api/data/patients';
 import { ISchedule } from 'api/data/schedules';
 import API from 'api/api';
@@ -14,6 +14,7 @@ import './SlotMenu.scss';
 interface SlotMenuProps {
 	title: string;
 	slot: boolean | ISlot;
+	newSlot: INewSlot;
 	freeSlot: boolean;
 	close?: Function;
 	reload: Function;
@@ -38,6 +39,11 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 	};
 
 	public createSlot = (e: any) => {
+		const newSlot = this.props.newSlot;
+		newSlot.patientId = this.props.selectPatient.id;
+		this._apiService.postSlot(newSlot);
+		this.props.reload();
+		
 		this.setState({
 			createPopupActive: true
 		});
@@ -48,7 +54,7 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 			});
 
 			this.onClose(e);
-		}, 3000)
+		}, 30000);
 	};
 
 	public renderRemoveSlot = () => {

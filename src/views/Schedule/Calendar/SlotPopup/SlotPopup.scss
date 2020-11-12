@@ -1,10 +1,11 @@
 .slot-popup {
   &__content {
     position: relative;
-    width: 230px;
+    min-width: 230px;
     height: 155px;
     padding: 20px;
     color: #2e4a68;
+    background-color: white;
   }
 
   &__header {
