@@ -1,7 +1,7 @@
 import patientList, { IPatient } from './data/patients';
 import resourceList, { IResource } from './data/resources';
 import scheduleList, { ISchedule } from './data/schedules';
-import slotList, { ISlot } from './data/slots';
+import slotList, { ISlot, INewSlot } from './data/slots';
 
 class API {
 	private _latency: number = 30;
@@ -146,11 +146,14 @@ class API {
 		});
 	}
 
-	public postSlot(slot: ISlot): Promise<Array<ISlot>> {
+	public postSlot(slot: INewSlot): Promise<Array<ISlot>> {
 		this._isLoading['postSlot'] = true;
 
 		return new Promise((resolve, reject) => {
-			slotList.push(slot);
+			const newSlot: ISlot = slot as ISlot;
+			newSlot.id = slotList[slotList.length - 1].id + 1;
+			console.log('slot', newSlot);
+			slotList.push(newSlot);
 
 			setTimeout(() => {
 				resolve(slotList);

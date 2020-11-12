@@ -1,9 +1,12 @@
-export interface ISlot {
+export interface ISlot extends INewSlot{
 	id: number;
+}
+
+export interface INewSlot {
 	visitDate: Date;
 	status: number;
 	scheduleId: number;
-	patientId: number;
+	patientId?: number;
 	resourceId: number;
 	interval: string;
 }
@@ -11,7 +14,7 @@ export interface ISlot {
 const slotList: Array<ISlot> = [
 	{
 		id: 0,
-		visitDate: new Date(2020, 10, 10),
+		visitDate: new Date(2020, 10, 17),
 		status: 0,
 		scheduleId: 0,
 		patientId: 0,
@@ -20,7 +23,7 @@ const slotList: Array<ISlot> = [
 	},
 	{
 		id: 1,
-		visitDate: new Date(2020, 10, 10),
+		visitDate: new Date(2020, 10, 17),
 		status: 0,
 		scheduleId: 0,
 		patientId: 1,
@@ -29,7 +32,7 @@ const slotList: Array<ISlot> = [
 	},
 	{
 		id: 2,
-		visitDate: new Date(2020, 10, 10),
+		visitDate: new Date(2020, 10, 17),
 		status: 0,
 		scheduleId: 0,
 		patientId: 2,
@@ -38,7 +41,7 @@ const slotList: Array<ISlot> = [
 	},
 	{
 		id: 3,
-		visitDate: new Date(2020, 10, 9),
+		visitDate: new Date(2020, 10, 16),
 		status: 0,
 		scheduleId: 1,
 		patientId: 3,

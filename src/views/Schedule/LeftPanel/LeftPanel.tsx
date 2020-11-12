@@ -12,10 +12,11 @@ import ResourceAppointment from './ResourceAppointment/ResourceAppointment';
 import './LeftPanel.scss';
 
 interface LeftPanelProps {
-	click: Function;
-	selectResource: Function;
 	resources: Array<IResource>;
 	schedules: Array<ISchedule>;
+	click: Function;
+	selectResource: Function;
+	selectPatient: Function;
 }
 
 export default class LeftPanel extends Component<LeftPanelProps> {
@@ -25,7 +26,8 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 		resources: [],
 		schedules: [],
 		click: Function.prototype,
-		selectResource: Function.prototype
+		selectResource: Function.prototype,
+		selectPatient: Function.prototype
 	};
 
 	public state = {
@@ -67,6 +69,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 
 	public setPatient = (patient: any) => {
 		this.setState({patient});
+		this.props.selectPatient(patient);
 	};
 
 	public setResource = (resource: IResource[]) => {
@@ -81,7 +84,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 					<div className="left-panel__patient">
 						<PatientAppointment
 							patients={this.state.patients}
-							onSetPatient={(patient: any) => {this.setPatient(patient)}}
+							onSetPatient={(patient: IPatient) => {this.setPatient(patient)}}
 						/>
 					</div>
 

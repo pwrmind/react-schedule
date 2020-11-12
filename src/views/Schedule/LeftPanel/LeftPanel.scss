@@ -3,13 +3,15 @@
   width: 340px;
   min-height: calc(100vh - 40px);
   height: calc(100vh - 40px);
-  overflow: auto;
+  overflow: hidden;
   background-color: #e8e8eb;
   box-shadow: 0 0 10px #777;
   z-index: 3;
 
   &__container {
     width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   &__patient, &__date, &__specialists {

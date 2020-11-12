@@ -1,0 +1,26 @@
+.context-menu {
+    &__root {
+        display: inherit;
+    }
+
+    &__popup {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        z-index: 99999;
+    }
+
+    &__container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: white;
+        text-align: center;
+        border: 1px solid gray;
+    }
+}

@@ -15,11 +15,12 @@ import './Schedule.scss';
 interface IScheduleState {
 	selectDate: any;
 	filterDays: number;
-	resources: Array<IResource>,
-	schedules: Array<ISchedule>,
-	slots: Array<ISlot>,
-	patients: Array<IPatient>,
-	selectResource: Array<IResource>
+	resources: Array<IResource>;
+	schedules: Array<ISchedule>;
+	slots: Array<ISlot>;
+	patients: Array<IPatient>;
+	selectResource: Array<IResource>;
+	selectPatient: IPatient | null;
 }
 
 export default class Schedule extends Component {
@@ -32,8 +33,20 @@ export default class Schedule extends Component {
 		schedules: [],
 		slots: [],
 		patients: [],
-		selectResource: []
+		selectResource: [],
+		selectPatient: null
 	};
+
+	public reloadSlots = (): void => {
+		this._apiService.getSlots()
+			.then((slots: ISlot[]) => {
+				console.log('getSlots:', slots);
+
+				this.setState({
+					slots
+				});
+			});
+	}
 
 	public componentDidMount(): void {
 		this._apiService.getResources()
@@ -91,6 +104,12 @@ export default class Schedule extends Component {
 		});
 	};
 
+	private selectPatient = (patient: IPatient) => {
+		this.setState({
+			selectPatient: patient
+		});
+	};
+
 	render() {
 		return (
 			<div className="schedule">
@@ -99,6 +118,7 @@ export default class Schedule extends Component {
 					schedules={this.state.schedules}
 					click={this.selectDate}
 					selectResource={this.selectResource}
+					selectPatient={this.selectPatient}
 				/>
 
 				<div className="schedule__container">
@@ -116,7 +136,9 @@ export default class Schedule extends Component {
 							patients={this.state.patients}
 							selectDate={this.state.selectDate}
 							selectResource={this.state.selectResource}
+							selectPatient={this.state.selectPatient}
 							filterDays={this.state.filterDays}
+							reload={this.reloadSlots}
 						/>
 					 ) : null}
 				</div>

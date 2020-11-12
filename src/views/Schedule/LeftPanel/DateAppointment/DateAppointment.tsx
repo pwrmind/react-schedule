@@ -74,7 +74,9 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 							🗓▼
 						</button>
 					</Tooltip>
+				</div>
 
+				<div className="date-appointment__calendar-wrapper">
 					{ this.state.showDatePicker ? (
 						<div className="date-appointment__calendar">
 							<DatePicker selectedDate={this.state.date} onChange={(date: Date) => this.setSelectedDate(date)}/>
