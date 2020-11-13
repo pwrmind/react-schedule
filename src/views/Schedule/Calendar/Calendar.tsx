@@ -122,9 +122,11 @@ export default class Calendar extends Component<CalendarProps> {
 					</div>
 				)
 			},
-			renderQuota = (hour: string, index: number, nextHour: string, schedule: ISchedule) => {
+			renderQuota = (hour: string, index: number, nextHour: string, schedule: ISchedule, date: Date) => {
 				lastRender = hour;
-				const newSlot: INewSlot = {
+				const nowDate = new Date(), quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
+				tooltipText = quotaDate > nowDate.getTime() ? 'Время доступно для записи' : 'Запись на прошедший временной интервал недоступна',
+				newSlot: INewSlot = {
 					visitDate: column.date,
 					status: 0,
 					scheduleId: schedule.id,
@@ -138,7 +140,7 @@ export default class Calendar extends Component<CalendarProps> {
 							renderMenu(`Выбран интервал времени ${hour} - ${nextHour}`, false, true, newSlot, null)
 						}
 					>
-						<Tooltip content="Время доступно для записи" delay={1000}>
+						<Tooltip content={tooltipText} delay={1000}>
 							<div className="calendar__schedule--body-column-hour">
 								<div className="calendar__schedule--body-column-hour_time">{hour}</div>
 							</div>
@@ -223,7 +225,7 @@ export default class Calendar extends Component<CalendarProps> {
 				}
 				else if (hourState.quota) {
 					if (!hourState.slots.length) {
-						renderHour = renderQuota(hour, i, (hours[i + 1] ? hours[i + 1] : column.scheduleEnd), column.schedule)
+						renderHour = renderQuota(hour, i, (hours[i + 1] ? hours[i + 1] : column.scheduleEnd), column.schedule, column.date)
 					}
 					else {
 						renderHour = renderSlot(hourState.slots, hour, i, column.schedule);
