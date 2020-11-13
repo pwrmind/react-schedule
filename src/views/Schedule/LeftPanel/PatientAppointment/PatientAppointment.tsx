@@ -122,7 +122,7 @@ export default class PatientAppointment extends Component<IPatientAppointmentPro
 			<div className="patient-appointment__root">
 				<div className="patient-appointment__header">
 					<h1 className="patient-appointment__header-text">Пациент</h1>
-					<button className="patient-appointment__header-button" disabled={!this.state.patient} onClick={this.toggleLogout}>▼</button>
+					<button className={"patient-appointment__header-button" + (this.state.logoutOpened ? ' active' : '')} disabled={!this.state.patient} onClick={this.toggleLogout}>▼</button>
 					<div className={"patient-appointment__header-list" + (this.state.logoutOpened ? '' : ' closed')}>
 						<div className="patient-appointment__header-list_option" onClick={this.logoutPatient}>✖ Завершить работу с пациентом</div>
 					</div>
