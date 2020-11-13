@@ -263,9 +263,7 @@ export default class Calendar extends Component<CalendarProps> {
 				}
 
 				return false;
-			});
-		
-		console.log('makeCalendar', this.props.schedules, schedules);
+			}).sort((scheduleA: ISchedule, scheduleB: ISchedule) => scheduleA.resource.name.toLowerCase() > scheduleB.resource.name.toLowerCase() ? 1 : -1);
 
 		for (let j = 0; j < filterDays; j += 1) {
 			const filterDate = new Date(selectDate.getTime());
