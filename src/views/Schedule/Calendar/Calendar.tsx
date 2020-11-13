@@ -105,9 +105,11 @@ export default class Calendar extends Component<CalendarProps> {
 									renderMenu(this.getPatient(slot.patientId), slot, slotsInHour.length < 2, newSlot, slotsInHour[0].patientId)
 								}
 							>
-								<Tooltip disabled={slotsInHour.length < 2} content={this.getPatient(slot.patientId)} delay={1000}>
-									<span key={slot.id}>{this.getPatient(slot.patientId)}</span>
-								</Tooltip>
+								<span>
+									<Tooltip disabled={slotsInHour.length < 2} content={this.getPatient(slot.patientId)} delay={1000}>
+										<span key={slot.id}>{this.getPatient(slot.patientId)}</span>
+									</Tooltip>
+								</span>
 							</ContextMenu>
 						)
 					}
@@ -138,11 +140,13 @@ export default class Calendar extends Component<CalendarProps> {
 							renderMenu(`Выбран интервал времени ${hour} - ${nextHour}`, false, true, newSlot, null)
 						}
 					>
-						<Tooltip content="Время доступно для записи" delay={1000}>
-							<div className="calendar__schedule--body-column-hour">
-								<div className="calendar__schedule--body-column-hour_time">{hour}</div>
-							</div>
-						</Tooltip>
+						<div>
+							<Tooltip content="Время доступно для записи" delay={1000}>
+								<div className="calendar__schedule--body-column-hour">
+									<div className="calendar__schedule--body-column-hour_time">{hour}</div>
+								</div>
+							</Tooltip>
+						</div>
 					</ContextMenu>
 				)
 			},

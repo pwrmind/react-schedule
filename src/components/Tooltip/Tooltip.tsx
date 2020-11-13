@@ -92,6 +92,7 @@ export default class Tooltip extends Component<TooltipProps> {
 					ref: (el: any) => this.childrenREF = el,
 					onMouseEnter: this.show,
 					onMouseLeave: this.hide,
+					...children.props,
 				})}
 
 				{createPortal(
