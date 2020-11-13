@@ -90,7 +90,8 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 
 					<div className="left-panel__date">
 						<DateAppointment
-							resource={this.state.resource}
+							schedules={this.state.schedules}
+							selectResource={this.state.resource}
 							setDate={this.changeDate}
 						/>
 					</div>

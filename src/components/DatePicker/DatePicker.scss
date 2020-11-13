@@ -41,13 +41,21 @@
 		}
 
 		&--selected {
-			background-color: dodgerblue;
+			background-color: dodgerblue !important;
 			color: white;
 		}
 
 		&--active {
-			// background-color: #d5d5d5;
-			// color: #a7a7a7;
+			pointer-events: none;
+
+			&:hover {
+				background-color: #eaeaea;
+			}
+		}
+
+		&--can-set {
+			background-color: #cde4fd;
+			color: #000;
 
 			&:hover {
 				background-color: #eaeaea;

@@ -252,7 +252,7 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 			<div className="resource-appointment__root">
 				<div className="resource-appointment__header">
 					<h1 className="resource-appointment__header-text">Специалисты <span>({this.state.selectedResources.length}/{this.state.resources.length})</span></h1>
-					<button className="resource-appointment__header-button" onClick={this.toggleHeaderPopup}>▼</button>
+					<button className={"resource-appointment__header-button" + (!this.state.headerOpened ? '' : ' active')} onClick={this.toggleHeaderPopup}>▼</button>
 
 					<div className={"resource-appointment__header-popup" + (this.state.headerOpened ? '' : ' closed')}>
 						<p onClick={() => this.setAllChecks(this.state.resources)}>Выбрать все</p>
