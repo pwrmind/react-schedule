@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 
+import { IResource } from 'api/data/resources';
+import { ISchedule, IQuota } from 'api/data/schedules';
+
 import './DatePicker.scss';
 
 export interface DatePickerProps {
 	date: Date;
+	schedules: Array<ISchedule>;
+	selectResource: Array<IResource>;
 	selectedDate: Date | null;
 	monthNames: Array<string>;
 	weekDayNames: Array<string>;
@@ -13,6 +18,8 @@ export interface DatePickerProps {
 export default class DatePicker extends Component<DatePickerProps> {
 	static defaultProps: DatePickerProps = {
 		date: new Date(),
+		schedules: [],
+		selectResource: [],
 		selectedDate: null,
 		monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
 		weekDayNames: ['Пн', 'Вт', 'Ср', 'Чт' , 'Пт', 'Сб', 'Вс'],
@@ -45,6 +52,18 @@ export default class DatePicker extends Component<DatePickerProps> {
 		return this.state.date.getDate();
 	}
 
+	public get schedules(): Array<ISchedule> {
+		return this.props.schedules.filter((schedule: ISchedule) => {
+			for (const resource of this.props.selectResource) {
+				if (resource.id === schedule.resource.id) {
+					return true;
+				}
+			}
+
+			return false;
+		});
+	}
+
 	public getCurrentDate(): Date {
 		const date: Date = new Date();
 		return new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -67,6 +86,28 @@ export default class DatePicker extends Component<DatePickerProps> {
 		return (date.getDay() || 7) - 1;
 	}
 
+	public getActiveDate(date: Date): boolean {
+		for (const i in this.schedules) {
+			const schedule: ISchedule = this.schedules[i],
+				dayNum: number = this.getDayOfWeek(date) + 1;
+
+			if (schedule.workDays.includes(dayNum)) {
+				const activeQuotas = schedule.quotas.filter(
+					(quota: IQuota) => {
+						return quota.active &&
+							(!quota.quotaDays || (quota.quotaDays && quota.quotaDays.includes(dayNum)));
+					}
+				);
+
+				if (activeQuotas.length > 0) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	public getMonthData(year: number, month: number): Array<Array<Date>> {
 		const DAYS_IN_WEEK = 7,
 			result: Array<Array<Date>> = [],
@@ -84,6 +125,31 @@ export default class DatePicker extends Component<DatePickerProps> {
 		}
 	
 		return result;
+	}
+
+	public getDayClass(date: Date): string {
+		const { currentDate, selectedDate } = this.state;
+		let out: string = '';
+
+		if (this.diffDate(date, currentDate) < 0 || this.diffDate(date, currentDate) > 13) {
+			return ' date-picker__day--disabled';
+		} else {
+			if (this.getActiveDate(date)) {
+				out += ' date-picker__day--can-set'
+			} else {
+				out += ' date-picker__day--active'
+			}
+		}
+
+		if (this.diffDate(date, currentDate) === 0) {
+			out += ' date-picker__day--today'
+		}
+
+		if (this.diffDate(date, selectedDate) === 0) {
+			out += ' date-picker__day--selected'
+		}
+
+		return out;
 	}
 
 	public onClickPrevMonth = () => {
@@ -107,7 +173,6 @@ export default class DatePicker extends Component<DatePickerProps> {
 
 	render() {
 		const { weekDayNames } = this.props;
-		const { currentDate, selectedDate } = this.state;
 		const monthData: Array<Array<Date>> = this.getMonthData(this.year, this.month);
 
 		return (
@@ -149,9 +214,7 @@ export default class DatePicker extends Component<DatePickerProps> {
 							{week.map((date, index) =>
 								<div
 									key={index}
-									className={
-										` date-picker__day ${(this.diffDate(date, currentDate) < 0 || this.diffDate(date, currentDate) > 13) ? 'date-picker__day--disabled' : 'date-picker__day--active'} ${this.diffDate(date, currentDate) === 0 ? 'date-picker__day--today' : ''} ${this.diffDate(date, selectedDate) === 0 ? 'date-picker__day--selected' : ''}`
-									}
+									className={`date-picker__day ${this.getDayClass(date)}`}
 									onClick={() => this.onDayClick(date)}
 								>
 									{date.getDate()}

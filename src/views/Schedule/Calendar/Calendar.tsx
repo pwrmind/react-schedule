@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { addZero } from 'services/formatter';
 
 import { IResource } from 'api/data/resources';
-import { ISchedule } from 'api/data/schedules';
-import { IQuota } from 'api/data/schedules';
+import { ISchedule, IQuota } from 'api/data/schedules';
 import { ISlot, INewSlot } from 'api/data/slots';
 import { IPatient } from 'api/data/patients';
 

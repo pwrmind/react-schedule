@@ -4,23 +4,29 @@ import { dateFormatter } from 'services/formatter';
 import DatePicker from 'components/DatePicker/DatePicker';
 import Tooltip from 'components/Tooltip/Tooltip';
 
+import { IResource } from 'api/data/resources';
+import { ISchedule } from 'api/data/schedules';
+
 import './DateAppointment.scss';
 
 interface DateAppointmentProps {
-	resource: any;
+	schedules: Array<ISchedule>;
+	selectResource: Array<IResource>;
 	date: Date | null;
 	setDate: Function;
 }
 
 export default class DateAppointment extends Component<DateAppointmentProps> {
 	static defaultProps: DateAppointmentProps = {
-		resource: [],
+		schedules: [],
+		selectResource: [],
 		date: null,
 		setDate: Function.prototype
 	};
 
 	public state = {
-		resource: this.props.resource,
+		schedules: this.props.schedules,
+		selectResource: this.props.selectResource,
 		showDatePicker: false,
 		date: this.props.date,
 		selectedDate: this.props.date
@@ -49,9 +55,15 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 	};
 
 	public componentDidUpdate(prevProps: DateAppointmentProps) {
-		if (prevProps.resource !== this.props.resource) {
+		if (prevProps.selectResource !== this.props.selectResource) {
 			this.setState({
-				resource: this.props.resource
+				selectResource: this.props.selectResource
+			})
+		}
+
+		if (prevProps.schedules !== this.props.schedules) {
+			this.setState({
+				schedules: this.props.schedules
 			})
 		}
 	}
@@ -65,10 +77,10 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 
 				<div className="date-appointment__body">
 					<input disabled className="date-appointment__input" placeholder="ДД.ММ.ГГГГ" value={dateFormatter(this.state.date)}/>
-					<Tooltip disabled={this.state.resource.length > 0} content="Выберите доступный ресурс">
+					<Tooltip disabled={this.state.selectResource.length > 0} content="Выберите доступный ресурс">
 						<button
 							className="date-appointment__button"
-							disabled={this.state.resource.length === 0}
+							disabled={this.state.selectResource.length === 0}
 							onClick={this.showToggle}
 						>
 							🗓▼
@@ -79,7 +91,12 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 				<div className="date-appointment__calendar-wrapper">
 					{ this.state.showDatePicker ? (
 						<div className="date-appointment__calendar">
-							<DatePicker selectedDate={this.state.date} onChange={(date: Date) => this.setSelectedDate(date)}/>
+							<DatePicker
+								schedules={this.state.schedules}
+								selectResource={this.state.selectResource}
+								selectedDate={this.state.date}
+								onChange={(date: Date) => this.setSelectedDate(date)}
+							/>
 
 							<div className="date-appointment__button-row">
 								<button className="date-appointment__button-footer" onClick={this.showToggle}>Отменить</button>
