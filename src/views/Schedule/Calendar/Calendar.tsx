@@ -60,11 +60,11 @@ export default class Calendar extends Component<CalendarProps> {
 		let lastRender: string = '';
 
 		const renderHours = [],
-			renderMenu = (title: string, slot: ISlot | boolean, freeSlot: boolean, newSlot: INewSlot, patientsInSlotId: number | null) => {
+			renderMenu = (title: string, slot: ISlot | boolean, freeSlot: boolean, newSlot: INewSlot, patientsInSlotId: number | null, oldHour: boolean) => {
 				return (
 					<SlotMenu
 						title={title} slot={slot} freeSlot={freeSlot} newSlot={newSlot} patientsInSlotId={patientsInSlotId}
-						selectPatient={this.props.selectPatient as IPatient}
+						selectPatient={this.props.selectPatient as IPatient} oldHour={oldHour}
 						schedules={this.props.schedules}
 						patients={this.props.patients}
 						reload={this.props.reload}
@@ -88,8 +88,9 @@ export default class Calendar extends Component<CalendarProps> {
 				}
 				return <div key={index} className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div>
 			},
-			renderSlot = (slots: ISlot[], hour: string, index: number, schedule: ISchedule) => {
-				const newSlot: INewSlot = {
+			renderSlot = (slots: ISlot[], hour: string, index: number, schedule: ISchedule, date: Date) => {
+				const nowDate = new Date(), quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
+				newSlot: INewSlot = {
 					visitDate: column.date,
 					status: 0,
 					scheduleId: schedule.id,
@@ -102,14 +103,14 @@ export default class Calendar extends Component<CalendarProps> {
 							<ContextMenu
 								key={slot.id}
 								content={
-									renderMenu(this.getPatient(slot.patientId), slot, slotsInHour.length < 2, newSlot, slotsInHour[0].patientId)
+									renderMenu(this.getPatient(slot.patientId), slot, slotsInHour.length < 2, newSlot, slotsInHour[0].patientId, quotaDate <= nowDate.getTime())
 								}
 							>
-								<span>
+								<div className="calendar__schedule--body-column-hour_patients-list_patient" >
 									<Tooltip disabled={slotsInHour.length < 2} content={this.getPatient(slot.patientId)} delay={1000}>
-										<span key={slot.id}>{this.getPatient(slot.patientId)}</span>
+										<span>{this.getPatient(slot.patientId)}</span>
 									</Tooltip>
-								</span>
+								</div>
 							</ContextMenu>
 						)
 					}
@@ -137,9 +138,10 @@ export default class Calendar extends Component<CalendarProps> {
 				};
 				return (
 					<ContextMenu
+						disabled={quotaDate <= nowDate.getTime()}
 						key={index}
 						content={
-							renderMenu(`Выбран интервал времени ${hour} - ${nextHour}`, false, true, newSlot, null)
+							renderMenu(`Выбран интервал времени\n ${hour} - ${nextHour}`, false, true, newSlot, null, quotaDate <= nowDate.getTime())
 						}
 					>
 						<div>
@@ -224,7 +226,7 @@ export default class Calendar extends Component<CalendarProps> {
 						renderHour = renderAppointment(hourState, i)
 					}
 					else {
-						renderHour = renderSlot(hourState.slots, hour, i, column.schedule);
+						renderHour = renderSlot(hourState.slots, hour, i, column.schedule, column.date);
 					}
 				}
 				else if (hourState.quota) {
@@ -232,11 +234,11 @@ export default class Calendar extends Component<CalendarProps> {
 						renderHour = renderQuota(hour, i, (hours[i + 1] ? hours[i + 1] : column.scheduleEnd), column.schedule, column.date)
 					}
 					else {
-						renderHour = renderSlot(hourState.slots, hour, i, column.schedule);
+						renderHour = renderSlot(hourState.slots, hour, i, column.schedule, column.date);
 					}
 				}
 				else if (hourState.slots.length) {
-					renderHour = renderSlot(hourState.slots, hour, i, column.schedule)
+					renderHour = renderSlot(hourState.slots, hour, i, column.schedule, column.date)
 				}
 				else {
 					renderHour = renderEmpty(i);

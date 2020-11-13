@@ -17,6 +17,7 @@ interface SlotMenuProps {
 	newSlot: INewSlot;
 	freeSlot: boolean | ISlot;
 	patientsInSlotId: number | null;
+	oldHour: boolean;
 	close?: Function;
 	reload: Function;
 	selectPatient: IPatient;
@@ -89,7 +90,7 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 				<div className={"slot-menu__content-title" + (this.props.slot ? ' user' : ' slot')}>{this.props.title}</div>
 				<div className="slot-menu__content-menu">
 					<div className={"slot-menu__content-menu-item" + (this.props.slot ? ' black' : ' disabled')} onClick={this.toggleModal}>Посмотреть запись</div>
-					<div className={"slot-menu__content-menu-item" + (this.props.freeSlot && this.props.selectPatient && this.props.patientsInSlotId !== this.props.selectPatient.id ? ' blue' : ' disabled')} onClick={this.createSlot}>Создать запись</div>
+					<div className={"slot-menu__content-menu-item" + (!this.props.oldHour && this.props.freeSlot && this.props.selectPatient && this.props.patientsInSlotId !== this.props.selectPatient.id ? ' blue' : ' disabled')} onClick={this.createSlot}>Создать запись</div>
 					<div className={"slot-menu__content-menu-item" + (this.props.slot ? ' red' : ' disabled')} onClick={() => {this.renderRemoveSlot()}}>Отменить запись</div>
 				</div>
 			</div>
