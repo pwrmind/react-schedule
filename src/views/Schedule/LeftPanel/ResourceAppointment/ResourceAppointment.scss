@@ -20,11 +20,36 @@
     }
 
     &-button {
-      background-color: #5e9135;
+      background: rgb(124, 172, 87);
+      background: linear-gradient(180deg, rgba(124, 172, 87, 1) 0%, rgba(100, 156, 59, 1) 2%, rgba(77, 122, 43, 1) 100%);
+      cursor: pointer;
       color: white;
+      border: 1px solid #3a5e1c;
+      border-radius: 4px;
+      padding: 5px 10px;
+      margin: 0;
 
       &:disabled {
-        background-color: #a4c589;
+        cursor: default;
+        filter: grayscale(1);
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      &.active {
+        background: rgb(58,94,28);
+        background: linear-gradient(180deg, rgba(58,94,28,1) 0%, rgba(76,121,44,1) 100%);
+      }
+
+      &:focus {
+        border: 1px solid #3a5e1c;
+        outline: 0;
+      }
+
+      &:hover {
+        opacity: 0.9;
       }
     }
 
