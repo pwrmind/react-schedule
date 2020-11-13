@@ -78,13 +78,15 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 				<div className="date-appointment__body">
 					<input disabled className="date-appointment__input" placeholder="ДД.ММ.ГГГГ" value={dateFormatter(this.state.date)}/>
 					<Tooltip disabled={this.state.selectResource.length > 0} content="Выберите доступный ресурс">
-						<button
-							className="date-appointment__button"
-							disabled={this.state.selectResource.length === 0}
-							onClick={this.showToggle}
-						>
-							🗓▼
-						</button>
+						<div>
+							<button
+								className="date-appointment__button"
+								disabled={this.state.selectResource.length === 0}
+								onClick={this.showToggle}
+							>
+								🗓▼
+							</button>
+						</div>
 					</Tooltip>
 				</div>
 

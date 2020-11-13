@@ -7,6 +7,7 @@ import { ISlot, INewSlot } from 'api/data/slots';
 import { IPatient } from 'api/data/patients';
 
 import ContextMenu from 'components/ContextMenu/ContextMenu';
+import Tooltip from 'components/Tooltip/Tooltip';
 import SlotMenu from './SlotMenu/SlotMenu';
 
 import './Calendar.scss';
@@ -104,7 +105,9 @@ export default class Calendar extends Component<CalendarProps> {
 									renderMenu(this.getPatient(slot.patientId), slot, slotsInHour.length < 2, newSlot, slotsInHour[0].patientId)
 								}
 							>
-								<span key={slot.id}>{this.getPatient(slot.patientId)}</span>
+								<Tooltip disabled={slotsInHour.length < 2} content={this.getPatient(slot.patientId)} delay={1000}>
+									<span key={slot.id}>{this.getPatient(slot.patientId)}</span>
+								</Tooltip>
 							</ContextMenu>
 						)
 					}
@@ -135,9 +138,11 @@ export default class Calendar extends Component<CalendarProps> {
 							renderMenu(`Выбран интервал времени ${hour} - ${nextHour}`, false, true, newSlot, null)
 						}
 					>
-						<div className="calendar__schedule--body-column-hour">
-							<div className="calendar__schedule--body-column-hour_time">{hour}</div>
-						</div>
+						<Tooltip content="Время доступно для записи" delay={1000}>
+							<div className="calendar__schedule--body-column-hour">
+								<div className="calendar__schedule--body-column-hour_time">{hour}</div>
+							</div>
+						</Tooltip>
 					</ContextMenu>
 				)
 			},
