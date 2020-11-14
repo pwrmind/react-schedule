@@ -1,7 +1,6 @@
 .slot-menu {
   &__content {
     width: 230px;
-    height: 135px;
     padding: 20px;
     font-size: 15px;
 
@@ -12,6 +11,7 @@
     &-title {
       &.slot {
         color: #2e4a68;
+        white-space: break-spaces;
       }
 
     }
