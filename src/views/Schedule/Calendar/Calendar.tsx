@@ -167,7 +167,9 @@ export default class Calendar extends Component<CalendarProps> {
 			},
 			renderQuota = (hour: string, index: number, nextHour: string, schedule: ISchedule, date: Date) => {
 				lastRender = hour;
-				const nowDate = new Date(), quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
+				const nowDate: Date = new Date();
+				nowDate.setMinutes(nowDate.getMinutes() + schedule.timeGrid);
+				const quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
 				tooltipText = quotaDate > nowDate.getTime() ? 'Время доступно для записи' : 'Запись на прошедший временной интервал недоступна',
 				newSlot: INewSlot = {
 					visitDate: column.date,
@@ -178,7 +180,7 @@ export default class Calendar extends Component<CalendarProps> {
 				};
 				return (
 					<ContextMenu
-						disabled={quotaDate <= nowDate.getTime()}
+						// disabled={quotaDate <= nowDate.getTime()}
 						key={index}
 						content={
 							renderMenu(`Выбран интервал времени\n ${hour} - ${nextHour}`, false, true, newSlot, null, quotaDate <= nowDate.getTime())
@@ -417,7 +419,7 @@ export default class Calendar extends Component<CalendarProps> {
 					}
 				</div>
 
-				<Modal isShow={this.state.createPopupActive}>
+				<Modal isShow={this.state.createPopupActive} close={this.closeModal}>
 					<div className="create-popup__content">
 						<div className="create-popup__header">Запись создана</div>
 						<div className="create-popup__body">
