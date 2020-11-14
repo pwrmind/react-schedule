@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { addZero } from 'services/formatter';
 
 import { IResource } from 'api/data/resources';
-import { ISchedule, IQuota } from 'api/data/schedules';
+import { ISchedule, IQuota, IDayOff } from 'api/data/schedules';
 import { ISlot, INewSlot } from 'api/data/slots';
 import { IPatient } from 'api/data/patients';
 
@@ -107,7 +107,7 @@ export default class Calendar extends Component<CalendarProps> {
 								}
 							>
 								<div className="calendar__schedule--body-column-hour_patients-list_patient" >
-									<Tooltip disabled={slotsInHour.length < 2} content={this.getPatient(slot.patientId)} delay={1000}>
+									<Tooltip content={this.getPatient(slot.patientId)} delay={1000}>
 										<span>{this.getPatient(slot.patientId)}</span>
 									</Tooltip>
 								</div>
@@ -300,6 +300,8 @@ export default class Calendar extends Component<CalendarProps> {
 						hours.push('');
 					}
 
+					const dayOff: IDayOff = schedules[i].dayOff as IDayOff;
+
 					const column: any = {
 						id: columns.length + 1,
 						dateString: `${this.DAYS[filterDate.getDay()]} ${filterDate.getDate()} ${this.MONTHS[filterDate.getMonth()]}`,
@@ -322,6 +324,10 @@ export default class Calendar extends Component<CalendarProps> {
 						hours: []
 					};
 
+					if (dayOff && dayOff.dayOffStart.getTime() <= filterDate.getTime() && dayOff.dayOffEnd.getTime() >= filterDate.getTime()) {
+						column.status = dayOff.reason;
+					}
+
 					column.hours = this.makeHours(column, hours);
 
 					columns.push(column);
@@ -342,8 +348,8 @@ export default class Calendar extends Component<CalendarProps> {
 							<div className="calendar__schedule--header-column-name">{column.name}</div>
 							<div className="calendar__schedule--header-column-specialty">{column.specialty}</div>
 							<div className="calendar__schedule--header-column-cabinet">{column.cabinet}</div>
-							<div className="calendar__schedule--header-column-schedule">{column.scheduleStart}-{column.scheduleEnd}</div>
-							{column.appointment.length ?
+							{!column.status && <div className="calendar__schedule--header-column-schedule">{column.scheduleStart}-{column.scheduleEnd}</div>}
+							{!column.status && column.appointment.length ?
 								<div className="calendar__schedule--header-column-schedule">
 									{column.appointment.map((appointment: any, index: number) => (
 										<div key={index}>{appointment.desc} ({appointment.timeStart}-{appointment.timeEnd})</div>

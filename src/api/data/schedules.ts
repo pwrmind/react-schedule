@@ -13,6 +13,12 @@ export interface IQuota {
 	active: boolean;
 }
 
+export interface IDayOff {
+	reason: string;
+	dayOffStart: Date;
+	dayOffEnd: Date;
+}
+
 export interface ISchedule {
 	id: number;
 	clinic: IClinic;
@@ -23,6 +29,7 @@ export interface ISchedule {
 	workMonth?: number;
 	timeGrid: number;
 	quotas: IQuota[];
+	dayOff?: IDayOff;
 }
 
 const scheduleList: Array<ISchedule> = [
@@ -159,7 +166,12 @@ const scheduleList: Array<ISchedule> = [
 				name: 'Работа с документами',
 				active: false
 			}
-		]
+		],
+		dayOff: {
+			reason: 'Врач на больничном',
+			dayOffStart: new Date(2020, 10, 18),
+			dayOffEnd: new Date(2020, 10, 18)
+		}
 	},
 	{
 		id: 4,
@@ -185,7 +197,12 @@ const scheduleList: Array<ISchedule> = [
 				name: 'Запись на прием',
 				active: true
 			}
-		]
+		],
+		dayOff: {
+			reason: 'Врач в отпуске',
+			dayOffStart: new Date(2020, 10, 20),
+			dayOffEnd: new Date(2020, 10, 21)
+		}
 	}
 ];
 

@@ -133,6 +133,10 @@
           font-size: 15px;
           cursor: pointer;
 
+          &:hover {
+            background-color: #d5e0e2;
+          }
+
           &.not-dashed {
             border-bottom-width: 0;
           }
