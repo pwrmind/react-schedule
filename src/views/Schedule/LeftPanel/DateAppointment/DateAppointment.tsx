@@ -32,8 +32,9 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 		selectedDate: this.props.date
 	};
 
-	public dateFormat(date: Date) {
-		return 
+	public getCurrentDate(): Date {
+		const date: Date = new Date();
+		return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 	}
 
 	public showToggle = () => {
@@ -58,7 +59,13 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 		if (prevProps.selectResource !== this.props.selectResource) {
 			this.setState({
 				selectResource: this.props.selectResource
-			})
+			});
+
+			if (this.state.date === null) {
+				this.setState({
+					date: this.getCurrentDate()
+				});
+			}
 		}
 
 		if (prevProps.schedules !== this.props.schedules) {
