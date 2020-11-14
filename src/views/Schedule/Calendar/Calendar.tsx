@@ -406,7 +406,7 @@ export default class Calendar extends Component<CalendarProps> {
 					}
 				</div>
 
-				<Modal isShow={this.state.createPopupActive}>
+				<Modal isShow={this.state.createPopupActive} close={this.closeModal}>
 					<div className="create-popup__content">
 						<div className="create-popup__header">Запись создана</div>
 						<div className="create-popup__body">

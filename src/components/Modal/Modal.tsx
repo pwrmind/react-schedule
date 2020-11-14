@@ -7,11 +7,18 @@ const modalRoot = document.getElementById('modal-root');
 
 interface ModalProps {
 	isShow: boolean;
+	close?: Function;
 }
 
 export default class Modal extends Component<ModalProps> {
 	static defaultProps: ModalProps = {
 		isShow: false,
+	}
+
+	public hide = () => {
+		if (this.props.close !== undefined) {
+			this.props.close();
+		}
 	}
 
 	render() {
@@ -20,6 +27,7 @@ export default class Modal extends Component<ModalProps> {
 			createPortal(
 				<div
 					className="modal__root"
+					onClick={this.hide}
 				>
 					<div
 						className="modal__wrapper"
