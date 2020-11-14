@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 import { addZero } from 'services/formatter';
 
 import { IResource } from 'api/data/resources';
-import { ISchedule, IQuota } from 'api/data/schedules';
+import { ISchedule, IQuota, IDayOff } from 'api/data/schedules';
 import { ISlot, INewSlot } from 'api/data/slots';
 import { IPatient } from 'api/data/patients';
 
 import ContextMenu from 'components/ContextMenu/ContextMenu';
+import Tooltip from 'components/Tooltip/Tooltip';
+import Modal from 'components/Modal/Modal';
 import SlotMenu from './SlotMenu/SlotMenu';
+import ScheduleList from './ScheduleList/ScheduleList';
 
 import './Calendar.scss';
 
@@ -23,7 +26,7 @@ interface CalendarProps {
 	reload: Function;
 }
 
-interface IAppointment {
+export interface IAppointment {
 	timeStart: string;
 	timeEnd: string;
 	desc: string;
@@ -35,6 +38,24 @@ interface IHourState {
 	appointment: IAppointment | boolean;
 	intervalStart: boolean;
 	intervalEnd: boolean;
+}
+
+export interface IColumn {
+	id: number;
+	dateString: string;
+	date: Date;
+	name: string;
+	specialty: string;
+	cabinet: string;
+	schedule: ISchedule,
+	scheduleStart: string;
+	scheduleEnd: string;
+	scheduleGrid: number;
+	slots: ISlot[];
+	activeQuotas: IQuota[];
+	appointment: IAppointment[];
+	status: string,
+	hours: Array<JSX.Element | null>
 }
 
 export default class Calendar extends Component<CalendarProps> {
@@ -50,6 +71,25 @@ export default class Calendar extends Component<CalendarProps> {
 		workEnd: '21:00'
 	};
 
+	public state: any = {
+		createPopupActive: false
+	};
+
+	public modalTimer: any;
+
+	public openModal = () => {
+		this.setState({createPopupActive: true});
+
+		this.modalTimer = setTimeout(() => {
+			this.closeModal();
+		}, 3000)
+	};
+
+	public closeModal = () => {
+		clearInterval(this.modalTimer);
+		this.setState({createPopupActive: false});
+	};
+
 	public getPatient = (id: number | any): string => {
 		const patient = this.props.patients.filter((patient: IPatient) => patient.id === id)[0];
 		return `${patient.lName} ${patient.fName[0]}. ${patient.mName[0]}.`
@@ -59,14 +99,15 @@ export default class Calendar extends Component<CalendarProps> {
 		let lastRender: string = '';
 
 		const renderHours = [],
-			renderMenu = (title: string, slot: ISlot | boolean, freeSlot: boolean, newSlot: INewSlot, patientsInSlotId: number | null) => {
+			renderMenu = (title: string, slot: ISlot | boolean, freeSlot: boolean, newSlot: INewSlot, patientsInSlotId: number | null, oldHour: boolean) => {
 				return (
 					<SlotMenu
 						title={title} slot={slot} freeSlot={freeSlot} newSlot={newSlot} patientsInSlotId={patientsInSlotId}
-						selectPatient={this.props.selectPatient as IPatient}
+						selectPatient={this.props.selectPatient as IPatient} oldHour={oldHour}
 						schedules={this.props.schedules}
 						patients={this.props.patients}
 						reload={this.props.reload}
+						create={this.openModal}
 					/>
 				)
 			},
@@ -78,17 +119,20 @@ export default class Calendar extends Component<CalendarProps> {
 				lastRender = appointment.desc;
 				if (!hourState.intervalStart || !hourState.intervalEnd) {
 					return (
-						<div key={index} className="calendar__schedule--body-column-hour_double">
-							{ hourState.intervalStart ? null : <div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>}
-							<div className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div>
-							{ hourState.intervalEnd ? null : <div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>}
-						</div>
+						<Tooltip key={index} content="Запись недоступна" delay={1000}>
+							<div className="calendar__schedule--body-column-hour_double">
+								{ hourState.intervalStart ? null : <div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>}
+								<div className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div>
+								{ hourState.intervalEnd ? null : <div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>}
+							</div>
+						</Tooltip>
 					);
 				}
-				return <div key={index} className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div>
+				return <Tooltip key={index} content="Запись недоступна" delay={1000}><div className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div></Tooltip>
 			},
-			renderSlot = (slots: ISlot[], hour: string, index: number, schedule: ISchedule) => {
-				const newSlot: INewSlot = {
+			renderSlot = (slots: ISlot[], hour: string, index: number, schedule: ISchedule, date: Date) => {
+				const nowDate = new Date(), quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
+				newSlot: INewSlot = {
 					visitDate: column.date,
 					status: 0,
 					scheduleId: schedule.id,
@@ -101,10 +145,14 @@ export default class Calendar extends Component<CalendarProps> {
 							<ContextMenu
 								key={slot.id}
 								content={
-									renderMenu(this.getPatient(slot.patientId), slot, slotsInHour.length < 2, newSlot, slotsInHour[0].patientId)
+									renderMenu(this.getPatient(slot.patientId), slot, slotsInHour.length < 2, newSlot, slotsInHour[0].patientId, quotaDate <= nowDate.getTime())
 								}
 							>
-								<span key={slot.id}>{this.getPatient(slot.patientId)}</span>
+								<div className="calendar__schedule--body-column-hour_patients-list_patient" >
+									<Tooltip content={this.getPatient(slot.patientId)} delay={1000}>
+										<span>{this.getPatient(slot.patientId)}</span>
+									</Tooltip>
+								</div>
 							</ContextMenu>
 						)
 					}
@@ -119,9 +167,13 @@ export default class Calendar extends Component<CalendarProps> {
 					</div>
 				)
 			},
-			renderQuota = (hour: string, index: number, nextHour: string, schedule: ISchedule) => {
+			renderQuota = (hour: string, index: number, nextHour: string, schedule: ISchedule, date: Date) => {
 				lastRender = hour;
-				const newSlot: INewSlot = {
+				const nowDate: Date = new Date();
+				nowDate.setMinutes(nowDate.getMinutes() + schedule.timeGrid);
+				const quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
+				tooltipText = quotaDate > nowDate.getTime() ? 'Время доступно для записи' : 'Запись на прошедший временной интервал недоступна',
+				newSlot: INewSlot = {
 					visitDate: column.date,
 					status: 0,
 					scheduleId: schedule.id,
@@ -130,13 +182,18 @@ export default class Calendar extends Component<CalendarProps> {
 				};
 				return (
 					<ContextMenu
+						// disabled={quotaDate <= nowDate.getTime()}
 						key={index}
 						content={
-							renderMenu(`Выбран интервал времени ${hour} - ${nextHour}`, false, true, newSlot, null)
+							renderMenu(`Выбран интервал времени\n ${hour} - ${nextHour}`, false, true, newSlot, null, quotaDate <= nowDate.getTime())
 						}
 					>
-						<div className="calendar__schedule--body-column-hour">
-							<div className="calendar__schedule--body-column-hour_time">{hour}</div>
+						<div>
+							<Tooltip content={tooltipText} delay={1000}>
+								<div className="calendar__schedule--body-column-hour">
+									<div className="calendar__schedule--body-column-hour_time">{hour}</div>
+								</div>
+							</Tooltip>
 						</div>
 					</ContextMenu>
 				)
@@ -147,7 +204,7 @@ export default class Calendar extends Component<CalendarProps> {
 					return null
 				}
 				lastRender = text;
-				return <div key={index} className="calendar__schedule--body-column-hour_notwork">{text}</div>
+				return <Tooltip key={index} content="Запись недоступна" delay={1000}><div className="calendar__schedule--body-column-hour_notwork">{text}</div></Tooltip>
 			};
 
 		for (let i = 0; i < hours.length; i += 1) {
@@ -164,9 +221,11 @@ export default class Calendar extends Component<CalendarProps> {
 
 			if (hour === '') {
 				renderHour = (
-					<div className="calendar__schedule--body-column-hour not-dashed" key={i}>
-						<div className="calendar__schedule--body-column-hour_notwork">Врач не принимает</div>
-					</div>
+					<Tooltip key={i} content="Запись недоступна" delay={1000}>
+						<div className="calendar__schedule--body-column-hour not-dashed">
+							<div className="calendar__schedule--body-column-hour_notwork">Врач не принимает</div>
+						</div>
+					</Tooltip>
 				);
 			}
 			else {
@@ -213,19 +272,19 @@ export default class Calendar extends Component<CalendarProps> {
 						renderHour = renderAppointment(hourState, i)
 					}
 					else {
-						renderHour = renderSlot(hourState.slots, hour, i, column.schedule);
+						renderHour = renderSlot(hourState.slots, hour, i, column.schedule, column.date);
 					}
 				}
 				else if (hourState.quota) {
 					if (!hourState.slots.length) {
-						renderHour = renderQuota(hour, i, (hours[i + 1] ? hours[i + 1] : column.scheduleEnd), column.schedule)
+						renderHour = renderQuota(hour, i, (hours[i + 1] ? hours[i + 1] : column.scheduleEnd), column.schedule, column.date)
 					}
 					else {
-						renderHour = renderSlot(hourState.slots, hour, i, column.schedule);
+						renderHour = renderSlot(hourState.slots, hour, i, column.schedule, column.date);
 					}
 				}
 				else if (hourState.slots.length) {
-					renderHour = renderSlot(hourState.slots, hour, i, column.schedule)
+					renderHour = renderSlot(hourState.slots, hour, i, column.schedule, column.date)
 				}
 				else {
 					renderHour = renderEmpty(i);
@@ -250,9 +309,7 @@ export default class Calendar extends Component<CalendarProps> {
 				}
 
 				return false;
-			});
-		
-		console.log('makeCalendar', this.props.schedules, schedules);
+			}).sort((scheduleA: ISchedule, scheduleB: ISchedule) => scheduleA.resource.name.toLowerCase() > scheduleB.resource.name.toLowerCase() ? 1 : -1);
 
 		for (let j = 0; j < filterDays; j += 1) {
 			const filterDate = new Date(selectDate.getTime());
@@ -289,7 +346,9 @@ export default class Calendar extends Component<CalendarProps> {
 						hours.push('');
 					}
 
-					const column: any = {
+					const dayOff: IDayOff = schedules[i].dayOff as IDayOff;
+
+					const column: IColumn = {
 						id: columns.length + 1,
 						dateString: `${this.DAYS[filterDate.getDay()]} ${filterDate.getDate()} ${this.MONTHS[filterDate.getMonth()]}`,
 						date: filterDate,
@@ -311,6 +370,10 @@ export default class Calendar extends Component<CalendarProps> {
 						hours: []
 					};
 
+					if (dayOff && dayOff.dayOffStart.getTime() <= filterDate.getTime() && dayOff.dayOffEnd.getTime() >= filterDate.getTime()) {
+						column.status = dayOff.reason;
+					}
+
 					column.hours = this.makeHours(column, hours);
 
 					columns.push(column);
@@ -323,7 +386,7 @@ export default class Calendar extends Component<CalendarProps> {
 		}
 
 		return (
-			<div className="calendar__schedule">
+			<div className="calendar__schedule" data-scroll="true">
 				<div className="calendar__schedule--header" style={ {width: (columns.length * 210 + 30) + 'px'} }>
 					{columns.map((column) => (
 						<div className={"calendar__schedule--header-column" + (column.status ? ' warning' : '')} key={column.id}>
@@ -331,15 +394,7 @@ export default class Calendar extends Component<CalendarProps> {
 							<div className="calendar__schedule--header-column-name">{column.name}</div>
 							<div className="calendar__schedule--header-column-specialty">{column.specialty}</div>
 							<div className="calendar__schedule--header-column-cabinet">{column.cabinet}</div>
-							<div className="calendar__schedule--header-column-schedule">{column.scheduleStart}-{column.scheduleEnd}</div>
-							{column.appointment.length ?
-								<div className="calendar__schedule--header-column-schedule">
-									{column.appointment.map((appointment: any, index: number) => (
-										<div key={index}>{appointment.desc} ({appointment.timeStart}-{appointment.timeEnd})</div>
-									))}
-								</div> :
-								''
-							}
+							{!column.status && <ScheduleList column={column}/>}
 							{column.status ?
 								<div className="calendar__schedule--header-column-status">{column.status}</div> :
 								''
@@ -367,6 +422,15 @@ export default class Calendar extends Component<CalendarProps> {
 						this.makeCalendar()
 					}
 				</div>
+
+				<Modal isShow={this.state.createPopupActive} close={this.closeModal}>
+					<div className="create-popup__content">
+						<div className="create-popup__header">Запись создана</div>
+						<div className="create-popup__body">
+							<div className="create-popup__body-icon">✓</div>
+						</div>
+					</div>
+				</Modal>
 			</div>
 		)
 	}

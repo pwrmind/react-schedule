@@ -47,7 +47,7 @@ const slotList: Array<ISlot> = [
 		patientId: 3,
 		resourceId: 1,
 		interval: '10:30'
-	},
+	}
 ];
 
 export default slotList;

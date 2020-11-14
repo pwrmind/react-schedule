@@ -38,13 +38,13 @@
         }
       }
 
-      &:active {
+      &.active {
         background: rgb(58,94,28);
         background: linear-gradient(180deg, rgba(58,94,28,1) 0%, rgba(76,121,44,1) 100%);
       }
 
       &:focus {
-        border: 0;
+        border: 1px solid #3a5e1c;
         outline: 0;
       }
 

@@ -73,7 +73,8 @@ export default class ContextMenu extends Component<ContextMenuProps> {
 			<>
 				{React.cloneElement(children, {
 					ref: ((el: any) => this.childrenREF = el),
-					onClick: ((e: any) => {this.show(e)})
+					onClick: ((e: any) => {this.show(e)}),
+					...children.props,
 				})}
 
 				{this.state.isShow && createPortal(

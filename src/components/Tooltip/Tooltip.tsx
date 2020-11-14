@@ -87,12 +87,13 @@ export default class Tooltip extends Component<TooltipProps> {
 	render() {
 		const children: any = React.Children.only(this.props.children);
 		return (
-			<div
-				className="tooltip__root"
-				onMouseEnter={this.show}
-				onMouseLeave={this.hide}
-			>
-				{React.cloneElement(children, {ref: (el: any) => this.childrenREF = el})}
+			<>
+				{React.cloneElement(children, {
+					ref: (el: any) => this.childrenREF = el,
+					onMouseEnter: this.show,
+					onMouseLeave: this.hide,
+					...children.props,
+				})}
 
 				{createPortal(
 					<div
@@ -104,7 +105,7 @@ export default class Tooltip extends Component<TooltipProps> {
 					</div>,
 					document.body
 				)}
-			</div>
+			</>
 		);
 	}
 }
