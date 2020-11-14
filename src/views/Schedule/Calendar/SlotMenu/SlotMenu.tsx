@@ -6,7 +6,6 @@ import { ISchedule } from 'api/data/schedules';
 import API from 'api/api';
 
 import Modal from 'components/Modal/Modal';
-import Tooltip from 'components/Tooltip/Tooltip';
 import SlotPopup from '../SlotPopup/SlotPopup';
 
 import './SlotMenu.scss';
@@ -19,6 +18,7 @@ interface SlotMenuProps {
 	patientsInSlotId: number | null;
 	oldHour: boolean;
 	close?: Function;
+	create?: Function;
 	reload: Function;
 	selectPatient: IPatient;
 	patients: Array<IPatient>;
@@ -40,25 +40,25 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 		});
 	};
 
+	public finishCreateSlot = () => {
+		if (this.props.create !== undefined) {
+			this.props.create();
+		}
+
+		if (this.props.reload !== undefined) {
+			this.props.reload();
+		}
+
+		this.onClose();
+	}
+
 	public createSlot = () => {
 		const newSlot = this.props.newSlot;
 		newSlot.patientId = this.props.selectPatient.id;
 
 		this._apiService.postSlot(newSlot);
-		
-		this.props.reload();
 
-		this.setState({
-			createPopupActive: true
-		});
-
-		setTimeout(() => {
-			this.setState({
-				createPopupActive: false
-			});
-
-			this.onClose();
-		}, 3000)
+		this.finishCreateSlot();
 	};
 
 	public renderRemoveSlot = () => {
@@ -96,15 +96,6 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 			</div>
 		), renderPopupSlot = (
 				<Modal isShow={this.state.slotPopupActive}><SlotPopup closePopup={this.toggleModal} slot={this.props.slot as ISlot} patients={this.props.patients} schedules={this.props.schedules}/></Modal>
-		), renderPopupCreate = (
-				<Modal isShow={this.state.createPopupActive}>
-					<div className="create-popup__content">
-						<div className="create-popup__header">Запись создана</div>
-						<div className="create-popup__body">
-							<div className="create-popup__body-icon">✓</div>
-						</div>
-					</div>
-				</Modal>
 		), renderRemoveSlot = (
 			<div className="slot-menu__content cancel" onClick={(e: any) => {e.stopPropagation()}}>
 				<div className="slot-menu__content-header">Отмена записи</div>
@@ -113,6 +104,12 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 				<div className="slot-menu__content-cancel" onClick={this.onClose}>Вернуться к расписанию</div>
 			</div>
 		);
-		return this.state.removeSlotActive ? renderRemoveSlot : (this.state.slotPopupActive ? renderPopupSlot : (this.state.createPopupActive ? renderPopupCreate : renderListSlot));
+		return (
+			<>
+				{this.state.removeSlotActive ? renderRemoveSlot : renderListSlot}
+				{this.state.slotPopupActive ? renderPopupSlot : null}
+			</>
+		);
+		
 	}
 }

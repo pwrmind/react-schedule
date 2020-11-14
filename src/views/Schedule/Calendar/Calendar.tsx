@@ -8,6 +8,7 @@ import { IPatient } from 'api/data/patients';
 
 import ContextMenu from 'components/ContextMenu/ContextMenu';
 import Tooltip from 'components/Tooltip/Tooltip';
+import Modal from 'components/Modal/Modal';
 import SlotMenu from './SlotMenu/SlotMenu';
 import ScheduleList from './ScheduleList/ScheduleList';
 
@@ -70,6 +71,25 @@ export default class Calendar extends Component<CalendarProps> {
 		workEnd: '21:00'
 	};
 
+	public state: any = {
+		createPopupActive: false
+	};
+
+	public modalTimer: any;
+
+	public openModal = () => {
+		this.setState({createPopupActive: true});
+
+		this.modalTimer = setTimeout(() => {
+			this.closeModal();
+		}, 3000)
+	};
+
+	public closeModal = () => {
+		clearInterval(this.modalTimer);
+		this.setState({createPopupActive: false});
+	}
+
 	public getPatient = (id: number | any): string => {
 		const patient = this.props.patients.filter((patient: IPatient) => patient.id === id)[0];
 		return `${patient.lName} ${patient.fName[0]}. ${patient.mName[0]}.`
@@ -87,6 +107,7 @@ export default class Calendar extends Component<CalendarProps> {
 						schedules={this.props.schedules}
 						patients={this.props.patients}
 						reload={this.props.reload}
+						create={this.openModal}
 					/>
 				)
 			},
@@ -395,6 +416,15 @@ export default class Calendar extends Component<CalendarProps> {
 						this.makeCalendar()
 					}
 				</div>
+
+				<Modal isShow={this.state.createPopupActive}>
+					<div className="create-popup__content">
+						<div className="create-popup__header">Запись создана</div>
+						<div className="create-popup__body">
+							<div className="create-popup__body-icon">✓</div>
+						</div>
+					</div>
+				</Modal>
 			</div>
 		)
 	}
