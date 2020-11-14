@@ -59,7 +59,7 @@
           background-color: #eba741;
         }
 
-        &-day, &-name, &-specialty, &-cabinet, &-schedule, &-status {
+        &-day, &-name, &-specialty, &-cabinet, &-status {
           font-size: 15px;
           line-height: 30px;
           text-align: center;
@@ -84,10 +84,6 @@
 
         &-cabinet {
           background-color: #8ec8d6;
-        }
-
-        &-schedule {
-          background-color: #a4c589;
         }
 
         &-status {
