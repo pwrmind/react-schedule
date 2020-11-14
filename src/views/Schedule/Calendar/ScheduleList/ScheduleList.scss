@@ -1,8 +1,30 @@
 .schedule-list {
+  &__container {
+    &.absolute {
+      position: absolute;
+      width: 100%;
+    }
+  }
+
   &__header, &__body {
     font-size: 15px;
     line-height: 30px;
     text-align: center;
     background-color: #a4c589;
+    overflow: hidden;
+  }
+
+  &__header {
+    &.underline {
+      text-decoration: underline;
+    }
+  }
+
+  &__body {
+    transition: height 0.3s ease;
+
+    &.hide {
+      height: 0;
+    }
   }
 }

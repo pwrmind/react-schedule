@@ -32,6 +32,10 @@
       top: 0;
       background: linear-gradient(180deg, rgba(239,239,239,1) 25px, rgba(239,239,239,0) 25px);
       z-index: 1;
+
+      &-column {
+        position: relative;
+      }
     }
 
     &--header, &--body {

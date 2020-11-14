@@ -88,7 +88,7 @@ export default class Calendar extends Component<CalendarProps> {
 	public closeModal = () => {
 		clearInterval(this.modalTimer);
 		this.setState({createPopupActive: false});
-	}
+	};
 
 	public getPatient = (id: number | any): string => {
 		const patient = this.props.patients.filter((patient: IPatient) => patient.id === id)[0];
@@ -380,7 +380,7 @@ export default class Calendar extends Component<CalendarProps> {
 		}
 
 		return (
-			<div className="calendar__schedule">
+			<div className="calendar__schedule" data-scroll="true">
 				<div className="calendar__schedule--header" style={ {width: (columns.length * 210 + 30) + 'px'} }>
 					{columns.map((column) => (
 						<div className={"calendar__schedule--header-column" + (column.status ? ' warning' : '')} key={column.id}>
