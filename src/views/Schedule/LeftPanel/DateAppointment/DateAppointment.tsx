@@ -108,8 +108,8 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 							/>
 
 							<div className="date-appointment__button-row">
-								<button className="date-appointment__button-footer" onClick={this.showToggle}>Отменить</button>
-								<button className="date-appointment__button-footer" onClick={this.okClick}>Ок</button>
+								<button className="date-appointment__button-footer cancel" onClick={this.showToggle}>✖ Отменить</button>
+								<button className="date-appointment__button-footer" onClick={this.okClick}>✓ Ок</button>
 							</div>
 						</div>
 					) : null }

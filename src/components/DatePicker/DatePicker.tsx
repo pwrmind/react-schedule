@@ -185,7 +185,7 @@ export default class DatePicker extends Component<DatePickerProps> {
 						{'<'}
 					</div>
 
-					<button>
+					<button className="date-picker__month-btn">
 						{this.monthName} {this.year}
 					</button>
 
