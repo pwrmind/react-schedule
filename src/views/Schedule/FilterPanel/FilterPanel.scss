@@ -46,7 +46,7 @@
       }
     }
 
-    &.active {
+    &.active, &:active {
       background: rgb(58,94,28);
       background: linear-gradient(180deg, rgba(58,94,28,1) 0%, rgba(76,121,44,1) 100%);
     }

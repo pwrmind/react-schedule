@@ -20,14 +20,16 @@
     }
 
     &-button {
+      cursor: pointer;
+      padding: 5px 10px;
+      margin: 0;
+      display: flex;
+      font-size: 10px;
       background: rgb(124, 172, 87);
       background: linear-gradient(180deg, rgba(124, 172, 87, 1) 0%, rgba(100, 156, 59, 1) 2%, rgba(77, 122, 43, 1) 100%);
-      cursor: pointer;
       color: white;
       border: 1px solid #3a5e1c;
       border-radius: 4px;
-      padding: 5px 10px;
-      margin: 0;
 
       &:disabled {
         cursor: default;
@@ -38,7 +40,7 @@
         }
       }
 
-      &.active {
+      &.active, &:active {
         background: rgb(58,94,28);
         background: linear-gradient(180deg, rgba(58,94,28,1) 0%, rgba(76,121,44,1) 100%);
       }
@@ -50,6 +52,15 @@
 
       &:hover {
         opacity: 0.9;
+      }
+
+      &:before {
+        content: '';
+        display: block;
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+        background: url("../../../../../src/assets/img/user.svg") no-repeat;
       }
     }
 
@@ -79,10 +90,39 @@
     &-input {
       width: 100%;
       height: 25px;
+      padding-left: 10px;
+      border: 1px solid gray;
+      border-right: 0;
+      border-radius: 3px 0 0 3px;
+
+      &:focus {
+        outline: 0;
+        border: 1px solid #555;
+        border-right: 0;
+      }
     }
 
     &-button {
+      width: 30px;
       white-space: nowrap;
+      border: 1px solid gray;
+      border-radius: 0 3px 3px 0;
+      background: #efefef url("../../../../../src/assets/img/search.svg") no-repeat center;
+      background-size: 50%;
+
+      &:hover {
+        cursor: pointer;
+        background-color: #ccc;
+      }
+
+      &:active {
+        opacity: 0.8;
+      }
+
+      &:focus {
+        outline: 0;
+        border: 1px solid gray;
+      }
     }
 
     &-result {

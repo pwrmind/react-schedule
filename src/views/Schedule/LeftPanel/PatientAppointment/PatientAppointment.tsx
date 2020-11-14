@@ -100,7 +100,7 @@ export default class PatientAppointment extends Component<IPatientAppointmentPro
 			return (
 				<div className="patient-appointment__body">
 					<input className="patient-appointment__body-input" placeholder="Введите текст для поиска" onChange={this.searchPatient}/>
-					<button className="patient-appointment__body-button" onClick={this.togglePanel}>🔍</button>
+					<button className="patient-appointment__body-button" onClick={this.togglePanel}></button>
 				</div>
 			)
 		}

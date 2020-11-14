@@ -388,8 +388,8 @@ export default class Calendar extends Component<CalendarProps> {
 		return (
 			<div className="calendar__schedule" data-scroll="true">
 				<div className="calendar__schedule--header" style={ {width: (columns.length * 210 + 30) + 'px'} }>
-					{columns.map((column) => (
-						<div className={"calendar__schedule--header-column" + (column.status ? ' warning' : '')} key={column.id}>
+					{columns.map((column: IColumn, index: number) => (
+						<div className={"calendar__schedule--header-column" + (column.status ? ' warning' : '')} key={column.name + column.schedule.id + column.id + index}>
 							<div className="calendar__schedule--header-column-day">{column.dateString}</div>
 							<div className="calendar__schedule--header-column-name">{column.name}</div>
 							<div className="calendar__schedule--header-column-specialty">{column.specialty}</div>
@@ -403,8 +403,8 @@ export default class Calendar extends Component<CalendarProps> {
 					))}
 				</div>
 				<div className="calendar__schedule--body">
-					{columns.map((column) => (
-						<div className={"calendar__schedule--body-column" + (column.status ? ' warning' : '')} key={column.id} style={ {minHeight: column.hours.length * 30 + 'px'} }>
+					{columns.map((column: IColumn, index: number) => (
+						<div className={"calendar__schedule--body-column" + (column.status ? ' warning' : '')} key={column.name + column.schedule.id + column.id + index} style={ {minHeight: column.hours.length * 30 + 'px'} }>
 							{column.status ? null : column.hours}
 						</div>
 					))}

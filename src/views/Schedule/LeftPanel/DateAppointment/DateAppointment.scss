@@ -21,6 +21,10 @@
 		height: 100%;
 		white-space: nowrap;
 
+		& > span {
+			font-size: 10px;
+		}
+
 		&:disabled {
 			pointer-events: none;
 		}
@@ -71,7 +75,65 @@
 
 	&__body {
 		display: flex;
-		flex: 1;
+
+		&-input {
+			width: 100%;
+			height: 25px;
+			padding-left: 10px;
+			background-color: white;
+			border: 1px solid gray;
+			border-right: 0;
+			border-radius: 3px 0 0 3px;
+		}
+
+		&-button {
+			height: 100%;
+			display: flex;
+			align-items: center;
+			white-space: nowrap;
+			font-size: 8px;
+			border: 1px solid gray;
+			border-radius: 0 3px 3px 0;
+			background-size: 50%;
+			color: black;
+
+			&:before {
+				content: '';
+				display: block;
+				width: 12px;
+				height: 12px;
+				margin-right: 5px;
+				background: url("../../../../../src/assets/img/calendar.svg") no-repeat;
+			}
+
+			&:disabled {
+				color: gray;
+
+				&:before {
+					opacity: 0.5;
+				}
+
+				&:hover {
+					cursor: default;
+					background-color: inherit;
+				}
+			}
+
+			&:hover {
+				cursor: pointer;
+				background-color: #ccc;
+			}
+
+			&:active, &.active {
+				opacity: 0.8;
+				background-color: #ccc;
+			}
+
+			&:focus {
+				outline: 0;
+				border: 1px solid gray;
+			}
+		}
 	}
 
 	&__calendar-wrapper {

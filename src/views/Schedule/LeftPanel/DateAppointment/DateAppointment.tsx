@@ -62,9 +62,12 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 			});
 
 			if (this.state.date === null) {
+				const date = this.getCurrentDate();
 				this.setState({
-					date: this.getCurrentDate()
+					date,
+					selectedDate: date
 				});
+				this.props.setDate(date);
 			}
 		}
 
@@ -83,15 +86,15 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 				</div>
 
 				<div className="date-appointment__body">
-					<input disabled className="date-appointment__input" placeholder="ДД.ММ.ГГГГ" value={dateFormatter(this.state.date)}/>
+					<input disabled className="date-appointment__body-input" placeholder="ДД.ММ.ГГГГ" value={dateFormatter(this.state.date)}/>
 					<Tooltip disabled={this.state.selectResource.length > 0} content="Выберите доступный ресурс">
 						<div>
 							<button
-								className="date-appointment__button"
+								className={"date-appointment__body-button" + (this.state.showDatePicker ? ' active' : '')}
 								disabled={this.state.selectResource.length === 0}
 								onClick={this.showToggle}
 							>
-								🗓▼
+								<span>▼</span>
 							</button>
 						</div>
 					</Tooltip>
