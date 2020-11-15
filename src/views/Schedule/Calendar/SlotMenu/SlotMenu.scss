@@ -9,9 +9,29 @@
     }
 
     &-title {
+      &:before {
+        content: '';
+        display: block;
+        width: 35px;
+        height: 35px;
+        position: absolute;
+        top: 15px;
+        left: 25px;
+        background: url("../../../../../src/assets/img/patient.svg") no-repeat;
+      }
+
       &.slot {
+        margin-left: 30px;
         color: #2e4a68;
         white-space: break-spaces;
+
+        &:before {
+          width: 25px;
+          height: 25px;
+          top: 15px;
+          left: 15px;
+          background: url("../../../../../src/assets/img/clock.svg") no-repeat;
+        }
       }
 
     }
@@ -20,6 +40,7 @@
       padding-top: 30px;
 
       &-item {
+        position: relative;
         padding: 5px 0;
         border-bottom: 1px solid gray;
         cursor: pointer;
@@ -27,6 +48,10 @@
         &.disabled {
           color: gray;
           pointer-events: none;
+
+          &:before {
+            opacity: 0.5;
+          }
         }
 
         &.black {
@@ -44,13 +69,49 @@
         &:last-child {
           border-bottom: 0;
         }
+
+        &.view, &.create, &.cancel {
+          &:before {
+            content: '';
+            display: block;
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            top: 4px;
+            left: 10px;
+            background: url("../../../../../src/assets/img/list.svg") no-repeat;
+          }
+        }
+
+        &.create {
+          &:before {
+            background: url("../../../../../src/assets/img/edit.svg") no-repeat;
+          }
+        }
+
+        &.cancel {
+          &:before {
+            background: url("../../../../../src/assets/img/basket.svg") no-repeat;
+          }
+        }
       }
     }
 
     &-header {
       font-size: 18px;
       font-weight: bold;
-      margin-bottom: 15px;
+      margin: 0 0 15px 10px;
+
+      &:before {
+        content: '';
+        display: block;
+        width: 35px;
+        height: 35px;
+        position: absolute;
+        top: 15px;
+        left: 25px;
+        background: url("../../../../../src/assets/img/attention.svg") no-repeat;
+      }
     }
 
     &-text {
@@ -62,7 +123,7 @@
       margin-bottom: 10px;
       padding: 5px 20px;
       font-size: 15px;
-      background-color: #f80017;
+      background-color: #d34944;
       color: white;
       outline: 0;
       border: 1px solid gray;

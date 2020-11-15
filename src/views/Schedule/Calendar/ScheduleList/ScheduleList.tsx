@@ -25,7 +25,7 @@ export default class ScheduleList extends Component<ScheduleListProps> {
 	};
 
 	public handleScroll = (e: any) => {
-		if (e.srcElement.dataset.scroll) {
+		if (e.srcElement.dataset && e.srcElement.dataset.scroll) {
 			this.heights.scrollTop = e.srcElement.scrollTop;
 			if (this.state.isOverShow) {
 				this.setState({isOverShow: false});

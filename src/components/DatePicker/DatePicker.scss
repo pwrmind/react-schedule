@@ -11,7 +11,32 @@
 	&__prev-btn,
 	&__next-btn {
 		padding: 0 14px;
+		line-height: 25px;
 		cursor: pointer;
+	}
+
+	&__month-btn {
+		width: 80%;
+		height: 25px;
+		background: rgb(170,170,170);
+		background: linear-gradient(0deg, rgba(170,170,170,1) 0%, rgba(255,255,255,1) 50%);
+		border: 1px solid #aaa;
+		border-radius: 4px;
+		cursor: pointer;
+
+		&:active {
+			background: rgb(224,224,224);
+			background: linear-gradient(0deg, rgba(224,224,224,1) 0%, rgba(255,255,255,1) 30%, rgba(255,255,255,1) 70%, rgba(110,110,110,1) 100%);
+		}
+
+		&:focus {
+			border: 1px solid #aaa;
+			outline: 0;
+		}
+
+		&:hover {
+			opacity: 0.9;
+		}
 	}
 
 	&__body {
@@ -25,6 +50,10 @@
 		flex-direction: row;
 	}
 
+	&__week:first-child &__day {
+		font-weight: bold;
+	}
+
 	&__day {
 		flex: 1;
 		padding: 4px 8px;
@@ -33,7 +62,20 @@
 		border: 2px solid transparent;
 
 		&--today {
-			border: 2px solid dodgerblue;
+			position: relative;
+
+			&:after {
+				content: '';
+				display: block;
+				width: 25px;
+				height: 25px;
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				transform: translate(-50%, -50%);
+				border: 2px solid dodgerblue;
+				border-radius: 50%;
+			}
 
 			&:hover {
 				background-color: #0081ff;

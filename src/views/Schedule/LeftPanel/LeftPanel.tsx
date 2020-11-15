@@ -52,7 +52,7 @@ export default class LeftPanel extends Component<LeftPanelProps> {
 	public componentDidUpdate(prevProps: LeftPanelProps) {
 		if (prevProps.resources !== this.props.resources) {
 			this.setState({
-				resources: this.props.resources
+				resources: this.props.resources.sort((resourceA: IResource, resourceB: IResource) => resourceA.name.toLowerCase() > resourceB.name.toLowerCase() ? 1 : -1)
 			})
 		}
 

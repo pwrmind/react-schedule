@@ -10,6 +10,19 @@
 
   &__header {
     margin-bottom: 20px;
+    position: relative;
+
+    &:before {
+      content: '';
+      display: block;
+      width: 30px;
+      height: 40px;
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      background: url("../../../../../src/assets/img/list.svg") no-repeat;
+    }
+
     &-close {
       display: flex;
       position: absolute;

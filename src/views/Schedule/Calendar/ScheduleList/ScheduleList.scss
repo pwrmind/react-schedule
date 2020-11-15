@@ -17,14 +17,7 @@
   &__header {
     &.underline {
       text-decoration: underline;
-    }
-  }
-
-  &__body {
-    transition: height 0.3s ease;
-
-    &.hide {
-      height: 0;
+      cursor: pointer;
     }
   }
 }

@@ -21,14 +21,119 @@
 		height: 100%;
 		white-space: nowrap;
 
+		& > span {
+			font-size: 10px;
+		}
+
 		&:disabled {
 			pointer-events: none;
+		}
+
+		&-row {
+			display: flex;
+			justify-content: flex-end;
+		}
+
+		&-footer {
+			width: 40%;
+			height: 25px;
+			margin: 0 10px 10px 0;
+			background: rgb(124, 172, 87);
+			background: linear-gradient(180deg, rgba(124, 172, 87, 1) 0%, rgba(100, 156, 59, 1) 2%, rgba(77, 122, 43, 1) 100%);
+			cursor: pointer;
+			color: white;
+			border: 1px solid #3a5e1c;
+			border-radius: 4px;
+
+			&:active {
+				background: rgb(58,94,28);
+				background: linear-gradient(180deg, rgba(58,94,28,1) 0%, rgba(76,121,44,1) 100%);
+			}
+
+			&:focus {
+				border: 1px solid #3a5e1c;
+				outline: 0;
+			}
+
+			&:hover {
+				opacity: 0.9;
+			}
+
+			&.cancel {
+				background: rgb(170,170,170);
+				background: linear-gradient(0deg, rgba(170,170,170,1) 0%, rgba(255,255,255,1) 50%);
+				border: 1px solid #aaa;
+				color: inherit;
+
+				&:active {
+					background: rgb(224,224,224);
+					background: linear-gradient(0deg, rgba(224,224,224,1) 0%, rgba(255,255,255,1) 30%, rgba(255,255,255,1) 70%, rgba(110,110,110,1) 100%);
+				}
+			}
 		}
 	}
 
 	&__body {
 		display: flex;
-		flex: 1;
+
+		&-input {
+			width: 100%;
+			height: 25px;
+			padding-left: 10px;
+			background-color: white;
+			border: 1px solid gray;
+			border-right: 0;
+			border-radius: 3px 0 0 3px;
+		}
+
+		&-button {
+			height: 100%;
+			display: flex;
+			align-items: center;
+			white-space: nowrap;
+			font-size: 8px;
+			border: 1px solid gray;
+			border-radius: 0 3px 3px 0;
+			background-size: 50%;
+			color: black;
+
+			&:before {
+				content: '';
+				display: block;
+				width: 12px;
+				height: 12px;
+				margin-right: 5px;
+				background: url("../../../../../src/assets/img/calendar.svg") no-repeat;
+			}
+
+			&:disabled {
+				color: gray;
+
+				&:before {
+					opacity: 0.5;
+				}
+
+				&:hover {
+					cursor: default;
+					background-color: inherit;
+				}
+			}
+
+			&:hover {
+				cursor: pointer;
+				background-color: #ccc;
+			}
+
+			&:active, &.active {
+				opacity: 0.8;
+				background-color: #ccc;
+			}
+
+			&:focus {
+				outline: 0;
+				border: 1px solid gray;
+			}
+		}
 	}
 
 	&__calendar-wrapper {
@@ -45,13 +150,5 @@
 
 		background-color: #fff;
 		border: 1px solid #dbdbdc;
-	}
-
-	&__button-row {
-		display: flex;
-	}
-
-	&__button-footer {
-		flex: 1;
 	}
 }

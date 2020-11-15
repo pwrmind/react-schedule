@@ -65,7 +65,7 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 	public toggleHeaderPopup = () => {
 		this.setState({
 			headerOpened: !this.state.headerOpened
-		})
+		});
 
 		this.closeSearch();
 	};
@@ -106,7 +106,7 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 
 	public setFilter = (activeFilter: number) => {
 		this.setState({activeFilter});
-	}
+	};
 
 	public isCheckedGroupResource(resources: IResource[]): boolean {
 		for (const resource of resources) {
@@ -116,7 +116,7 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 		}
 
 		return true;
-	}
+	};
 
 	public checkResource(resource: IResource): void {
 		if (this.selectedCheckboxes.has(resource)) {
@@ -124,7 +124,7 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 		} else {
 			this.selectedCheckboxes.add(resource);
 		}
-	}
+	};
 
 	public checkGroupResource(resources: IResource[]): void {
 		if (this.isCheckedGroupResource(resources)) {
@@ -136,13 +136,13 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 				this.selectedCheckboxes.add(resources[key]);
 			}
 		}
-	}
+	};
 
 	public setSelectedResources = () => {
 		const selectedResources = Array.from(this.selectedCheckboxes);
 		this.setState({selectedResources});
 		this.props.onSetResource(selectedResources);
-	}
+	};
 
 	public setResource = (resource: any) => {
 		if (resource.data === undefined) {
@@ -152,19 +152,19 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 		}
 
 		this.setSelectedResources();
-	}
+	};
 
 	public setAllChecks = (resources: IResource[]) => {
 		this.setResource({data: resources});
 		this.toggleHeaderPopup();
-	}
+	};
 
 	public resetAllChecks = () => {
 		this.selectedCheckboxes.clear();
 
 		this.setSelectedResources();
 		this.toggleHeaderPopup();
-	}
+	};
 
 	public resourcesConstructor = () => {
 		const resources: any = this.state.resources;
@@ -189,7 +189,7 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 		}
 
 		return outData;
-	}
+	};
 
 	public makeSearch = () => {
 		const resources: any = this.resourcesConstructor();
@@ -233,6 +233,7 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 			return resources.map((resource: IResource, index: any) =>
 				<li
 					key={index}
+					className="normal"
 				>
 					<label>
 						<input
@@ -262,7 +263,7 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 
 				<div className="resource-appointment__body">
 					<input className="resource-appointment__body-input" placeholder="Введите текст для поиска" onChange={this.searchResource}/>
-					<button className="resource-appointment__body-button" onClick={this.toggleSearch}>🔍</button>
+					<button className="resource-appointment__body-button" onClick={this.toggleSearch}></button>
 
 					<div className={"resource-appointment__search" + (this.state.searchOpened ? '' : ' closed')}>
 						<div className="resource-appointment__search-list">
