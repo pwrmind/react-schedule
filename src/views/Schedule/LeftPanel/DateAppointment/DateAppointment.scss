@@ -108,6 +108,7 @@
 
 			&:disabled {
 				color: gray;
+				pointer-events: none;
 
 				&:before {
 					opacity: 0.5;
