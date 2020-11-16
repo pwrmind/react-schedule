@@ -234,6 +234,7 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 				<li
 					key={index}
 					className="normal"
+					ref={el => (this.itemRefs[resource.id] = el)}
 				>
 					<label>
 						<input
