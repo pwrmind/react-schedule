@@ -119,16 +119,22 @@ export default class Calendar extends Component<CalendarProps> {
 				lastRender = appointment.desc;
 				if (!hourState.intervalStart || !hourState.intervalEnd) {
 					return (
-						<Tooltip key={index} content="Запись недоступна" delay={1000}>
-							<div className="calendar__schedule--body-column-hour_double">
-								{ hourState.intervalStart ? null : <div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>}
-								<div className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div>
-								{ hourState.intervalEnd ? null : <div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>}
-							</div>
-						</Tooltip>
+						<div key={index} className="calendar__schedule--body-column-hour_double">
+							{ hourState.intervalStart ? null : (
+								<Tooltip content="Запись недоступна" delay={1000}>
+									<div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>
+								</Tooltip>
+							)}
+							<div className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div>
+							{ hourState.intervalEnd ? null : (
+								<Tooltip content="Запись недоступна" delay={1000}>
+									<div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>
+								</Tooltip>
+							)}
+						</div>
 					);
 				}
-				return <Tooltip key={index} content="Запись недоступна" delay={1000}><div className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div></Tooltip>
+				return <div key={index} className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div>
 			},
 			renderSlot = (slots: ISlot[], hour: string, index: number, schedule: ISchedule, date: Date) => {
 				const nowDate = new Date(), quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
@@ -221,11 +227,9 @@ export default class Calendar extends Component<CalendarProps> {
 
 			if (hour === '') {
 				renderHour = (
-					<Tooltip key={i} content="Запись недоступна" delay={1000}>
-						<div className="calendar__schedule--body-column-hour not-dashed">
-							<div className="calendar__schedule--body-column-hour_notwork">Врач не принимает</div>
-						</div>
-					</Tooltip>
+					<div key={i}  className="calendar__schedule--body-column-hour not-dashed">
+						<div className="calendar__schedule--body-column-hour_notwork">Врач не принимает</div>
+					</div>
 				);
 			}
 			else {
