@@ -22,8 +22,8 @@ export default class SlotPopup extends Component<SlotPopupProps> {
 
 
 	render() {
-		const patient = this.props.patients.filter((patient: IPatient) => patient.id === this.props.slot.patientId)[0],
-			schedule = this.props.schedules.filter((schedule: ISchedule) => schedule.id === this.props.slot.scheduleId)[0];
+		const patient = this.props.patients.find((patient: IPatient) => patient.id === this.props.slot.patientId) as IPatient,
+			schedule = this.props.schedules.find((schedule: ISchedule) => schedule.id === this.props.slot.scheduleId) as ISchedule;
 		return (
 			<div className="slot-popup__content">
 				<div className="slot-popup__header">

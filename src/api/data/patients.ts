@@ -1,6 +1,6 @@
 export interface IPatient {
 	id: number;
-	name: string;
+	name?: string;
 	lName: string;
 	fName: string;
 	mName: string;
@@ -11,7 +11,6 @@ export interface IPatient {
 const patientList: Array<IPatient> = [
 	{
 		id: 0,
-		name: 'Иванов Иван Иванович',
 		lName: 'Иванов',
 		fName: 'Иван',
 		mName: 'Иванович',
@@ -20,7 +19,6 @@ const patientList: Array<IPatient> = [
 	},
 	{
 		id: 1,
-		name: 'Алексеев Алексей Алексеевич',
 		lName: 'Алексеев',
 		fName: 'Алексей',
 		mName: 'Алексеевич',
@@ -29,7 +27,6 @@ const patientList: Array<IPatient> = [
 	},
 	{
 		id: 2,
-		name: 'Петров Петр Петрович',
 		lName: 'Петров',
 		fName: 'Петр',
 		mName: 'Петрович',
@@ -38,7 +35,6 @@ const patientList: Array<IPatient> = [
 	},
 	{
 		id: 3,
-		name: 'Сергеев Сергей Сергеевич',
 		lName: 'Сергеев',
 		fName: 'Сергей',
 		mName: 'Сергеевич',
@@ -47,7 +43,6 @@ const patientList: Array<IPatient> = [
 	},
 	{
 		id: 4,
-		name: 'Васильев Василий Васильевич',
 		lName: 'Васильев',
 		fName: 'Василий',
 		mName: 'Васильевич',

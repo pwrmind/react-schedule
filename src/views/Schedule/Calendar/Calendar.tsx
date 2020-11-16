@@ -91,7 +91,7 @@ export default class Calendar extends Component<CalendarProps> {
 	};
 
 	public getPatient = (id: number | any): string => {
-		const patient = this.props.patients.filter((patient: IPatient) => patient.id === id)[0];
+		const patient = this.props.patients.find((patient: IPatient) => patient.id === id) as IPatient;
 		return `${patient.lName} ${patient.fName[0]}. ${patient.mName[0]}.`
 	};
 

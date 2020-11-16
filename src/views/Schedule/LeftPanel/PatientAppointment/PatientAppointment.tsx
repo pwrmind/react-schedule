@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { dateFormatter } from 'services/formatter';
+import { IPatient } from 'api/data/patients';
 
 import './PatientAppointment.scss';
 
@@ -25,8 +26,8 @@ export default class PatientAppointment extends Component<IPatientAppointmentPro
 	public componentDidUpdate(prevProps: IPatientAppointmentProps) {
 		if (prevProps.patients !== this.props.patients) {
 			this.setState({
-				patients: this.props.patients,
-				searchPatients: this.props.patients
+				patients: this.addNames(this.props.patients),
+				searchPatients: this.addNames(this.props.patients)
 			})
 		}
 	}
@@ -53,6 +54,11 @@ export default class PatientAppointment extends Component<IPatientAppointmentPro
 		this.setState({
 			logoutOpened: !this.state.logoutOpened
 		})
+	};
+
+	public addNames = (patients: IPatient[]): IPatient[] => {
+		patients.forEach((patient: IPatient) => patient.name = `${patient.lName} ${patient.fName} ${patient.mName}`);
+		return patients;
 	};
 
 	public searchPatient = (e: any) => {
