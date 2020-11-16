@@ -185,7 +185,7 @@ export default class Calendar extends Component<CalendarProps> {
 				nowDate.setMinutes(nowDate.getMinutes());
 
 				const quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
-				tooltipText = quotaDate > nowDateGrid.getTime() ? 'Время доступно для записи' : (quotaDate > nowDate.getTime() ? 'На ближайший интервал запись недоступна' : 'Запись на прошедший временной интервал недоступна'),
+				tooltipText = quotaDate > nowDateGrid.getTime() ? 'Время доступно для записи' : (quotaDate > nowDate.getTime() ? 'Запись на ближайший временной интервал недоступна' : 'Запись на прошедший временной интервал недоступна'),
 				newSlot: INewSlot = {
 					visitDate: column.date,
 					scheduleId: schedule.id,
