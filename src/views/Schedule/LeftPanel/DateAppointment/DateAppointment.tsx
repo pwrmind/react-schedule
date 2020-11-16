@@ -106,6 +106,7 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 							<DatePicker
 								schedules={this.state.schedules}
 								selectResource={this.state.selectResource}
+								date={this.state.date || new Date()}
 								selectedDate={this.state.date}
 								onChange={(date: Date) => this.setSelectedDate(date)}
 							/>

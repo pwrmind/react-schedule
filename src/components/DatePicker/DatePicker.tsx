@@ -89,9 +89,17 @@ export default class DatePicker extends Component<DatePickerProps> {
 	public getActiveDate(date: Date): boolean {
 		for (const i in this.schedules) {
 			const schedule: ISchedule = this.schedules[i],
-				dayNum: number = this.getDayOfWeek(date) + 1;
+				dayNum: number = date.getDay();
 
 			if (schedule.workDays.includes(dayNum)) {
+				if (schedule.workMonth) {
+					const today = new Date(new Date().setHours(0, 0, 0, 0));
+
+					if (date.getTime() > new Date(today.setMonth(today.getMonth() + (schedule.workMonth || 0))).getTime()) {
+						continue;
+					}
+				}
+
 				const activeQuotas = schedule.quotas.filter(
 					(quota: IQuota) => {
 						return quota.active &&
@@ -131,14 +139,25 @@ export default class DatePicker extends Component<DatePickerProps> {
 		const { currentDate, selectedDate } = this.state;
 		let out: string = '';
 
-		if (this.diffDate(date, currentDate) < 0 || this.diffDate(date, currentDate) > 13) {
+		if (this.diffDate(date, currentDate) < 0) {
 			return ' date-picker__day--disabled';
+		}
+
+		if (this.diffDate(date, selectedDate) > 13) {
+			out += ' date-picker__day--grey';
+		}
+
+		// if (this.diffDate(date, currentDate) === 0) {
+		// 	out += ' date-picker__day--today'
+		// }
+
+		if (
+			this.diffDate(date, selectedDate) >= 0 &&
+			this.getActiveDate(date)
+		) {
+			out += ' date-picker__day--can-set'
 		} else {
-			if (this.getActiveDate(date)) {
-				out += ' date-picker__day--can-set'
-			} else {
-				out += ' date-picker__day--active'
-			}
+			out += ' date-picker__day--active'
 		}
 
 		if (this.diffDate(date, selectedDate) === 0) {
