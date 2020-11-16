@@ -61,7 +61,7 @@
 		text-align: center;
 		border: 2px solid transparent;
 
-		&--today {
+		&--selected {
 			position: relative;
 
 			&:after {
@@ -76,24 +76,20 @@
 				border: 2px solid dodgerblue;
 				border-radius: 50%;
 			}
-
-			&:hover {
-				background-color: #0081ff;
-			}
 		}
 
-		&--selected {
+		&:hover {
 			background-color: dodgerblue !important;
 			color: white;
 		}
 
-		&--active {
-			pointer-events: none;
+		// &--active {
+		// 	pointer-events: none;
 
-			&:hover {
-				background-color: #eaeaea;
-			}
-		}
+		// 	&:hover {
+		// 		background-color: #eaeaea;
+		// 	}
+		// }
 
 		&--can-set {
 			background-color: #cde4fd;
