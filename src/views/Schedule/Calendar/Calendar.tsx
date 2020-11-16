@@ -142,7 +142,10 @@ export default class Calendar extends Component<CalendarProps> {
 				return <div key={index} className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div>
 			},
 			renderSlot = (slots: ISlot[], hour: string, index: number, schedule: ISchedule, date: Date) => {
-				const nowDate = new Date(), quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
+				const nowDateGrid: Date = new Date();
+				nowDateGrid.setMinutes(nowDateGrid.getMinutes() + schedule.timeGrid);
+
+				const quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
 				newSlot: INewSlot = {
 					visitDate: column.date,
 					scheduleId: schedule.id,
@@ -155,7 +158,7 @@ export default class Calendar extends Component<CalendarProps> {
 							<ContextMenu
 								key={slot.id}
 								content={
-									renderMenu(this.getPatient(slot.patientId), slot, slotsInHour.length < 2, newSlot, slotsInHour[0].patientId, quotaDate <= nowDate.getTime())
+									renderMenu(this.getPatient(slot.patientId), slot, slotsInHour.length < 2, newSlot, slotsInHour[0].patientId, quotaDate <= nowDateGrid.getTime())
 								}
 							>
 								<div className="calendar__schedule--body-column-hour_patients-list_patient" >
