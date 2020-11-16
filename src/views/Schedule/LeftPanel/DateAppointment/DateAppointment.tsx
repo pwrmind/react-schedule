@@ -39,7 +39,8 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 
 	public showToggle = () => {
 		this.setState({
-			showDatePicker: !this.state.showDatePicker
+			showDatePicker: !this.state.showDatePicker,
+			selectedDate: this.state.date
 		});
 	};
 
@@ -49,9 +50,11 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 
 	public okClick = () => {
 		console.log('okClick', this.state.selectedDate);
-		this.showToggle();
 
-		this.setState({date: this.state.selectedDate});
+		this.setState({
+			date: this.state.selectedDate,
+			showDatePicker: false,
+		});
 		this.props.setDate(this.state.selectedDate);
 	};
 
@@ -86,7 +89,7 @@ export default class DateAppointment extends Component<DateAppointmentProps> {
 				</div>
 
 				<div className="date-appointment__body">
-					<input disabled className="date-appointment__body-input" placeholder="ДД.ММ.ГГГГ" value={dateFormatter(this.state.date)}/>
+					<input disabled className="date-appointment__body-input" placeholder="ДД.ММ.ГГГГ" value={dateFormatter(this.state.selectedDate)}/>
 					<Tooltip disabled={this.state.selectResource.length > 0} content="Выберите доступный ресурс">
 						<div>
 							<button
