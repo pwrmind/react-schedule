@@ -4,6 +4,7 @@ import { dateFormatter } from 'services/formatter';
 import { ISlot } from 'api/data/slots';
 import { ISchedule } from 'api/data/schedules';
 import { IPatient } from 'api/data/patients';
+import { IResource } from 'api/data/resources';
 
 import './SlotPopup.scss';
 
@@ -12,6 +13,7 @@ interface SlotPopupProps {
 	closePopup: Function;
 	patients: Array<IPatient>;
 	schedules: Array<ISchedule>;
+	resource: IResource;
 }
 
 export default class SlotPopup extends Component<SlotPopupProps> {
@@ -20,10 +22,9 @@ export default class SlotPopup extends Component<SlotPopupProps> {
 		this.props.closePopup();
 	};
 
-
 	render() {
-		const patient = this.props.patients.filter((patient: IPatient) => patient.id === this.props.slot.patientId)[0],
-			schedule = this.props.schedules.filter((schedule: ISchedule) => schedule.id === this.props.slot.scheduleId)[0];
+		const patient = this.props.patients.find((patient: IPatient) => patient.id === this.props.slot.patientId) as IPatient,
+			schedule = this.props.schedules.find((schedule: ISchedule) => schedule.id === this.props.slot.scheduleId) as ISchedule;
 		return (
 			<div className="slot-popup__content">
 				<div className="slot-popup__header">
@@ -38,7 +39,7 @@ export default class SlotPopup extends Component<SlotPopupProps> {
 						</tr>
 						<tr>
 							<td>Врач:</td>
-							<td>{schedule.resource.name}</td>
+							<td>{this.props.resource.name}</td>
 						</tr>
 						<tr>
 							<td>Кабинет:</td>

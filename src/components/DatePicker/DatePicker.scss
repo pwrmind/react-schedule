@@ -61,7 +61,7 @@
 		text-align: center;
 		border: 2px solid transparent;
 
-		&--today {
+		&--selected {
 			position: relative;
 
 			&:after {
@@ -76,33 +76,16 @@
 				border: 2px solid dodgerblue;
 				border-radius: 50%;
 			}
-
-			&:hover {
-				background-color: #0081ff;
-			}
 		}
 
-		&--selected {
+		&:hover {
 			background-color: dodgerblue !important;
 			color: white;
-		}
-
-		&--active {
-			pointer-events: none;
-
-			&:hover {
-				background-color: #eaeaea;
-			}
 		}
 
 		&--can-set {
 			background-color: #cde4fd;
 			color: #000;
-
-			&:hover {
-				background-color: #eaeaea;
-				cursor: pointer;
-			}
 		}
 
 		&--disabled {
@@ -110,6 +93,11 @@
 			color: #a7a7a7;
 			cursor: default;
 			pointer-events: none;
+		}
+
+		&--grey {
+			background-color: #ededed;
+			color: #9b9b9b;
 		}
 	}
 }

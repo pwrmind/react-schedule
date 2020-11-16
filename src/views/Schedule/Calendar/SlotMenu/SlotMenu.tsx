@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import API from 'api/api';
 
 import { ISlot, INewSlot } from 'api/data/slots';
 import { IPatient } from 'api/data/patients';
 import { ISchedule } from 'api/data/schedules';
-import API from 'api/api';
+import { IResource } from 'api/data/resources';
 
 import Modal from 'components/Modal/Modal';
 import SlotPopup from '../SlotPopup/SlotPopup';
@@ -23,6 +24,7 @@ interface SlotMenuProps {
 	selectPatient: IPatient;
 	patients: Array<IPatient>;
 	schedules: Array<ISchedule>;
+	resource: IResource
 }
 
 export default class SlotMenu extends Component<SlotMenuProps> {
@@ -95,7 +97,15 @@ export default class SlotMenu extends Component<SlotMenuProps> {
 				</div>
 			</div>
 		), renderPopupSlot = (
-				<Modal isShow={this.state.slotPopupActive}><SlotPopup closePopup={this.toggleModal} slot={this.props.slot as ISlot} patients={this.props.patients} schedules={this.props.schedules}/></Modal>
+				<Modal isShow={this.state.slotPopupActive}>
+					<SlotPopup
+						closePopup={this.toggleModal}
+						slot={this.props.slot as ISlot}
+						patients={this.props.patients}
+						schedules={this.props.schedules}
+						resource={this.props.resource}
+					/>
+				</Modal>
 		), renderRemoveSlot = (
 			<div className="slot-menu__content cancel" onClick={(e: any) => {e.stopPropagation()}}>
 				<div className="slot-menu__content-header">Отмена записи</div>

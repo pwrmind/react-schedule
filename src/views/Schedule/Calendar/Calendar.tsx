@@ -15,7 +15,7 @@ import ScheduleList from './ScheduleList/ScheduleList';
 import './Calendar.scss';
 
 interface CalendarProps {
-	resources?: Array<IResource>;
+	resources: Array<IResource>;
 	schedules: Array<ISchedule>;
 	slots: Array<ISlot>;
 	patients: Array<IPatient>;
@@ -47,7 +47,8 @@ export interface IColumn {
 	name: string;
 	specialty: string;
 	cabinet: string;
-	schedule: ISchedule,
+	schedule: ISchedule;
+	resource: IResource;
 	scheduleStart: string;
 	scheduleEnd: string;
 	scheduleGrid: number;
@@ -91,8 +92,12 @@ export default class Calendar extends Component<CalendarProps> {
 	};
 
 	public getPatient = (id: number | any): string => {
-		const patient = this.props.patients.filter((patient: IPatient) => patient.id === id)[0];
+		const patient = this.props.patients.find((patient: IPatient) => patient.id === id) as IPatient;
 		return `${patient.lName} ${patient.fName[0]}. ${patient.mName[0]}.`
+	};
+
+	public getResource = (id: number): IResource => {
+		return this.props.resources.find((resource: IResource) => resource.id === id) as IResource;
 	};
 
 	public makeHours = (column: any, hours: string[]) => {
@@ -103,7 +108,7 @@ export default class Calendar extends Component<CalendarProps> {
 				return (
 					<SlotMenu
 						title={title} slot={slot} freeSlot={freeSlot} newSlot={newSlot} patientsInSlotId={patientsInSlotId}
-						selectPatient={this.props.selectPatient as IPatient} oldHour={oldHour}
+						selectPatient={this.props.selectPatient as IPatient} oldHour={oldHour} resource={column.resource}
 						schedules={this.props.schedules}
 						patients={this.props.patients}
 						reload={this.props.reload}
@@ -119,24 +124,32 @@ export default class Calendar extends Component<CalendarProps> {
 				lastRender = appointment.desc;
 				if (!hourState.intervalStart || !hourState.intervalEnd) {
 					return (
-						<Tooltip key={index} content="Запись недоступна" delay={1000}>
-							<div className="calendar__schedule--body-column-hour_double">
-								{ hourState.intervalStart ? null : <div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>}
-								<div className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div>
-								{ hourState.intervalEnd ? null : <div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>}
-							</div>
-						</Tooltip>
+						<div key={index} className="calendar__schedule--body-column-hour_double">
+							{ hourState.intervalStart ? null : (
+								<Tooltip content="Запись недоступна" delay={1000}>
+									<div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>
+								</Tooltip>
+							)}
+							<div className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div>
+							{ hourState.intervalEnd ? null : (
+								<Tooltip content="Запись недоступна" delay={1000}>
+									<div className="calendar__schedule--body-column-hour_notwork">Нет записи</div>
+								</Tooltip>
+							)}
+						</div>
 					);
 				}
-				return <Tooltip key={index} content="Запись недоступна" delay={1000}><div className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div></Tooltip>
+				return <div key={index} className="calendar__schedule--body-column-hour_notwork">{appointment.desc}</div>
 			},
 			renderSlot = (slots: ISlot[], hour: string, index: number, schedule: ISchedule, date: Date) => {
-				const nowDate = new Date(), quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
+				const nowDateGrid: Date = new Date();
+				nowDateGrid.setMinutes(nowDateGrid.getMinutes() + schedule.timeGrid);
+
+				const quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
 				newSlot: INewSlot = {
 					visitDate: column.date,
-					status: 0,
 					scheduleId: schedule.id,
-					resourceId: schedule.resource.id,
+					resourceId: schedule.resourceId,
 					interval: hour
 				}, patients = column.slots.map((slot: ISlot) => {
 					if (slot.interval === hour) {
@@ -145,7 +158,7 @@ export default class Calendar extends Component<CalendarProps> {
 							<ContextMenu
 								key={slot.id}
 								content={
-									renderMenu(this.getPatient(slot.patientId), slot, slotsInHour.length < 2, newSlot, slotsInHour[0].patientId, quotaDate <= nowDate.getTime())
+									renderMenu(this.getPatient(slot.patientId), slot, slotsInHour.length < 2, newSlot, slotsInHour[0].patientId, quotaDate <= nowDateGrid.getTime())
 								}
 							>
 								<div className="calendar__schedule--body-column-hour_patients-list_patient" >
@@ -169,23 +182,25 @@ export default class Calendar extends Component<CalendarProps> {
 			},
 			renderQuota = (hour: string, index: number, nextHour: string, schedule: ISchedule, date: Date) => {
 				lastRender = hour;
+				const nowDateGrid: Date = new Date();
+				nowDateGrid.setMinutes(nowDateGrid.getMinutes() + schedule.timeGrid);
 				const nowDate: Date = new Date();
-				nowDate.setMinutes(nowDate.getMinutes() + schedule.timeGrid);
+				nowDate.setMinutes(nowDate.getMinutes());
+
 				const quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
-				tooltipText = quotaDate > nowDate.getTime() ? 'Время доступно для записи' : 'Запись на прошедший временной интервал недоступна',
+				tooltipText = quotaDate > nowDateGrid.getTime() ? 'Время доступно для записи' : (quotaDate > nowDate.getTime() ? 'Запись на ближайший временной интервал недоступна' : 'Запись на прошедший временной интервал недоступна'),
 				newSlot: INewSlot = {
 					visitDate: column.date,
-					status: 0,
 					scheduleId: schedule.id,
-					resourceId: schedule.resource.id,
+					resourceId: schedule.resourceId,
 					interval: hour
 				};
 				return (
 					<ContextMenu
-						// disabled={quotaDate <= nowDate.getTime()}
+						// disabled={quotaDate <= nowDateGrid.getTime()}
 						key={index}
 						content={
-							renderMenu(`Выбран интервал времени\n ${hour} - ${nextHour}`, false, true, newSlot, null, quotaDate <= nowDate.getTime())
+							renderMenu(`Выбран интервал времени\n ${hour} - ${nextHour}`, false, true, newSlot, null, quotaDate <= nowDateGrid.getTime())
 						}
 					>
 						<div>
@@ -221,11 +236,9 @@ export default class Calendar extends Component<CalendarProps> {
 
 			if (hour === '') {
 				renderHour = (
-					<Tooltip key={i} content="Запись недоступна" delay={1000}>
-						<div className="calendar__schedule--body-column-hour not-dashed">
-							<div className="calendar__schedule--body-column-hour_notwork">Врач не принимает</div>
-						</div>
-					</Tooltip>
+					<div key={i}  className="calendar__schedule--body-column-hour not-dashed">
+						<div className="calendar__schedule--body-column-hour_notwork">Врач не принимает</div>
+					</div>
 				);
 			}
 			else {
@@ -303,13 +316,13 @@ export default class Calendar extends Component<CalendarProps> {
 			columns = [], slots = this.props.slots,
 			schedules: Array<ISchedule> = this.props.schedules.filter((schedule: ISchedule) => {
 				for (const resource of this.props.selectResource) {
-					if (resource.id === schedule.resource.id) {
+					if (resource.id === schedule.resourceId) {
 						return true;
 					}
 				}
 
 				return false;
-			}).sort((scheduleA: ISchedule, scheduleB: ISchedule) => scheduleA.resource.name.toLowerCase() > scheduleB.resource.name.toLowerCase() ? 1 : -1);
+			}).sort((scheduleA: ISchedule, scheduleB: ISchedule) => this.getResource(scheduleA.resourceId).name.toLowerCase() > this.getResource(scheduleB.resourceId).name.toLowerCase() ? 1 : -1);
 
 		for (let j = 0; j < filterDays; j += 1) {
 			const filterDate = new Date(selectDate.getTime());
@@ -346,16 +359,17 @@ export default class Calendar extends Component<CalendarProps> {
 						hours.push('');
 					}
 
-					const dayOff: IDayOff = schedules[i].dayOff as IDayOff;
+					const dayOff: IDayOff = schedules[i].dayOff as IDayOff, resource = this.getResource(schedules[i].resourceId);
 
 					const column: IColumn = {
 						id: columns.length + 1,
 						dateString: `${this.DAYS[filterDate.getDay()]} ${filterDate.getDate()} ${this.MONTHS[filterDate.getMonth()]}`,
 						date: filterDate,
-						name: schedules[i].resource.name,
-						specialty: schedules[i].resource.specialty.toLowerCase(),
+						name: resource.name,
+						specialty: resource.specialty.toLowerCase(),
 						cabinet: `${schedules[i].clinic.name}, (к. ${schedules[i].clinic.roomNumber})`,
 						schedule: schedules[i],
+						resource,
 						scheduleStart: schedules[i].workStart,
 						scheduleEnd: schedules[i].workEnd,
 						scheduleGrid: schedules[i].timeGrid,
