@@ -22,7 +22,8 @@ export interface IDayOff {
 export interface ISchedule {
 	id: number;
 	clinic: IClinic;
-	resource: IResource;
+	resourceId: number;
+	resource?: IResource;
 	workStart: string;
 	workEnd: string;
 	workDays: number[];
@@ -39,11 +40,7 @@ const scheduleList: Array<ISchedule> = [
 			name: 'ГП №128',
 			roomNumber: 110,
 		},
-		resource: {
-			id: 0,
-			name: 'Григорьева Г.Г.',
-			specialty: 'Терапевт'
-		},
+		resourceId: 0,
 		workStart: '10:00',
 		workEnd: '20:00',
 		workDays: [1, 2, 3, 4, 5],
@@ -76,11 +73,7 @@ const scheduleList: Array<ISchedule> = [
 			name: 'ГП №128',
 			roomNumber: 120,
 		},
-		resource: {
-			id: 1,
-			name: 'Сидорова С.С.',
-			specialty: 'Терапевт'
-		},
+		resourceId: 1,
 		workStart: '08:00',
 		workEnd: '15:00',
 		workDays: [1, 2, 3, 4],
@@ -108,11 +101,7 @@ const scheduleList: Array<ISchedule> = [
 			name: 'ГП №128',
 			roomNumber: 130,
 		},
-		resource: {
-			id: 1,
-			name: 'Сидорова С.С.',
-			specialty: 'Терапевт'
-		},
+		resourceId: 1,
 		workStart: '14:00',
 		workEnd: '18:00',
 		workDays: [5, 6],
@@ -133,11 +122,7 @@ const scheduleList: Array<ISchedule> = [
 			name: 'ГП №128',
 			roomNumber: 140,
 		},
-		resource: {
-			id: 2,
-			name: 'Елисеева Е.Е.',
-			specialty: 'Офтальмолог'
-		},
+		resourceId: 2,
 		workStart: '08:00',
 		workEnd: '18:00',
 		workDays: [1, 2, 3, 4, 5],
@@ -175,11 +160,7 @@ const scheduleList: Array<ISchedule> = [
 			name: 'ГП №128',
 			roomNumber: 150,
 		},
-		resource: {
-			id: 3,
-			name: 'Константинова-Щедрина А.А.',
-			specialty: 'Офтальмолог'
-		},
+		resourceId: 3,
 		workStart: '09:00',
 		workEnd: '21:00',
 		workDays: [2, 3, 4, 5, 6],

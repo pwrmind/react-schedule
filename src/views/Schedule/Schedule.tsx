@@ -62,6 +62,10 @@ export default class Schedule extends Component {
 			.then((schedules: ISchedule[]) => {
 				console.log('getSchedules:', schedules);
 
+				const resources = this.state.resources as IResource[];
+
+				schedules.forEach((schedule: any) => schedule.resource = resources.find((resource: IResource) => resource.id === schedule.resourceId));
+
 				this.setState({
 					schedules
 				});
@@ -130,7 +134,7 @@ export default class Schedule extends Component {
 
 					{this.state.resources.length ? (
 						<Calendar
-							// resources={this.state.resources}
+							resources={this.state.resources}
 							schedules={this.state.schedules}
 							slots={this.state.slots}
 							patients={this.state.patients}

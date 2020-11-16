@@ -55,7 +55,7 @@ export default class DatePicker extends Component<DatePickerProps> {
 	public get schedules(): Array<ISchedule> {
 		return this.props.schedules.filter((schedule: ISchedule) => {
 			for (const resource of this.props.selectResource) {
-				if (resource.id === schedule.resource.id) {
+				if (resource.id === schedule.resourceId) {
 					return true;
 				}
 			}
