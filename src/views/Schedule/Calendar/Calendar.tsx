@@ -140,7 +140,6 @@ export default class Calendar extends Component<CalendarProps> {
 				const nowDate = new Date(), quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
 				newSlot: INewSlot = {
 					visitDate: column.date,
-					status: 0,
 					scheduleId: schedule.id,
 					resourceId: schedule.resource.id,
 					interval: hour
@@ -181,7 +180,6 @@ export default class Calendar extends Component<CalendarProps> {
 				tooltipText = quotaDate > nowDate.getTime() ? 'Время доступно для записи' : 'Запись на прошедший временной интервал недоступна',
 				newSlot: INewSlot = {
 					visitDate: column.date,
-					status: 0,
 					scheduleId: schedule.id,
 					resourceId: schedule.resource.id,
 					interval: hour

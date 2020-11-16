@@ -42,8 +42,7 @@ const scheduleList: Array<ISchedule> = [
 		resource: {
 			id: 0,
 			name: 'Григорьева Г.Г.',
-			specialty: 'Терапевт',
-			description: 'description',
+			specialty: 'Терапевт'
 		},
 		workStart: '10:00',
 		workEnd: '20:00',
@@ -68,7 +67,7 @@ const scheduleList: Array<ISchedule> = [
 				quotaEnd: '20:00',
 				name: 'Запись на прием',
 				active: true
-			},
+			}
 		]
 	},
 	{
@@ -80,8 +79,7 @@ const scheduleList: Array<ISchedule> = [
 		resource: {
 			id: 1,
 			name: 'Сидорова С.С.',
-			specialty: 'Терапевт',
-			description: 'description',
+			specialty: 'Терапевт'
 		},
 		workStart: '08:00',
 		workEnd: '15:00',
@@ -113,8 +111,7 @@ const scheduleList: Array<ISchedule> = [
 		resource: {
 			id: 1,
 			name: 'Сидорова С.С.',
-			specialty: 'Терапевт',
-			description: 'description',
+			specialty: 'Терапевт'
 		},
 		workStart: '14:00',
 		workEnd: '18:00',
@@ -139,8 +136,7 @@ const scheduleList: Array<ISchedule> = [
 		resource: {
 			id: 2,
 			name: 'Елисеева Е.Е.',
-			specialty: 'Офтальмолог',
-			description: 'description',
+			specialty: 'Офтальмолог'
 		},
 		workStart: '08:00',
 		workEnd: '18:00',
@@ -182,8 +178,7 @@ const scheduleList: Array<ISchedule> = [
 		resource: {
 			id: 3,
 			name: 'Константинова-Щедрина А.А.',
-			specialty: 'Офтальмолог',
-			description: 'description',
+			specialty: 'Офтальмолог'
 		},
 		workStart: '09:00',
 		workEnd: '21:00',
