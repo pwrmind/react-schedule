@@ -179,10 +179,13 @@ export default class Calendar extends Component<CalendarProps> {
 			},
 			renderQuota = (hour: string, index: number, nextHour: string, schedule: ISchedule, date: Date) => {
 				lastRender = hour;
+				const nowDateGrid: Date = new Date();
+				nowDateGrid.setMinutes(nowDateGrid.getMinutes() + schedule.timeGrid);
 				const nowDate: Date = new Date();
-				nowDate.setMinutes(nowDate.getMinutes() + schedule.timeGrid);
+				nowDate.setMinutes(nowDate.getMinutes());
+
 				const quotaDate = new Date(date).setHours(+hour.split(':')[0], +hour.split(':')[1], 0, 0),
-				tooltipText = quotaDate > nowDate.getTime() ? 'Время доступно для записи' : 'Запись на прошедший временной интервал недоступна',
+				tooltipText = quotaDate > nowDateGrid.getTime() ? 'Время доступно для записи' : (quotaDate > nowDate.getTime() ? 'На ближайший интервал запись недоступна' : 'Запись на прошедший временной интервал недоступна'),
 				newSlot: INewSlot = {
 					visitDate: column.date,
 					scheduleId: schedule.id,
@@ -191,10 +194,10 @@ export default class Calendar extends Component<CalendarProps> {
 				};
 				return (
 					<ContextMenu
-						// disabled={quotaDate <= nowDate.getTime()}
+						// disabled={quotaDate <= nowDateGrid.getTime()}
 						key={index}
 						content={
-							renderMenu(`Выбран интервал времени\n ${hour} - ${nextHour}`, false, true, newSlot, null, quotaDate <= nowDate.getTime())
+							renderMenu(`Выбран интервал времени\n ${hour} - ${nextHour}`, false, true, newSlot, null, quotaDate <= nowDateGrid.getTime())
 						}
 					>
 						<div>
