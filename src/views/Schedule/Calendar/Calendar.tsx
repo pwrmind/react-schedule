@@ -15,7 +15,7 @@ import ScheduleList from './ScheduleList/ScheduleList';
 import './Calendar.scss';
 
 interface CalendarProps {
-	resources?: Array<IResource>;
+	resources: Array<IResource>;
 	schedules: Array<ISchedule>;
 	slots: Array<ISlot>;
 	patients: Array<IPatient>;
@@ -47,7 +47,8 @@ export interface IColumn {
 	name: string;
 	specialty: string;
 	cabinet: string;
-	schedule: ISchedule,
+	schedule: ISchedule;
+	resource: IResource;
 	scheduleStart: string;
 	scheduleEnd: string;
 	scheduleGrid: number;
@@ -95,6 +96,10 @@ export default class Calendar extends Component<CalendarProps> {
 		return `${patient.lName} ${patient.fName[0]}. ${patient.mName[0]}.`
 	};
 
+	public getResource = (id: number): IResource => {
+		return this.props.resources.find((resource: IResource) => resource.id === id) as IResource;
+	};
+
 	public makeHours = (column: any, hours: string[]) => {
 		let lastRender: string = '';
 
@@ -103,7 +108,7 @@ export default class Calendar extends Component<CalendarProps> {
 				return (
 					<SlotMenu
 						title={title} slot={slot} freeSlot={freeSlot} newSlot={newSlot} patientsInSlotId={patientsInSlotId}
-						selectPatient={this.props.selectPatient as IPatient} oldHour={oldHour}
+						selectPatient={this.props.selectPatient as IPatient} oldHour={oldHour} resource={column.resource}
 						schedules={this.props.schedules}
 						patients={this.props.patients}
 						reload={this.props.reload}
@@ -141,7 +146,7 @@ export default class Calendar extends Component<CalendarProps> {
 				newSlot: INewSlot = {
 					visitDate: column.date,
 					scheduleId: schedule.id,
-					resourceId: schedule.resource.id,
+					resourceId: schedule.resourceId,
 					interval: hour
 				}, patients = column.slots.map((slot: ISlot) => {
 					if (slot.interval === hour) {
@@ -181,7 +186,7 @@ export default class Calendar extends Component<CalendarProps> {
 				newSlot: INewSlot = {
 					visitDate: column.date,
 					scheduleId: schedule.id,
-					resourceId: schedule.resource.id,
+					resourceId: schedule.resourceId,
 					interval: hour
 				};
 				return (
@@ -305,13 +310,13 @@ export default class Calendar extends Component<CalendarProps> {
 			columns = [], slots = this.props.slots,
 			schedules: Array<ISchedule> = this.props.schedules.filter((schedule: ISchedule) => {
 				for (const resource of this.props.selectResource) {
-					if (resource.id === schedule.resource.id) {
+					if (resource.id === schedule.resourceId) {
 						return true;
 					}
 				}
 
 				return false;
-			}).sort((scheduleA: ISchedule, scheduleB: ISchedule) => scheduleA.resource.name.toLowerCase() > scheduleB.resource.name.toLowerCase() ? 1 : -1);
+			}).sort((scheduleA: ISchedule, scheduleB: ISchedule) => this.getResource(scheduleA.resourceId).name.toLowerCase() > this.getResource(scheduleB.resourceId).name.toLowerCase() ? 1 : -1);
 
 		for (let j = 0; j < filterDays; j += 1) {
 			const filterDate = new Date(selectDate.getTime());
@@ -348,16 +353,17 @@ export default class Calendar extends Component<CalendarProps> {
 						hours.push('');
 					}
 
-					const dayOff: IDayOff = schedules[i].dayOff as IDayOff;
+					const dayOff: IDayOff = schedules[i].dayOff as IDayOff, resource = this.getResource(schedules[i].resourceId);
 
 					const column: IColumn = {
 						id: columns.length + 1,
 						dateString: `${this.DAYS[filterDate.getDay()]} ${filterDate.getDate()} ${this.MONTHS[filterDate.getMonth()]}`,
 						date: filterDate,
-						name: schedules[i].resource.name,
-						specialty: schedules[i].resource.specialty.toLowerCase(),
+						name: resource.name,
+						specialty: resource.specialty.toLowerCase(),
 						cabinet: `${schedules[i].clinic.name}, (к. ${schedules[i].clinic.roomNumber})`,
 						schedule: schedules[i],
+						resource,
 						scheduleStart: schedules[i].workStart,
 						scheduleEnd: schedules[i].workEnd,
 						scheduleGrid: schedules[i].timeGrid,
