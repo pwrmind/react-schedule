@@ -46,9 +46,6 @@ export default class Tooltip extends Component<TooltipProps> {
 			x: number = Math.round(childrenRect.x - ((contentRect.width / 2) - (childrenRect.width / 2))),
 			y: number = Math.round(childrenRect.y - contentRect.height - 6);
 
-		// console.log('onMouseEnter', this.contentREF, contentRect);
-		// console.log('onMouseEnter', this.childrenREF, childrenRect);
-
 		return {x, y};
 	}
 

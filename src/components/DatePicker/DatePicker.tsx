@@ -147,10 +147,6 @@ export default class DatePicker extends Component<DatePickerProps> {
 			out += ' date-picker__day--grey';
 		}
 
-		// if (this.diffDate(date, currentDate) === 0) {
-		// 	out += ' date-picker__day--today'
-		// }
-
 		if (
 			this.diffDate(date, selectedDate) >= 0 &&
 			this.getActiveDate(date)
