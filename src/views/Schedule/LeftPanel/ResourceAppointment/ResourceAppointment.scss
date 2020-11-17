@@ -150,6 +150,16 @@
       border: 1px solid transparent;
       border-radius: 2px;
 
+      &:before {
+        content: '☓';
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      &:first-child:before {
+        content: '✓';
+      }
+
       &:hover {
         background-color: #fefefe;
         border-color: #f0f0f0;
