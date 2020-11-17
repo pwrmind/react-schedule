@@ -77,7 +77,7 @@ const scheduleList: Array<ISchedule> = [
 		workStart: '08:00',
 		workEnd: '15:00',
 		workDays: [1, 2, 3, 4],
-		workMonth: 1,
+		workMonth: 2,
 		timeGrid: 30,
 		quotas: [
 			{
@@ -105,7 +105,7 @@ const scheduleList: Array<ISchedule> = [
 		workStart: '14:00',
 		workEnd: '18:00',
 		workDays: [5, 6],
-		workMonth: 2,
+		workMonth: 1,
 		timeGrid: 10,
 		quotas: [
 			{
@@ -150,8 +150,8 @@ const scheduleList: Array<ISchedule> = [
 		],
 		dayOff: {
 			reason: 'Врач на больничном',
-			dayOffStart: new Date(2020, 10, 18),
-			dayOffEnd: new Date(2020, 10, 18)
+			dayOffStart: new Date(2020, 10, 25),
+			dayOffEnd: new Date(2020, 10, 25)
 		}
 	},
 	{
@@ -176,8 +176,8 @@ const scheduleList: Array<ISchedule> = [
 		],
 		dayOff: {
 			reason: 'Врач в отпуске',
-			dayOffStart: new Date(2020, 10, 20),
-			dayOffEnd: new Date(2020, 10, 21)
+			dayOffStart: new Date(2020, 10, 27),
+			dayOffEnd: new Date(2020, 10, 28)
 		}
 	}
 ];
