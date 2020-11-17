@@ -60,7 +60,7 @@
         width: 10px;
         height: 10px;
         margin-right: 5px;
-        background: url("../../../../../src/assets/img/filter.svg") no-repeat;
+        background: url("../../../../assets/img/filter.svg") no-repeat;
       }
     }
 
@@ -120,7 +120,7 @@
       white-space: nowrap;
       border: 1px solid gray;
       border-radius: 0 3px 3px 0;
-      background: #efefef url("../../../../../src/assets/img/search.svg") no-repeat center;
+      background: #efefef url("../../../../assets/img/search.svg") no-repeat center;
       background-size: 50%;
 
       &:hover {
@@ -182,7 +182,7 @@
 
   &__search {
     position: absolute;
-    top: 65px;
+    top: 30px;
     width: 100%;
     background-color: white;
     border: 1px solid black;

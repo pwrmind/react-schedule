@@ -17,7 +17,7 @@
         position: absolute;
         top: 15px;
         left: 25px;
-        background: url("../../../../../src/assets/img/patient.svg") no-repeat;
+        background: url("../../../../assets/img/patient.svg") no-repeat;
       }
 
       &.slot {
@@ -30,7 +30,7 @@
           height: 25px;
           top: 15px;
           left: 15px;
-          background: url("../../../../../src/assets/img/clock.svg") no-repeat;
+          background: url("../../../../assets/img/clock.svg") no-repeat;
         }
       }
 
@@ -79,19 +79,19 @@
             position: absolute;
             top: 4px;
             left: 10px;
-            background: url("../../../../../src/assets/img/list.svg") no-repeat;
+            background: url("../../../../assets/img/list.svg") no-repeat;
           }
         }
 
         &.create {
           &:before {
-            background: url("../../../../../src/assets/img/edit.svg") no-repeat;
+            background: url("../../../../assets/img/edit.svg") no-repeat;
           }
         }
 
         &.cancel {
           &:before {
-            background: url("../../../../../src/assets/img/basket.svg") no-repeat;
+            background: url("../../../../assets/img/basket.svg") no-repeat;
           }
         }
       }
@@ -110,7 +110,7 @@
         position: absolute;
         top: 15px;
         left: 25px;
-        background: url("../../../../../src/assets/img/attention.svg") no-repeat;
+        background: url("../../../../assets/img/attention.svg") no-repeat;
       }
     }
 
