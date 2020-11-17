@@ -55,6 +55,11 @@ export default class ContextMenu extends Component<ContextMenuProps> {
 			y = Math.round(childrenRect.y - diff);
 		}
 
+		if (childrenRect.x + contentRect.width > window.innerWidth) {
+			const diff = childrenRect.x + contentRect.width - window.innerWidth;
+			x = Math.round(childrenRect.x - diff);
+		}
+
 		return {x, y};
 	}
 
