@@ -19,17 +19,20 @@ export default class ContextMenu extends Component<ContextMenuProps> {
 
 	public state = {
 		isShow: false,
+		hidden: true,
 		positionX: 0,
 		positionY: 0
 	}
 
 	public timer: any;
 	public childrenREF: HTMLDivElement | null = null;
+	public contentREF: HTMLDivElement | null = null;
 
 	public setPositions = (positionX: number, positionY: number) => {
 		this.setState({
 			positionX,
-			positionY
+			positionY,
+			hidden: false
 		});
 	}
 
@@ -38,13 +41,24 @@ export default class ContextMenu extends Component<ContextMenuProps> {
 	}
 
 	public get calcPosition(): {x: number, y: number} {
-		if (this.childrenREF === null) {
+		if (this.childrenREF === null || this.contentREF === null) {
 			return {x: 0, y: 0};
 		}
 
 		const childrenRect: DOMRect = this.childrenREF.getBoundingClientRect(),
-			x: number = Math.round(childrenRect.x),
-			y: number = Math.round(childrenRect.y);
+			contentRect: DOMRect = this.contentREF.getBoundingClientRect();
+		let x: number = Math.round(childrenRect.x);
+		let y: number = Math.round(childrenRect.y);
+
+		if (childrenRect.y + contentRect.height > window.innerHeight) {
+			const diff = childrenRect.y + contentRect.height - window.innerHeight;
+			y = Math.round(childrenRect.y - diff);
+		}
+
+		if (childrenRect.x + contentRect.width > window.innerWidth) {
+			const diff = childrenRect.x + contentRect.width - window.innerWidth;
+			x = Math.round(childrenRect.x - diff);
+		}
 
 		return {x, y};
 	}
@@ -55,15 +69,16 @@ export default class ContextMenu extends Component<ContextMenuProps> {
 			return;
 		}
 
+		this.setVisibility(true);
 		this.timer = setTimeout(() => {
 			this.setPositions(this.calcPosition.x, this.calcPosition.y);
-			this.setVisibility(true);
 		}, this.props.delay);
 	}
 	
 	public hide = () => {
 		clearInterval(this.timer);
 		this.setVisibility(false);
+		this.setState({hidden: true})
 	}
 
 	render() {
@@ -83,7 +98,8 @@ export default class ContextMenu extends Component<ContextMenuProps> {
 						onClick={this.hide}
 					>
 						<div
-							className="context-menu__container"
+							className={`context-menu__container ${this.state.hidden && 'context-menu__container--hide'}`}
+							ref={el => (this.contentREF = el)}
 							style={{transform: `translate3d(${this.state.positionX}px, ${this.state.positionY}px, 0)`}}
 						>
 							{React.cloneElement(content, {

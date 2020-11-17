@@ -237,7 +237,8 @@
     &__search-wrapper {
       background-color: white;
       border: 1px solid #d0d1d1;
-      overflow-x: scroll;
+      overflow-x: hidden;
+      overflow-y: scroll;
       margin-top: 50px;
       max-height: 300px;
 

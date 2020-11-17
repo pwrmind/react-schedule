@@ -22,5 +22,10 @@
         background: white;
         text-align: center;
         border: 1px solid gray;
+
+        &--hide {
+            visibility: hidden;
+            left: -2000;
+        }
     }
 }
