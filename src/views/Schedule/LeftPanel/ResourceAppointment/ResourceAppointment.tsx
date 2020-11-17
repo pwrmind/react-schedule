@@ -18,6 +18,7 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 		activeFilter: 0,
 		headerOpened: false,
 		searchOpened: false,
+		clearActive: false,
 		selectedResources: [],
 		resources: [],
 		searchResources: []
@@ -26,6 +27,7 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 	public selectedCheckboxes: Set<IResource> = new Set();
 
 	public itemRefs: any = {};
+	public inputRef: HTMLInputElement | null = null;
 
 	public componentDidUpdate(prevProps: IResourceAppointmentProps) {
 		if (prevProps.resources !== this.props.resources) {
@@ -35,13 +37,26 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 			})
 		}
 	}
+	
+	public clearSearch = () => {
+		const input = this.inputRef as HTMLInputElement;
+		input.value = '';
+		input.focus();
+		this.searchResource({target: input});
+	};
 
 	public searchResource = (e: any) => {
 		const search: string = e.target.value.toLowerCase();
 
 		if (search === '') {
 			this.setState({
-				searchResources: this.state.resources
+				searchResources: this.state.resources,
+				clearActive: false
+			});
+		}
+		else {
+			this.setState({
+				clearActive: true
 			});
 		}
 
@@ -263,7 +278,8 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 				</div>
 
 				<div className="resource-appointment__body">
-					<input className="resource-appointment__body-input" placeholder="Введите текст для поиска" onChange={this.searchResource}/>
+					<input className="resource-appointment__body-input" placeholder="Введите текст для поиска" onChange={this.searchResource} ref={el => (this.inputRef = el)}/>
+					{this.state.clearActive && <div className="resource-appointment__body-input-clear" onClick={this.clearSearch}>☓</div>}
 					<button className="resource-appointment__body-button" onClick={this.toggleSearch}></button>
 
 					<div className={"resource-appointment__search" + (this.state.searchOpened ? '' : ' closed')}>
