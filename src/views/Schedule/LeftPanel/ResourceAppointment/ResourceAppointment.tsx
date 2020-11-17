@@ -39,10 +39,13 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 	}
 	
 	public clearSearch = () => {
-		const input = this.inputRef as HTMLInputElement;
-		input.value = '';
-		input.focus();
-		this.searchResource({target: input});
+		if (this.inputRef === null) {
+			return;
+		}
+
+		this.inputRef.value = '';
+		this.inputRef.focus();
+		this.closeSearch();
 	};
 
 	public searchResource = (e: any) => {
@@ -50,13 +53,7 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 
 		if (search === '') {
 			this.setState({
-				searchResources: this.state.resources,
-				clearActive: false
-			});
-		}
-		else {
-			this.setState({
-				clearActive: true
+				searchResources: this.state.resources
 			});
 		}
 
@@ -279,7 +276,7 @@ export default class ResourceAppointment extends Component<IResourceAppointmentP
 
 				<div className="resource-appointment__body">
 					<input className="resource-appointment__body-input" placeholder="Введите текст для поиска" onChange={this.searchResource} ref={el => (this.inputRef = el)}/>
-					{this.state.clearActive && <div className="resource-appointment__body-input-clear" onClick={this.clearSearch}>☓</div>}
+					{this.inputRef && this.inputRef.value.length > 0 && <div className="resource-appointment__body-input-clear" onClick={this.clearSearch}>☓</div>}
 					<button className="resource-appointment__body-button" onClick={this.toggleSearch}></button>
 
 					<div className={"resource-appointment__search" + (this.state.searchOpened ? '' : ' closed')}>
